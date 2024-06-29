@@ -142,6 +142,9 @@ function startDraw(event) {
 
 function Drawing(event) {
 
+    const color = colorPicker.value;
+    const rgbaColor = hexToRgba(color, penAlpha);
+
     if (row < 100) {
         time=getCurrentTime();
         matrix_mousePosition[row] = `${time},${currentX},${currentY}`;
@@ -212,10 +215,8 @@ function Drawing(event) {
                     isDrawing=true;
                     if (isPencilMode){
                         t=0;
-                        const color = colorPicker.value;
-                        const rgbaColor = hexToRgba(color, penAlpha);
-                        ctx.strokeStyle = rgbaColor;
-                        ctx.lineWidth = brushSize;
+                        ctx.strokeStyle = 'black';
+                        ctx.lineWidth = 2;
                         saveCanvasState();
                         ctx.beginPath();
                         ctx.arc(currentX, currentY, threshold, 0, 2 * Math.PI); // Draw circle around start_drawingX, start_drawingY with radius Z
@@ -245,8 +246,7 @@ function Drawing(event) {
 
         if (isDrawing){ //starting now to draw because movement_check==1 conition
 
-            const color = colorPicker.value;
-            const rgbaColor = hexToRgba(color, penAlpha);
+           
         
             ctx.beginPath(); // creating new path to draw
             ctx.strokeStyle = rgbaColor;
@@ -266,7 +266,9 @@ function Drawing(event) {
         
     }
 
-    
+    ctx.strokeStyle = rgbaColor;
+    ctx.lineWidth = brushSize;
+
     if (movement_check==0){
         if (isDrawing){
            if (!isSprayMode && !isSplashMode && !isPencilMode){ctx.putImageData(originalData, 0, 0);} 
@@ -368,10 +370,13 @@ function pencilmode() {
         // Update start_drawingX, start_drawingY to the endpoint of the drawn line
         [start_drawingX, start_drawingY] = [endX, endY];
     } 
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
     saveCanvasState();
     ctx.beginPath();
     ctx.arc(start_drawingX, start_drawingY, Z, 0, 2 * Math.PI); // Draw circle around start_drawingX, start_drawingY with radius Z
     ctx.stroke();
+    drawNeedle();
     
  //   setTimeout(() => {
       //  pencilmode;
@@ -379,6 +384,25 @@ function pencilmode() {
 }   
 
 
+function drawRedDot(x, y) {
+    ctx.save(); // Save the current state
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, 2 * Math.PI); // Draw a small circle (radius 3)
+    ctx.fillStyle = 'red'; // Set the fill color to red
+    ctx.fill(); // Fill the circle with the red color
+    ctx.restore(); // Restore the saved state
+}
+
+function drawNeedle() {
+    ctx.save();
+    ctx.strokeStyle = 'lightblue';
+    ctx.beginPath();
+    ctx.moveTo(start_drawingX, start_drawingY);
+    ctx.lineTo(currentX, currentY);
+    ctx.stroke();
+    drawRedDot(currentX, currentY);
+    ctx.restore();
+}
 function stopdraw() {
 
     if (isDrawing){
