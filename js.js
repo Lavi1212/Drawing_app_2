@@ -8,7 +8,6 @@ const brushSizeSlider = document.getElementById('brushSize');
 const brushSizeDisplay = document.getElementById('brushSizeValue');
 const canvasContainer = document.getElementById('canvas-container');
 const confirmationDialog = document.getElementById('confirmationDialog');
-
 const undoButton = document.getElementById('undoButton');
 const saveButton = document.getElementById('saveButton');
 const resetImageButton = document.getElementById('resetImage');
@@ -20,7 +19,6 @@ const zoomOutButton = document.getElementById('ZoomOut');
 const DragButton = document.getElementById('Drag');
 const switchToPenButton=document.getElementById('switchToPen');
 const switchToEraserButton=document.getElementById('switchToEraser');
-
 const pencilButtonsContainer = document.getElementById('pencilButtons');
 const switchToPencilButton=document.getElementById('switchToPencil');
 const switchToPencil2Button = document.getElementById('switchToPencil2');
@@ -50,28 +48,31 @@ const magentaColorButton = document.getElementById('magentaColor');
 const confirmYesButton = document.getElementById('confirmYes');
 const confirmNoButton = document.getElementById('confirmNo');
 
-
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const containerWidth = canvasContainer.clientWidth;
 const containerHeight = canvasContainer.clientHeight;
 
-let originalData,originalImageData,
-    isPenMode = false,isSprayMode=false, isSplashMode=false, isPencilMode = false, isEraserMode = false,
-    isDrawing = false, isRectangleMode = false, isCircleMode = false,
-    isTriangleMode = false, isLineMode = false, isEllipseMode=false, isIsoscelesTriangleMode=false,
-    startX, startY,start_drawingX, start_drawingY ,currentX=0,currentY=0, flag=0,t=0, lastX=0, lastY=0, clientXWithinThreshold, clientYWithinThreshold, starttimerX, starttimerY ;
-let actionsStack = [];
-let brushSize = 10;
-let penAlpha = 1;
-let eraserSize = brushSize;
-let timeoutId = null;
-let timesetting1;
-let  movement_check=0;
-let matrix_mousePosition = [];
-let row=0;
-let currentAction = null;
+let  isSplashMode=false, isPencilMode = false, isEraserMode = false,isZoomOutMode = false,isZoomInMode = false,
+     isDragMode=false, isPenMode = false,isSprayMode=false, isDrawing = false, isRectangleMode = false,
+     isCircleMode = false, isIsoscelesTriangleMode=false, isTriangleMode = false, isLineMode = false, isEllipseMode=false, 
+    startX, startY,start_drawingX, start_drawingY ,currentX=0 ,currentY=0, flag=0, t=0, movement_check=0,
+    clientXWithinThreshold, clientYWithinThreshold ,currentAction = null, originalData, originalImageData,interval, 
+    brushSize = 1, penAlpha = 1,eraserSize = brushSize, timeoutId = null ,p=0,row=0,scale = 1, distance=1000,settingsVisible = false;;
 
+// start_drawingX:The place where the mouse click happened and dwell-click finished!
+// startX: The place where the dwell-click started!
+// currentX: The place the mouse is in the call to every event function.
+// endX/Y: Only for compass use. The place with Z distance from currentX/Y, inside the compass.
+
+let actionsStack = [],compassStack=[];
+let matrix_mousePosition = [];
+
+
+let A = 0.5; // Parameter to control the speed of compass drawing
+let Z = 50; 
+let timesetting = 1000; // Default timesetting value
+let threshold = 40; // Default threshold value
 
 for (let i = 0; i < 100; i++) {
     matrix_mousePosition[i] = [];
@@ -80,12 +81,6 @@ for (let i = 0; i < 100; i++) {
     }
 }
 
-let originX = canvasWidth / 2;
-let originY = canvasHeight / 2;
-let isZoomInMode = false;
-let isZoomOutMode = false;
-let isDragMode=false;
-let scale = 1;
 
 canvas.addEventListener("mousedown", startDraw);
 canvas.addEventListener("mousemove", Drawing);
@@ -93,14 +88,14 @@ canvas.addEventListener("mouseleave", stopdraw);
 
 
 function startDraw(event) {
-    if (movement_check==1){
+    if (movement_check==1){// So there will be no double-click, mouse & dwell-click
         return;
     }
-
+    currentX = event.offsetX;
+    currentY =event.offsetY;
     start_drawingX = event.offsetX;
     start_drawingY = event.offsetY;
 
- 
     if (isZoomInMode) {
         scale = scale * 2;
         updateTransform();
@@ -122,14 +117,15 @@ function startDraw(event) {
 
     else if (isDrawing){
         isDrawing=false; 
+        if (isPencilMode){undoLastAction();}//command to delete the circle
     }
 
     else if (!isDrawing) {
         isDrawing = true;
     t=0;
-   
-   
 
+
+ 
     const color = colorPicker.value;
     const rgbaColor = hexToRgba(color, penAlpha);
 
@@ -141,7 +137,6 @@ function startDraw(event) {
     saveCanvasState();
     originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-   
 }
 }
 
@@ -156,41 +151,78 @@ function Drawing(event) {
     currentX = event.offsetX;
     currentY = event.offsetY;
 
-    clientXWithinThreshold = Math.abs(currentX - startX) <= threshold;
-    clientYWithinThreshold = Math.abs(currentY - startY) <= threshold;
+    distance = getDistance(startX, startY, currentX, currentY);
 
-    if (clientXWithinThreshold && clientYWithinThreshold) {
+    if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode){
+
+        console.log('p:',p);
+        if (p!=0)
+        {undoLastAction();}
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
+        saveCanvasState();
+        p++;
+        ctx.beginPath();
+        ctx.arc(currentX, currentY, threshold, 0, 2 * Math.PI); // Draw circle around start_drawingX, start_drawingY with radius Z
+        ctx.stroke();
+    }
+
+    if (distance <= threshold) {
         if (!timeoutId){//Starting the timecount
             startX = currentX;
             startY = currentY;
             timeoutId = setTimeout(() => {
-                movement_check=1;       
-                 if (isPenMode) { handleMouseDownPen(event); }
-                 
+                movement_check=1; 
+                if(!(isPenMode || isZoomInMode|| isZoomOutMode||isDragMode||isPencilMode)){
+                saveCanvasState();
+                ctx.beginPath();
+                ctx.arc(currentX, currentY, 3, 0, 2 * Math.PI); // Draw a small circle (radius 3)
+                ctx.fillStyle = 'red'; // Set the fill color to red
+                ctx.fill(); // Fill the circle with the red color
+                }
+                
+                 if (isPenMode) { 
+                    undoLastAction();
+                    handleMouseDownPen(event);
+                    saveCanvasState();
+                    p=0;
+                 }
                  else if (isZoomInMode) {
                     scale = scale * 2;
+                    threshold=threshold/2;
                     updateTransform(); 
                 }
-            
                 else if (isZoomOutMode){
                     scale /= 2;
+                    threshold=threshold*2;
                     if (scale < 1) scale = 1;// Prevent scaling below the original size
                         updateTransform();
                     }
-            
                 else if (isDragMode){
                       updateTransform();
                     }
-
                 else if (isDrawing){
                     isDrawing=false;
+                    //if (isPencilMode)
+                        {
+                            undoLastAction();
+                        }//command to delete the circle/dot
                 }
-
                 else if  (!isDrawing){
                     isDrawing=true;
+                    if (isPencilMode){
+                        t=0;
+                        const color = colorPicker.value;
+                        const rgbaColor = hexToRgba(color, penAlpha);
+                        ctx.strokeStyle = rgbaColor;
+                        ctx.lineWidth = brushSize;
+                        saveCanvasState();
+                        ctx.beginPath();
+                        ctx.arc(currentX, currentY, threshold, 0, 2 * Math.PI); // Draw circle around start_drawingX, start_drawingY with radius Z
+                        ctx.stroke();
+                    }
                 }
-        
-                    }, timesetting); }
+                 }, timesetting); }
                 }
     else{
         clearTimeout(timeoutId);
@@ -199,8 +231,9 @@ function Drawing(event) {
         startY = currentY;
         movement_check=0;
     }
-console.log(movement_check);
-
+       
+//console.log(movement_check);
+ 
     if (movement_check==1){
 
         clearTimeout(timeoutId); //Restart the counting
@@ -208,6 +241,7 @@ console.log(movement_check);
         movement_check=0;
         startX = currentX; 
         startY = currentY;
+        
 
         if (isDrawing){ //starting now to draw because movement_check==1 conition
 
@@ -219,25 +253,27 @@ console.log(movement_check);
             ctx.lineWidth = brushSize;
             
             // Save the current canvas state before drawing
+           // if (isPencilMode)
+            {undoLastAction();}//Delete the circle/dot now!
             saveCanvasState();
             originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             
-        start_drawingX = event.offsetX;
-        start_drawingY = event.offsetY;
+            start_drawingX = event.offsetX;
+            start_drawingY = event.offsetY;
         
            
            }
         
     }
- 
+
     
     if (movement_check==0){
-        if (isDrawing==true){//allready drawing because movement_check==0 conition
-           if (!isSprayMode && !isSplashMode){ctx.putImageData(originalData, 0, 0);} 
+        if (isDrawing){
+           if (!isSprayMode && !isSplashMode && !isPencilMode){ctx.putImageData(originalData, 0, 0);} 
            if (isSprayMode){
             for (let i = 0; i < 100; i++) {
-                let x = currentX + (Math.random() - 0.5) * 20; // Adjust the spread (20) as needed
-                let y = currentY + (Math.random() - 0.5) * 20; // Adjust the spread (20) as needed
+                let x = currentX + (Math.random() - 0.5) * 3*brushSize; // Adjust the spread (20) as needed
+                let y = currentY + (Math.random() - 0.5) * 3*brushSize; // Adjust the spread (20) as needed
                 
                 // Draw small circles or dots
                 ctx.beginPath();
@@ -248,7 +284,7 @@ console.log(movement_check);
            }
 
            if (isSplashMode) {
-            const splashSize = 10; // Adjust splash size as needed
+            const splashSize = brushSize; // Adjust splash size as needed
             const density = 5;    // Adjust density (number of splashes) as needed
     
             for (let i = 0; i < density; i++) {
@@ -267,8 +303,7 @@ console.log(movement_check);
             }
         }
            if (isPencilMode){
-            ctx.lineTo(currentX, currentY); // creating line according to the mouse pointer
-            ctx.stroke();
+            pencilmode();
            }
            else if (isEraserMode) {
                 ctx.strokeStyle = "#fff";
@@ -308,17 +343,51 @@ console.log(movement_check);
 }
 
 
+function pencilmode() {
+    Z=threshold;
+    distance = getDistance(start_drawingX, start_drawingY, currentX, currentY);
+    if(t){undoLastAction();}// Command to delete the circle
+    if (!t){t++; }
+
+    if (distance >= Z) {
+        const speed = A * distance; // Speed is proportional to the distance
+        interval = Math.max(1, 100 / speed); // Calculate interval based on speed
+
+        // Calculate angle from current point to last mouse position
+        const angle = Math.atan2(start_drawingY - currentY, start_drawingX - currentX);
+
+        // Calculate endpoint at distance Z from currentX, currentY in the angle direction
+        const endX = currentX + Z * Math.cos(angle);
+        const endY = currentY + Z * Math.sin(angle);
+
+        ctx.beginPath();
+        ctx.moveTo(start_drawingX, start_drawingY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        // Update start_drawingX, start_drawingY to the endpoint of the drawn line
+        [start_drawingX, start_drawingY] = [endX, endY];
+    } 
+    saveCanvasState();
+    ctx.beginPath();
+    ctx.arc(start_drawingX, start_drawingY, Z, 0, 2 * Math.PI); // Draw circle around start_drawingX, start_drawingY with radius Z
+    ctx.stroke();
+    
+ //   setTimeout(() => {
+      //  pencilmode;
+  //  }, interval); // Way to control the velocity
+}   
 
 
-
-function stopdraw(event) {
+function stopdraw() {
 
     if (isDrawing){
         isDrawing=false; 
+            {undoLastAction();}
     }
+    if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode) {undoLastAction();}
     clearTimeout(timeoutId);
     timeoutId = null;
-
 }
 
 function updateTransform() {
@@ -470,7 +539,7 @@ function handleFileSelect(event) {
         reader.readAsDataURL(file);
     } else {
         ctx.putImageData(originalData, 0, 0); 
-    }
+    }p=0;
 }
 
 
@@ -488,11 +557,22 @@ function handleFileSelect(event) {
     if (actionsStack.length > 0) {
       const lastImageData = actionsStack.pop();
       ctx.putImageData(lastImageData, 0, 0);
+      console.log("Undo action. Stack size:", actionsStack.length);
+    } else {
+      console.log("No actions to undo");
+    }
+  }
+
+  function undoLastAction_Compass() {
+    if (compassStack.length > 0) {
+      const lastImageData = compassStack.pop();
+      ctx.putImageData(lastImageData, 0, 0);
      // console.log("Undo action. Stack size:", actionsStack.length);
     } else {
       //console.log("No actions to undo");
     }
   }
+
 
 
 
@@ -549,12 +629,12 @@ const switchToCircle = () => {isSprayMode = false; isSplashMode = false; isIsosc
 const switchToTriangle = () => {isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = true; isLineMode = false;  scaleTransform();}
 const switchToLine = () => {isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = true;  scaleTransform();}
 const switchToElipsa = () => {isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= true; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform(); }
-function switchToPen () {t=0;isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); }
+function switchToPen () {p=0; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); }
 function switchToEraser() {isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = true; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();}
-function activateZoomInMode() {isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();    }
-function activateZoomOutMode() {isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
-function activateDragMode() {isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
-function switchToPencil () {  isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = true; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  pencilButtonsContainer.style.display = 'none';}
+function activateZoomInMode() {p=0; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();    }
+function activateZoomOutMode() {p=0; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
+function activateDragMode() {p=0; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
+function switchToPencil () { t=0; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = true; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  pencilButtonsContainer.style.display = 'none';}
 function switchToSpray () {  isSprayMode = true; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  pencilButtonsContainer.style.display = 'none';}
 function switchToSplash () {  isSprayMode = false; isSplashMode = true; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform(); pencilButtonsContainer.style.display = 'none'; }
 
@@ -604,6 +684,7 @@ const matrix_color = [
  
 // Function to handle color selection from the main palette
 function selectColor(color='#000000') {
+    p=0;
     // Show the secondary color palette
     isDrawing = false;
    // document.getElementById('colorPicker').value = color;
@@ -663,6 +744,11 @@ function addColorOption(color, column) {
     column.appendChild(colorOption);
 }
 
+function getDistance(x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    return Math.sqrt(dx * dx + dy * dy);
+}
 // Function to lighten or darken a color
 function lightenDarkenColor(col, amt) {
     var usePound = false;
@@ -819,16 +905,14 @@ function endDraw() {
 function saveCanvasState() {
     actionsStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
     console.log("Canvas state saved. Stack size:", actionsStack.length);
-
+}
+function saveCanvasState_Compass() {
+    compassStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    //console.log("Canvas state saved. Stack size:", actionsStack.length);
 }
 
 
 
-
-//setting
-let timesetting = 3000; // Default timesetting value
-let threshold = 20; // Default threshold value
-let settingsVisible = false; // Flag to track settings panel visibility
 
 // Function to toggle the settings panel visibility
 function toggleSetting() {
@@ -1006,11 +1090,13 @@ function newPage(){
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    p=0;
 }
 
 function resetImage() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
     ctx.putImageData(originalImageData, 0, 0); // Restore original image
+    p=0;
   }
 
   function showConfirmation(action) {
