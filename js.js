@@ -155,10 +155,11 @@ function Drawing(event) {
     currentY = event.offsetY;
 
     distance = getDistance(startX, startY, currentX, currentY);
-
+    
+   
     if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode){
 
-        console.log('p:',p);
+        
         if (p!=0)
         {undoLastAction();}
         ctx.strokeStyle = 'black';
@@ -178,10 +179,7 @@ function Drawing(event) {
                 movement_check=1; 
                 if(!(isPenMode || isZoomInMode|| isZoomOutMode||isDragMode||isPencilMode)){
                 saveCanvasState();
-                ctx.beginPath();
-                ctx.arc(currentX, currentY, 3, 0, 2 * Math.PI); // Draw a small circle (radius 3)
-                ctx.fillStyle = 'red'; // Set the fill color to red
-                ctx.fill(); // Fill the circle with the red color
+                drawRedDot(currentX, currentY);
                 }
                 
                  if (isPenMode) { 
@@ -351,7 +349,7 @@ function pencilmode() {
     if(t){undoLastAction();}// Command to delete the circle
     if (!t){t++; }
 
-    if (distance >= Z) {
+    if (distance >= Z && distance <= threshold*2) {
         const speed = A * distance; // Speed is proportional to the distance
         interval = Math.max(1, 100 / speed); // Calculate interval based on speed
 
@@ -376,13 +374,17 @@ function pencilmode() {
     ctx.beginPath();
     ctx.arc(start_drawingX, start_drawingY, Z, 0, 2 * Math.PI); // Draw circle around start_drawingX, start_drawingY with radius Z
     ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(start_drawingX, start_drawingY,2*Z, 0, 2 * Math.PI); // Draw circle around start_drawingX, start_drawingY with radius Z
+    ctx.stroke();
+
     drawNeedle();
     
- //   setTimeout(() => {
-      //  pencilmode;
-  //  }, interval); // Way to control the velocity
+  //  setTimeout(() => {
+    //    pencilmode();
+   // }, interval); // Way to control the velocity
 }   
-
 
 function drawRedDot(x, y) {
     ctx.save(); // Save the current state
@@ -396,15 +398,48 @@ function drawRedDot(x, y) {
 function drawNeedle() {
     ctx.save();
     ctx.strokeStyle = 'lightblue';
+    ctx.lineWidth = 2; // Set the line width for the needle
+
+    // Calculate the angle of the needle
+    const angle = Math.atan2(currentY - start_drawingY, currentX - start_drawingX);
+
+    // Extend the needle line
+    const extendedLength = 20; // Length to extend the line
+    const extendedX = currentX + extendedLength * Math.cos(angle);
+    const extendedY = currentY + extendedLength * Math.sin(angle);
+
+    // Draw the needle line
     ctx.beginPath();
     ctx.moveTo(start_drawingX, start_drawingY);
-    ctx.lineTo(currentX, currentY);
+    ctx.lineTo(extendedX, extendedY);
     ctx.stroke();
+
+    // Draw the red dot at the end of the line
     drawRedDot(currentX, currentY);
+
+    // Draw the arrow head at the end of the extended line
+    const arrowLength = 10; // Length of the arrow head
+    const arrowAngle = Math.PI / 6; // Angle of the arrow head sides (30 degrees)
+
+    const arrowX1 = extendedX - arrowLength * Math.cos(angle - arrowAngle);
+    const arrowY1 = extendedY - arrowLength * Math.sin(angle - arrowAngle);
+    const arrowX2 = extendedX - arrowLength * Math.cos(angle + arrowAngle);
+    const arrowY2 = extendedY - arrowLength * Math.sin(angle + arrowAngle);
+
+    ctx.beginPath();
+    ctx.moveTo(extendedX, extendedY);
+    ctx.lineTo(arrowX1, arrowY1);
+    ctx.lineTo(arrowX2, arrowY2);
+    ctx.lineTo(extendedX, extendedY);
+    ctx.fillStyle = 'lightblue';
+    ctx.fill();
+
     ctx.restore();
 }
-function stopdraw() {
 
+
+function stopdraw() {
+    p=0;
     if (isDrawing){
         isDrawing=false; 
             {undoLastAction();}
@@ -524,6 +559,7 @@ ctx.putImageData(imageData, 0, 0);
 
 
 function handleFileSelect(event) {
+    p=0;
     saveCanvasState();
     originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const file = event.target.files[0];
@@ -563,7 +599,7 @@ function handleFileSelect(event) {
         reader.readAsDataURL(file);
     } else {
         ctx.putImageData(originalData, 0, 0); 
-    }p=0;
+    }
 }
 
 
@@ -1092,6 +1128,7 @@ function Pause() {
     isDrawing = false; 
 }
 function select_immidiate_color(){
+    p=0;
     isDrawing=false;
     const selectedColor = this.style.backgroundColor;
     colorPicker.value = rgbToHex(selectedColor);
