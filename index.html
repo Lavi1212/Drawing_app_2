@@ -142,8 +142,26 @@ input[type="file"]::-webkit-file-upload-button {
   justify-content: center; /* Center content horizontally */
   background-color: white; /* Optional: Set background color */
 }
+.button {
+  width: 100%; /* Ensure button fills the container */
+  height: 100%; /* Ensure button fills the container */
+  padding: 0; /* Remove any padding */
+  margin: 0; /* Remove any margin */
+  border: none; /* Remove any border */
+  background: none; /* Remove any background */
+  background-color: white; /* Optional: Set background color */
 
+}
 
+.button-img {
+  width: 100%; /* Set image width to fill the button */
+  height: 94%; /* Set image height to fill the button */
+  object-fit: cover; /* Ensure the image covers the entire button without distortion */
+  padding: 0; /* Remove any padding */
+  margin: 0; /* Remove any margin */
+  background-color: white; /* Optional: Set background color */
+
+}
 /*column right- pen eraser figures*/
 
 .button-container3 {
@@ -744,31 +762,31 @@ body.secondary-palette-visible .settings-container {
 
     <div class="button-container1">
       <div>
+        
         <input type="file" id="fileInput" accept="image/*">
-        <button id="resetImage">Reset Image</button>
-        <button id="newPage">New Page</button>
-      
+        <button id="resetImage"><img src="reset.png" class="button-img"></button>
+        <button id="newPage"><img src="newpage.png" class="button-img"></button>
       </div>
     </div>
 
     <div class="button-container2">
       <div>
-        <button id="Pause">Pause</button>
+        <button id="Pause"><img src="pause.png" class="button-img"></button>
       </div>
       <div>
-        <button id="ZoomIn">Zoom In</button>
+        <button id="ZoomIn"><img src="zoomin.jpg" class="button-img"></button>
       </div>
       <div>
-        <button id="ZoomOut">Zoom Out</button>
+        <button id="ZoomOut"><img src="zoomout.png" class="button-img"></button>
       </div>
       <div>
-        <button id="Drag">Drag</button>
+        <button id="Drag"><img src="drag.png" class="button-img"></button>
       </div>
       <div>
-      <button id="undoButton">Undo</button>
+      <button id="undoButton"><img src="undo.png" class="button-img"></button>
       </div>
       <div>
-      <button id="saveButton">Save Image</button>
+      <button id="saveButton"><img src="saveimage.png" class="button-img"></button>
     </div>
     </div>
 
@@ -811,7 +829,7 @@ body.secondary-palette-visible .settings-container {
     </div>
 
       <div class="color-palette" id="mainColorPalette">
-        <button id="selectColor">more colors</button>
+        <button id="selectColor"><img src="color.png" class="button-img"></button>
       </div>
       <div class="color-palette" id="secondaryColorPalette" style="display: none;"></div>
    
@@ -819,7 +837,7 @@ body.secondary-palette-visible .settings-container {
 
     
    <div class="brush-size-container">
-      <button id="toggleBrushSizeButtons">Choose Brush Size</button>
+      <button id="toggleBrushSizeButtons"><img src="brushsize.png" class="button-img"></button>
         <div id="brushSizeFrame" class="brush-size-frame">
           <div class="brush-size-buttons">
             <button id="brushSize1" class="special-button">
@@ -882,7 +900,7 @@ body.secondary-palette-visible .settings-container {
 
   <div class="settings-container">
     <div>
-    <button id="settingsbutton">Settings</button>
+    <button id="settingsbutton"><img src="setting.png" class="button-img"></button>
     <div id="settingsscreen" class="settings-screen">
       <div class="settings-screen1">
         <button id="setting1">Time Setting</button>
@@ -938,5 +956,4 @@ body.secondary-palette-visible .settings-container {
   <script src="js.js"></script>
 </body>
 </html>
-
 
