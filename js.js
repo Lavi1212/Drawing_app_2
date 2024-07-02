@@ -1058,23 +1058,3 @@ document.addEventListener('DOMContentLoaded', function() {
         img.src = picturePath;
     }
 });
-
- const scaleFactor = Math.min(900 / img.width, 450 / img.height);
-
-                // Calculate the new dimensions for the resized image
-                const newWidth = img.width * scaleFactor;
-                const newHeight = img.height * scaleFactor;
-
-                // Clear the canvas to plain white
-                canvas.width = 900;
-                canvas.height = 450;
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Draw the resized image on the canvas
-                ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
-
-                // Store the original image data
-                originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                originalImageData = adjustBrightness(originalImageData);
-                ctx.putImageData(originalImageData, 0, 0);
