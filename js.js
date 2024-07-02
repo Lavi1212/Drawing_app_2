@@ -1040,9 +1040,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
 
                 // Store the original image data
-                //originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                //originalImageData = adjustBrightness(originalImageData);
-                //ctx.putImageData(originalImageData, 0, 0);
+                originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                originalImageData = adjustBrightness(originalImageData);
+                ctx.putImageData(originalImageData, 0, 0);
             });
 
             picturePalette.appendChild(button);
