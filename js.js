@@ -992,3 +992,62 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const level1Button = document.getElementById('level1');
+    const picturePalette = document.getElementById('picturePalette');
+    
+
+    level1Button.addEventListener('click', function() {
+        toggleSetting();
+        picturePalette.style.display='block';
+        // Clear existing content in picturePalette
+        picturePalette.innerHTML = '';
+
+        // Create and append picture buttons
+        for (let i = 1; i <= 10; i++) {
+            const button = document.createElement('button');
+            button.classList.add('picture-button');
+            button.dataset.pictureNumber = i; // Store picture number in data attribute
+
+            const buttonText = document.createTextNode(`Picture ${i}`);
+            button.appendChild(buttonText);
+
+            // Example: Set image source dynamically
+            const imgSrc = `picture${i}.jpg`;
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.classList.add('button-image');
+            button.appendChild(img);
+
+            // Add click event listener to handle picture selection
+            button.addEventListener('click', function() {
+                picturePalette.style.display='none';
+                const scaleFactor = Math.min(900 / img.width, 450 / img.height);
+
+                // Calculate the new dimensions for the resized image
+                const newWidth = img.width * scaleFactor;
+                const newHeight = img.height * scaleFactor;
+
+                // Clear the canvas to plain white
+                canvas.width = 900;
+                canvas.height = 450;
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw the resized image on the canvas
+                ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
+
+                // Store the original image data
+                //originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                //originalImageData = adjustBrightness(originalImageData);
+                //ctx.putImageData(originalImageData, 0, 0);
+            });
+
+            picturePalette.appendChild(button);
+        
+        }
+        
+    });
+});
