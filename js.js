@@ -255,9 +255,9 @@ function stopdraw() {
     if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode) {undoLastAction();}
     clearTimeout(timeoutId);
     timeoutId = null;
-     if (musicPlayer.src== ('song1.mp3')){
+    if (musicPlayer.src == 'https://lavi1212.github.io/Drawing_app_2/song1.mp3'){
      musicPlayer.src= ('song2.mp3');
-     playMusic();}
+     musicPlayer.play();}
 }
 
 
@@ -970,14 +970,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('playButton').addEventListener('click', function() {
     playMusic();
+     toggleSetting();
   });
 
   document.getElementById('pauseButton').addEventListener('click', function() {
     pauseMusic();
+       toggleSetting();
   });
 
   document.getElementById('stopButton').addEventListener('click', function() {
     stopMusic();
+       toggleSetting();
   });
 
   function playMusic() {
