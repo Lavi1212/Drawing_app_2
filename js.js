@@ -255,6 +255,8 @@ function stopdraw() {
     if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode) {undoLastAction();}
     clearTimeout(timeoutId);
     timeoutId = null;
+     musicPlayer.src= ('song2.mp3');
+     playMusic();
 }
 
 
