@@ -55,6 +55,13 @@ const magentaColorButton = document.getElementById('magentaColor');
 const confirmYesButton = document.getElementById('confirmYes');
 const confirmNoButton = document.getElementById('confirmNo');
 
+const level1Button = document.getElementById('level1');
+const level2Button = document.getElementById('level2');
+const level3Button = document.getElementById('level3');
+const level1Palette = document.getElementById('level1Palette');
+const level2Palette = document.getElementById('level2Palette');
+const level3Palette = document.getElementById('level3Palette');
+
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const containerWidth = canvasContainer.clientWidth;
@@ -857,6 +864,57 @@ document.querySelectorAll('.thresholdsetting-button').forEach(button => {
     setupTimeoutHandler(button, () => button.click());
 });;
 
+function createPictureButtons(level, palette, start, end) {
+    toggleSetting();
+    palette.style.display = 'block';
+    palette.innerHTML = '';
+
+    for (let i = start; i <= end; i++) {
+        const button = document.createElement('button');
+        button.classList.add('picture-button');
+        button.dataset.pictureNumber = i;
+
+        const buttonText = document.createTextNode(`Picture ${i}`);
+        button.appendChild(buttonText);
+
+        const imgSrc = `picture${i}.jpg`;
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.classList.add('button-image');
+        button.appendChild(img);
+        
+
+                    
+            button.addEventListener('click', function() {
+                level1Palette.style.display='none';
+                level2Palette.style.display='none';
+                level3Palette.style.display='none';
+                const scaleFactor = Math.min(900 / img.width, 450 / img.height);
+
+                // Calculate the new dimensions for the resized image
+                const newWidth = img.width * scaleFactor;
+                const newHeight = img.height * scaleFactor;
+
+                // Clear the canvas to plain white
+                canvas.width = 900;
+                canvas.height = 450;
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw the resized image on the canvas
+                //img=adjustBrightness(img);
+                ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
+
+                // Store the original image data
+                originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                originalImageData = adjustBrightness(originalImageData);
+                ctx.putImageData(originalImageData, 0, 0);
+            });
+            setupTimeoutHandler(button, () => button.click());
+        palette.appendChild(button);
+    }
+}
+
 function switchToPenciloptoins(){
     pencilButtonsContainer.style.display = pencilButtonsContainer.style.display === 'none' ? 'block' : 'none';
     brushSizeFrame.style.display = 'none';
@@ -950,6 +1008,7 @@ function confirmYes(){
   }
 
 //initialization function
+
 document.addEventListener('DOMContentLoaded', function() {
 
     canvas.width = canvasContainer.offsetWidth;
@@ -968,6 +1027,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     resetImageButton.addEventListener('click', function() {showConfirmation('resetImage');});
     newPageButton.addEventListener('click', function() {showConfirmation('newPage');});
+    level1Button.addEventListener('click', function() {createPictureButtons('level1', level1Palette, 1, 10);});
+    level2Button.addEventListener('click', function() {createPictureButtons('level2', level1Palette, 11, 20);});
+    level3Button.addEventListener('click', function() {createPictureButtons('level3', level1Palette, 21, 30);});
     fileInputButton.addEventListener('change', handleFileSelect);
     undoButton.addEventListener('click', undoLastAction);
     saveButton.addEventListener('click', saveImage);
@@ -1012,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
     [undoButton, saveButton, resetImageButton,newPageButton,PauseButton,zoomInButton,zoomOutButton,DragButton
-        ,switchToPenButton,switchToEraserButton,switchToPencilButton ,toggleFiguresButton,
+        ,switchToPenButton,switchToEraserButton,switchToPencilButton ,toggleFiguresButton,level1Button,level2Button,level3Button,
         rectangleButton,lineButton ,circleButton,elipsaButton,triangleButton,IsoscelesTriangleButton,
         selectColorButton,redColorButton,greenColorButton,cyanColorButton,magentaColorButton,yellowColorButton,blueColorButton,toggleBrushSizeButton,PenTransparencyButton,settingsbutton, playButton,pauseButton,stopButton,MatrixButton
         ,confirmYesButton,confirmNoButton,switchToPencil1Button,switchToPencil2Button,switchToSprayButton,switchToSplashButton
@@ -1028,66 +1090,5 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('mouseleave', function() {
             clearTimeout(timeoutId); // Clear timeout on mouse leave
         });
-    });
-});
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    const level1Button = document.getElementById('level1');
-    const picturePalette = document.getElementById('picturePalette');
-    
-
-    level1Button.addEventListener('click', function() {
-        toggleSetting();
-        picturePalette.style.display='block';
-        // Clear existing content in picturePalette
-        picturePalette.innerHTML = '';
-
-        // Create and append picture buttons
-        for (let i = 1; i <= 10; i++) {
-            const button = document.createElement('button');
-            button.classList.add('picture-button');
-            button.dataset.pictureNumber = i; // Store picture number in data attribute
-
-            const buttonText = document.createTextNode(`Picture ${i}`);
-            button.appendChild(buttonText);
-
-            // Example: Set image source dynamically
-            const imgSrc = `picture${i}.jpg`;
-            const img = document.createElement('img');
-            img.src = imgSrc;
-            img.classList.add('button-image');
-            button.appendChild(img);
-
-            // Add click event listener to handle picture selection
-            button.addEventListener('click', function() {
-                picturePalette.style.display='none';
-                const scaleFactor = Math.min(900 / img.width, 450 / img.height);
-
-                // Calculate the new dimensions for the resized image
-                const newWidth = img.width * scaleFactor;
-                const newHeight = img.height * scaleFactor;
-
-                // Clear the canvas to plain white
-                canvas.width = 900;
-                canvas.height = 450;
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Draw the resized image on the canvas
-                //img=adjustBrightness(img);
-                ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
-
-                // Store the original image data
-                originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                originalImageData = adjustBrightness(originalImageData);
-                ctx.putImageData(originalImageData, 0, 0);
-            });
-
-            picturePalette.appendChild(button);
-        
-        }
-        
     });
 });
