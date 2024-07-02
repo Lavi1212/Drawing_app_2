@@ -739,6 +739,49 @@ body.secondary-palette-visible .settings-container {
   background-color: #ddd; /* Change background color on hover */
 }
 
+    
+.picture-palette {
+  position: absolute;
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: -630px;
+  margin-left: -100px;
+  width: 1400px; /* Adjust size as needed */
+  height: 620px; /* Adjust size as needed */
+  background-color: white;
+ 
+}
+
+/* Style for the picture buttons */
+.picture-button {
+  background-color: #008CBA;
+  color: white;
+  border: none;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  
+}
+
+.picture-button:hover {
+  background-color: #005F6B;
+}
+
+/* Style for the button images */
+.button-image {
+  width: 250px; /* Adjust size as needed */
+  height: 250px; /* Adjust size as needed */
+  display: block;
+  margin: 5px auto;
+   /*border-radius: 50%; Makes the image round */
+}
+
 
 
   </style>
@@ -930,19 +973,21 @@ body.secondary-palette-visible .settings-container {
           <button id="stopButton">Stop Music</button>
         </div>
         
+ 
         <button id="leveldraw">Your Level</button>
         <div class="leveldrawbuttons">
-          <button class="leveldraw-button" data-value="1">1</button>
-          <div id="pictureSelection" style="display: none;"></div>
+          <button id="level1" class="level-button">Level 1</button>
+         
           <button class="leveldraw-button" data-value="2">2</button>
           <button class="leveldraw-button" data-value="3">3</button>
         </div>
-
         <button id="downloadBtn">Download Matrix</button>
       </div>
       </div>
     </div>
   </div>
+  <div id="picturePalette" class="picture-palette"></div>
+
 
 
   <div id="confirmationDialog" style="display:none;">
