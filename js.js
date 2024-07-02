@@ -1082,9 +1082,9 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleBrushSizeButton.addEventListener('click',toggleBrushSizeFrame);
     PenTransparencyButton.addEventListener('click',toggleTransparencyOptions);
     settingsbutton.addEventListener('click',toggleSetting);
-    playButton.addEventListener('click',playMusic);
-    pauseButton.addEventListener('click',pauseMusic);
-    stopButton.addEventListener('click',stopMusic);
+    //playButton.addEventListener('click',playMusic);
+    //pauseButton.addEventListener('click',pauseMusic);
+    //stopButton.addEventListener('click',stopMusic);
     MatrixButton.addEventListener('click',MatrixDownload);
     redColorButton.addEventListener('click', select_immidiate_color);
     greenColorButton.addEventListener('click', select_immidiate_color);
