@@ -289,10 +289,14 @@ function click_happened(){
         }
     else if (isDrawing){
         isDrawing=false;
+         musicPlayer.src= ('song2.mp3');
+         playmusic();
         undoLastAction(); //command to delete the circle/dot
     }
     else if (!isDrawing){
         isDrawing=true;
+         musicPlayer.src= ('song1.mp3');
+         playmusic();
         if (isPencilMode){
             t=0;
             saveCanvasState();
