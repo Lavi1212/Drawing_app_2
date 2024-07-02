@@ -992,3 +992,57 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const button = document.querySelector('.leveldraw-button');
+    const pictureSelection = document.getElementById('pictureSelection');
+
+    // Event listener for the button click
+    button.addEventListener('click', function() {
+        // Clear previous content
+        pictureSelection.innerHTML = '';
+
+        // Generate buttons for each picture
+        for (let i = 1; i <= 10; i++) {
+            const pictureButton = document.createElement('button');
+            pictureButton.textContent = `pinceau ${i}`;
+            pictureButton.dataset.value = i;
+            pictureButton.classList.add('picture-button');
+            pictureButton.addEventListener('click', function() {
+                // Handle picture selection (e.g., load the picture)
+                const pictureNumber = this.dataset.value;
+                loadImage(`pinceau${pictureNumber}.jpg`);
+                // Hide the picture selection after choosing
+                pictureSelection.style.display = 'none';
+            });
+            pictureSelection.appendChild(pictureButton);
+        }
+
+        // Display the picture selection interface
+        pictureSelection.style.display = 'block';
+    });
+
+    // Function to load the selected picture (you can customize this)
+    function loadImage(picturePath) {
+        //const canvas = document.getElementById('yourCanvasId'); // Replace with your canvas ID
+        //const ctx = canvas.getContext('2d');
+    
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'; // Set crossOrigin attribute
+    
+        img.onload = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0); // Draw image directly onto canvas
+    
+            // Example manipulation after image load
+            let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            // Perform operations on imageData...
+            ctx.putImageData(imageData, 0, 0); // Put modified data back onto canvas
+        };
+    
+        img.src = picturePath;
+    }
+});
+
