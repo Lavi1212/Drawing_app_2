@@ -643,6 +643,7 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 
+/*music settings*/
 #musicsetting {
   width: 100%; /* Make the button fill its container width */
   height: 40px; /* Set button height */
@@ -663,12 +664,50 @@ input[type="file"]::-webkit-file-upload-button {
 }
 .music-player {
   display: flex;
-  justify-content: center; /* Center buttons horizontally */
+  flex-direction: column;
+  align-items: center;
   margin-top: -10px; /* Adjust top margin as needed */
-  gap: 5px; /* Space between buttons */
-
+  gap: 10px; /* Space between elements */
 }
 
+.control-buttons, .song-buttons {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+}
+
+.control-buttons {
+  margin-bottom: 10px; /* Space between control buttons and song buttons */
+}
+
+.songButton, #playButton, #pauseButton, #stopButton {
+  width: 150px; /* Adjust width as needed */
+  height: 40px;
+  border: 2px solid #000;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+.songButton {
+  width: 150px; /* Adjust width as needed */
+  height: 40px;
+  border: 2px solid #000;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#playButton, #pauseButton, #stopButton {
+  width: 150px;
+  height: 40px;
+  border: 2px solid #000;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px; /* Add some space between the song buttons and control buttons */
+}
 
 
 #leveldraw {
@@ -714,6 +753,54 @@ input[type="file"]::-webkit-file-upload-button {
   background-color: #ddd;
 }
 
+
+/*background color*/
+#backgroundColor {
+  width: 100%; /* Make the button fill its container width */
+  height: 40px; /* Set button height */
+  margin-bottom: 10px; /* Add margin at the bottom */
+  border: 2px solid #000; /* Add border */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  background-color: #fff; /* Set background color */
+  color: #000; /* Set text color */
+  font-size: 16px; /* Adjust font size */
+  cursor: pointer; /* Show pointer cursor on hover */
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+}
+#backgroundColor:hover {
+  background-color: #ddd; /* Change background color on hover */
+}
+
+.backgroundColorbuttons {
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  margin-top: -10px; /* Adjust top margin as needed */
+  gap: 5px; /* Space between buttons */
+  
+}
+
+.colorButton {
+  width: 100px; /* Adjust button width as needed */
+  height: 40px; /* Adjust button height as needed */
+  border: 2px solid #000;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row; /* Arrange items in a row */
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.colorButton:hover {
+  background-color: #ddd;
+}
+
+
+    
 body.secondary-palette-visible .transparency-container, 
 body.secondary-palette-visible .brush-size-container,
 body.secondary-palette-visible .settings-container {
@@ -968,12 +1055,19 @@ body.secondary-palette-visible .settings-container {
         </div>
         <button id="musicsetting">Music Setting</button>
         <div class="music-player">
-          <audio id="musicPlayer" src="music.mp3"></audio>
-          <button id="playButton">Play Music</button>
-          <button id="pauseButton">Pause Music</button>
-          <button id="stopButton">Stop Music</button>
+          <div class="control-buttons">
+            <button id="playButton">Play Music</button>
+            <button id="pauseButton">Pause Music</button>
+            <button id="stopButton">Stop Music</button>
+          </div>
+          <div class="song-buttons">
+            <button id="song1Button" class="songButton" data-src="song1.mp3">Jazz Song</button>
+            <button id="song2Button" class="songButton" data-src="song2.mp3">Relaxing Song</button>
+            <button id="song3Button" class="songButton" data-src="song3.mp3">Deep House</button>
+            <button id="song4Button" class="songButton" data-src="song4.mp3">Chill Out Song</button>
+          </div>
+          <audio id="musicPlayer" src="song1.mp3"></audio>
         </div>
-        
  
         <button id="leveldraw">Your Level</button>
         <div class="leveldrawbuttons">
@@ -981,6 +1075,16 @@ body.secondary-palette-visible .settings-container {
           <button id="level2" class="level-button">Level 2</button>
           <button id="level3" class="level-button">Level 3</button>
         </div>
+
+        
+        <button id="backgroundColor">Color Background</button>
+        <div class="backgroundColorButtons">
+            <button class="colorButton" data-color="#FFFFFF">White</button>
+            <button class="colorButton" data-color="#000000">Black</button>
+            <button class="colorButton" data-color="#90EE90">Light Green</button>
+            <button class="colorButton" data-color="#00008B">Dark Blue</button>
+            <button class="colorButton" data-color="#ADD8E6">Light Blue</button>
+          </div>
         <button id="downloadBtn">Download Matrix</button>
       </div>
       </div>
