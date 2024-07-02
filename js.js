@@ -950,21 +950,45 @@ function MatrixDownload () {
 };
 
 
-function playMusic (){
+
+//music
+document.addEventListener('DOMContentLoaded', function() {
+  const musicPlayer = document.getElementById('musicPlayer');
+
+  document.querySelectorAll('.songButton').forEach(button => {
+    button.addEventListener('click', function() {
+      musicPlayer.src = this.getAttribute('data-src');
+    });
+  });
+
+  document.getElementById('playButton').addEventListener('click', function() {
+    playMusic();
+  });
+
+  document.getElementById('pauseButton').addEventListener('click', function() {
+    pauseMusic();
+  });
+
+  document.getElementById('stopButton').addEventListener('click', function() {
+    stopMusic();
+  });
+
+  function playMusic() {
     musicPlayer.play();
-    toggleSetting(); // Close settings panel after clicking play
-  };
-  
-function pauseMusic() {
+  }
+
+  function pauseMusic() {
     musicPlayer.pause();
-    toggleSetting(); // Close settings panel after clicking play
-  };
-  
-function stopMusic()  {
+  }
+
+  function stopMusic() {
     musicPlayer.pause();
     musicPlayer.currentTime = 0;
-    toggleSetting(); // Close settings panel after clicking play
-  };
+  }
+});
+
+
+
 
 // newPage functions
 function newPage(){
@@ -1092,3 +1116,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+
+//change the background
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('backgroundColor').addEventListener('click', function() {
+      const colorButtons = document.getElementById('backgroundColorButtons');
+      if (colorButtons.style.display === 'none' || colorButtons.style.display === '') {
+        colorButtons.style.display = 'flex';
+      } else {
+        colorButtons.style.display = 'none';
+      }
+    });
+  
+    var colorButtons = document.querySelectorAll('.colorButton');
+    
+    colorButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        var color = this.getAttribute('data-color');
+        document.body.style.backgroundImage = 'none'; // Remove background image
+        document.body.style.backgroundColor = color; // Set background color
+      });
+    });
+  });
