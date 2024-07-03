@@ -352,6 +352,7 @@ function pencilmode() {
     saveCanvasState(1);
     drawBlackCircle(start_drawingX,start_drawingY,threshold+2);
     //drawBlackCircle(start_drawingX,start_drawingY,3*threshold);
+    //drawNeedleArray();
     drawNeedle();
     
   //  setTimeout(() => {
@@ -466,6 +467,60 @@ function DeleteMarkings(){
             undoLastAction();
         }
     }
+}
+
+function drawNeedleArray() {
+    ctx.strokeStyle = 'lightblue';
+    ctx.lineWidth = 3; // Set the line width for the needle
+    const numNeedles=7;
+    const distanceBetweenNeedles=threshold/3.5;
+    const angle = Math.atan2(currentY - start_drawingY, currentX - start_drawingX);//Fliped the angle calculation but not too bad
+    let needleY,needleX;
+
+    // Loop to draw multiple needles
+    for (let i = 0; i < numNeedles; i++) {
+        // Calculate the position of each needle
+        if (i%2 ==0){
+        needleY = start_drawingY - (i/2) * distanceBetweenNeedles* Math.cos(angle);
+        needleX = start_drawingX + (i/2) * distanceBetweenNeedles* Math.sin(angle);
+        }
+        else{
+        needleY = start_drawingY + ((i/2)+0.5) * distanceBetweenNeedles* Math.cos(angle);
+        needleX = start_drawingX - ((i/2)+0.5) * distanceBetweenNeedles* Math.sin(angle);
+        }
+        // Extend the needle line
+        const extendedLength = threshold + 20; // Length to extend the line
+        const extendedX = needleX + extendedLength * Math.cos(angle);
+        const extendedY = needleY + extendedLength * Math.sin(angle);
+
+        // Draw the needle line
+        ctx.beginPath();
+        ctx.moveTo(needleX, needleY);
+        ctx.lineTo(extendedX, extendedY);
+        ctx.stroke();
+
+        // Draw the arrow head at the end of the extended line
+        const arrowLength = 10; // Length of the arrow head
+        const arrowAngle = Math.PI / 6; // Angle of the arrow head sides (30 degrees)
+
+        const arrowX1 = extendedX - arrowLength * Math.cos(angle - arrowAngle);
+        const arrowY1 = extendedY - arrowLength * Math.sin(angle - arrowAngle);
+        const arrowX2 = extendedX - arrowLength * Math.cos(angle + arrowAngle);
+        const arrowY2 = extendedY - arrowLength * Math.sin(angle + arrowAngle);
+
+        ctx.beginPath();
+        ctx.moveTo(extendedX, extendedY);
+        ctx.lineTo(arrowX1, arrowY1);
+        ctx.lineTo(arrowX2, arrowY2);
+        ctx.lineTo(extendedX, extendedY);
+        ctx.fillStyle = 'lightblue';
+        ctx.fill();
+
+        // Draw the red dot at the end of the line
+        if (i==0){
+            drawRedDot(currentX, currentY);}
+    }
+
 }
 
 function drawRedDot(x, y) {
