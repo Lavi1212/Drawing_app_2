@@ -62,6 +62,11 @@ const level1Palette = document.getElementById('level1Palette');
 const level2Palette = document.getElementById('level2Palette');
 const level3Palette = document.getElementById('level3Palette');
 
+const musicPlayer = document.getElementById('musicPlayer');
+const play_Button = document.getElementById('playButton');
+const pause_Button = document.getElementById('pauseButton');
+const stop_Button = document.getElementById('stopButton');
+
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const containerWidth = canvasContainer.clientWidth;
@@ -80,13 +85,13 @@ let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isErase
 // currentX: The place the mouse is in the call to every event function.
 // endX/Y: Only for compass use. The place with Z distance from currentX/Y, inside the compass.
 
-let actionsStack = [],matrix_mousePosition = [];
+let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [];
 
 let A = 0.5; // Parameter to control the speed of compass drawing
 
 let timesetting = 2000; // Default timesetting value
 let threshold = 40,user_threshold=40; // Default threshold value
-let numberOfRows = 100; //number of matrix_mousePosition rows
+let numberOfRows = 10000; //number of matrix_mousePosition rows
 
 for (let i = 0; i < numberOfRows; i++) {//initalizing matrix_mousePosition
     matrix_mousePosition[i] = [];
@@ -128,20 +133,25 @@ function Drawing(event) {
     }
 
     if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode){// Drawing black circle for help 
-        if (p!=0)  {
-            undoLastAction();}
+        DeleteMarkings();
         p++;
-        saveCanvasState();
-        drawBlackCircle(currentX,currentY,threshold)
+        saveCanvasState(1);
+        drawBlackCircle(currentX,currentY,threshold);
     }
 
     distance = getDistance(startX, startY, currentX, currentY);
+    if (isPencilMode && isDrawing){//for pencil mode the center of the circle is start_drawingX,  start_drawingY
+            distance = getDistance(start_drawingX, start_drawingY, currentX, currentY);
+        }
+    //console.log('distance:', distance);
 
     if (distance <= threshold) {
+        //console.log("distance <= threshold");
         if (!timeoutId){//Starting the timecount
             startX = currentX;
             startY = currentY;
             timeoutId = setTimeout(() => {
+                //console.log("click");
                 click_happened();
                  }, timesetting); }
                 }
@@ -150,12 +160,13 @@ function Drawing(event) {
     }
  
     if (movement_check==1){// Click has been made
+
         restart_timeout();
         if (isDrawing){
-
+            //undoLastAction();//Delete the circle/dot now!
+            DeleteMarkings();
+            saveCanvasState(3);// Save the current canvas state before drawing
             ctx.beginPath(); // creating new path to draw
-            undoLastAction();//Delete the circle/dot now!
-            saveCanvasState();// Save the current canvas state before drawing
 
             originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             start_drawingX = event.offsetX;
@@ -171,7 +182,7 @@ function Drawing(event) {
         ctx.lineWidth = brushSize;
 
         if (isDrawing){
-           if (!isSprayMode && !isSplashMode && !isPencilMode  && !isEraserMode){
+           if (!isSprayMode && !isSplashMode && !isPencilMode){
                 ctx.putImageData(originalData, 0, 0);} 
 
            if (isSprayMode){
@@ -206,7 +217,7 @@ function Drawing(event) {
            else if (isPencilMode){
             pencilmode();
            }
-           else if (isPencil_noCompass){
+           else if (isPencil_noCompass || isEraserMode){
             if (isEraserMode){
                 ctx.strokeStyle = "#fff";
             }
@@ -250,28 +261,31 @@ function stopdraw() {
     p=0;
     if (isDrawing){
         isDrawing=false; 
-            {undoLastAction();}
+            //{undoLastAction();}
     }
-    if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode) {undoLastAction();}
+    //if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode) {undoLastAction();}
+    DeleteMarkings();
+    console.log(musicPlayer.src);
+    //if (musicPlayer.src == 'file:///C:/Users/Lavi/Desktop/Final_Project/Git_Hub/song1.mp3'){
+        //console.log('here1');
+        //musicPlayer.src= ('song2.mp3');
+        //musicPlayer.play();}
     clearTimeout(timeoutId);
     timeoutId = null;
-    if (musicPlayer.src == 'https://lavi1212.github.io/Drawing_app_2/song1.mp3'){
-     musicPlayer.src= ('song2.mp3');
-     musicPlayer.play();}
 }
 
 
 function click_happened(){
     movement_check=1; 
     if(!(isPenMode || isZoomInMode|| isZoomOutMode||isDragMode||isPencilMode)){
-    saveCanvasState();
+    saveCanvasState(2);
     drawRedDot(currentX, currentY);
     }
     
      if (isPenMode) { 
-        undoLastAction();
+        DeleteMarkings();
+        saveCanvasState(3);
         handleMouseDownPen();
-        saveCanvasState();
         p=0;
      }
      else if (isZoomInMode) {
@@ -292,17 +306,19 @@ function click_happened(){
         }
     else if (isDrawing){
         isDrawing=false;
-         musicPlayer.src= ('song2.mp3');
-        musicPlayer.play();
-        undoLastAction(); //command to delete the circle/dot
+        DeleteMarkings(); //command to delete the circle/dot
+        //musicPlayer.src= ('song2.mp3');
+        //musicPlayer.play();
     }
     else if (!isDrawing){
         isDrawing=true;
-         musicPlayer.src= ('song1.mp3');
-         musicPlayer.play();
+        //musicPlayer.src= ('song1.mp3');
+        //musicPlayer.play();
         if (isPencilMode){
+            start_drawingX=currentX;
+            start_drawingY=currentY;
             t=0;
-            saveCanvasState();
+            saveCanvasState(1);
             drawBlackCircle(currentX,currentY,threshold);
         }
     }
@@ -310,8 +326,7 @@ function click_happened(){
 
 function pencilmode() {
     distance = getDistance(start_drawingX, start_drawingY, currentX, currentY);
-    if(t){undoLastAction();}// Command to delete the circle
-    if (!t){t++; }
+    DeleteMarkings();
 
     if (distance >= threshold && distance <= threshold*2) {
         const speed = A * distance; // Speed is proportional to the distance
@@ -334,7 +349,7 @@ function pencilmode() {
         [start_drawingX, start_drawingY] = [endX, endY];
     } 
   
-    saveCanvasState();
+    saveCanvasState(1);
     drawBlackCircle(start_drawingX,start_drawingY,threshold+2);
     //drawBlackCircle(start_drawingX,start_drawingY,3*threshold);
     drawNeedle();
@@ -346,15 +361,15 @@ function pencilmode() {
 
 function handleMouseDownPen() {
     isDrawing= false;
-    saveCanvasState();
+   // saveCanvasState();
     
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height); // Get the image data of the canvas
     const data = imageData.data; // Get the pixel data of the canvas
     const color = hexToRgb(colorPicker.value);
     const mouseX = currentX;
     const mouseY = currentY;
-    const rectWidth =800; // Adjust rectangle width 
-    const rectHeight = 800; // Adjust rectangle height 
+    const rectWidth =1800; // Adjust rectangle width 
+    const rectHeight = 1800; // Adjust rectangle height 
     
     
     let xStart = Math.max(0, mouseX - Math.floor(rectWidth / 2));
@@ -443,7 +458,16 @@ function updateImagePixels(ctx, imageData, grayscaleValues, xStart, yStart, rect
     // Update the canvas with the modified image data
     ctx.putImageData(imageData, 0, 0);
 }
-    
+
+function DeleteMarkings(){
+    if (canvasStateStack.length>0){
+        //console.log('here');
+        while (actionsStack[actionsStack.length - 1]<3){
+            undoLastAction();
+        }
+    }
+}
+
 function drawRedDot(x, y) {
     ctx.beginPath();
     ctx.arc(x, y, 3, 0, 2 * Math.PI); // Draw a small circle (radius 3)
@@ -452,17 +476,17 @@ function drawRedDot(x, y) {
 }
 
 function drawNeedle() {
-    ctx.save();
+ 
     ctx.strokeStyle = 'lightblue';
-    ctx.lineWidth = 2; // Set the line width for the needle
+    ctx.lineWidth = 3; // Set the line width for the needle
 
     // Calculate the angle of the needle
     const angle = Math.atan2(currentY - start_drawingY, currentX - start_drawingX);
 
     // Extend the needle line
     const extendedLength = threshold+20; // Length to extend the line
-    const extendedX = currentX + extendedLength * Math.cos(angle);
-    const extendedY = currentY + extendedLength * Math.sin(angle);
+    const extendedX = start_drawingX + extendedLength * Math.cos(angle);
+    const extendedY = start_drawingY + extendedLength * Math.sin(angle);
 
     // Draw the needle line
     ctx.beginPath();
@@ -490,7 +514,7 @@ function drawNeedle() {
     ctx.fillStyle = 'lightblue';
     ctx.fill();
 
-    ctx.restore();
+   
 }
 
 function drawCircle(ctx, startX, startY, endX, endY) {
@@ -592,13 +616,21 @@ function saveImage() {
     link.click();
   };
 
-  function undoLastAction() {
-    if (actionsStack.length > 0) {
-      const lastImageData = actionsStack.pop();
+  
+function saveCanvasState(actionType) {//Three types of drawing: 1-BlackCircle. 2-redDot. 3-regularDrawing
+    canvasStateStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    actionsStack.push(actionType);
+    ///console.log("Canvas state saved. Stack size:", canvasStateStack.length);
+}
+
+function undoLastAction() {
+    if (canvasStateStack.length > 0) {
+      const lastImageData = canvasStateStack.pop();
+      const last_action = actionsStack.pop();
       ctx.putImageData(lastImageData, 0, 0);
-      console.log("Undo action. Stack size:", actionsStack.length);
+      //console.log("Undo action. last action:",last_action);
     } else {
-      console.log("No actions to undo");
+      //console.log("No actions to undo");
     }
   }
 
@@ -644,29 +676,6 @@ function adjustBrightness(imageData) {
     return imageData;
     }
 
-function saveCanvasState() {
-    actionsStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-    console.log("Canvas state saved. Stack size:", actionsStack.length);
-}
-
-function switchToIsoscelesTriangle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=true; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
-function switchToRectangle  () { isPencil_noCompass=false;  isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = true; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
-function switchToCircle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = true; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
-function switchToTriangle  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = true; isLineMode = false;  scaleTransform();toggleFigures();}
-function switchToLine  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = true;  scaleTransform();toggleFigures();}
-function switchToElipsa ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= true; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleFigures(); }
-function switchToPen () {p=0;  isPencil_noCompass=false;isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); }
-function switchToEraser() {t=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = true; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();}
-function activateZoomInMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();    }
-function activateZoomOutMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
-function activateDragMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
-function switchToSpray () {  isPencil_noCompass=false;  isSprayMode = true; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();   switchToPenciloptoins();}
-function switchToSplash () { isPencil_noCompass=false;   isSprayMode = false; isSplashMode = true; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins(); }
-function switchToPencil () {t=0; isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = true; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
-function switchToPencil_noCompass () {isPencil_noCompass=true; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
-
-function Pause() { isDragMode = false; isPenMode = false;  isZoomInMode = false;isZoomOutMode = false; isPencilMode = false; isDrawing = false; }
-
 function resetScaleTransform() {
     switchToEraserButton.style.transform = 'scale(1)';
     switchToPenButton.style.transform = 'scale(1)';
@@ -702,6 +711,26 @@ function scaleTransform() {
         toggleFiguresButton.style.transform = 'scale(1.1)';
     }
 }
+
+function switchToIsoscelesTriangle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=true; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
+function switchToRectangle  () { isPencil_noCompass=false;  isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = true; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
+function switchToCircle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = true; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
+function switchToTriangle  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = true; isLineMode = false;  scaleTransform();toggleFigures();}
+function switchToLine  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = true;  scaleTransform();toggleFigures();}
+function switchToElipsa ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= true; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleFigures(); }
+function switchToPen () {p=0;  isPencil_noCompass=false;isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); }
+function switchToEraser() {t=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = true; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();}
+function activateZoomInMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();    }
+function activateZoomOutMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
+function activateDragMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
+function switchToSpray () {  isPencil_noCompass=false;  isSprayMode = true; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();   switchToPenciloptoins();}
+function switchToSplash () { isPencil_noCompass=false;   isSprayMode = false; isSplashMode = true; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins(); }
+function switchToPencil () {t=0; isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = true; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
+function switchToPencil_noCompass () {isPencil_noCompass=true; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
+
+function Pause() { isDragMode = false; isPenMode = false;  isZoomInMode = false;isZoomOutMode = false; isPencilMode = false; isDrawing = false; }
+
+
 
 //function for dwell-click on buttons
 function setupTimeoutHandler(button, clickFunction) {
@@ -791,6 +820,13 @@ function toggleFigures() {
     pencilButtonsContainer.style.display ='none';
 }
 
+function switchToPenciloptoins(){
+    pencilButtonsContainer.style.display = pencilButtonsContainer.style.display === 'none' ? 'block' : 'none';
+    brushSizeFrame.style.display = 'none';
+    transparencyOptions.style.display = 'none';
+    figuresContainer.style.display ='none';
+    settingsscreen.style.display ='none';
+}
 
 
 
@@ -871,6 +907,15 @@ document.querySelectorAll('.thresholdsetting-button').forEach(button => {
     setupTimeoutHandler(button, () => button.click());
 });;
 
+document.querySelectorAll('.colorButton').forEach(button=> { 
+    button.addEventListener('click', function() {
+      document.body.style.backgroundImage = 'none'; // Remove background image
+      document.body.style.backgroundColor = this.getAttribute('data-color'); // Set background color
+      toggleSetting();
+    });
+    setupTimeoutHandler(button, () => button.click());
+  });
+
 function createPictureButtons(level, palette, start, end) {
     toggleSetting();
     palette.style.display = 'block';
@@ -922,14 +967,6 @@ function createPictureButtons(level, palette, start, end) {
     }
 }
 
-function switchToPenciloptoins(){
-    pencilButtonsContainer.style.display = pencilButtonsContainer.style.display === 'none' ? 'block' : 'none';
-    brushSizeFrame.style.display = 'none';
-    transparencyOptions.style.display = 'none';
-    figuresContainer.style.display ='none';
-    settingsscreen.style.display ='none';
-}
-
 function matrixToCSV(matrix) {
     // Add headers
     const headers = 'Time,X Position,Y Position';
@@ -957,51 +994,37 @@ function MatrixDownload () {
 };
 
 
-
-//music
-document.addEventListener('DOMContentLoaded', function() {
-  const musicPlayer = document.getElementById('musicPlayer');
-
-  document.querySelectorAll('.songButton').forEach(button => {
-    button.addEventListener('click', function() {
-      musicPlayer.src = this.getAttribute('data-src');
-    });
-  });
-
-  document.getElementById('playButton').addEventListener('click', function() {
-    playMusic();
-     toggleSetting();
-  });
-
-  document.getElementById('pauseButton').addEventListener('click', function() {
-    pauseMusic();
-       toggleSetting();
-  });
-
-  document.getElementById('stopButton').addEventListener('click', function() {
-    stopMusic();
-       toggleSetting();
-  });
-
-  function playMusic() {
-    musicPlayer.play();
-  }
-
-  function pauseMusic() {
-    musicPlayer.pause();
-  }
-
-  function stopMusic() {
-    musicPlayer.pause();
-    musicPlayer.currentTime = 0;
-  }
+document.querySelectorAll('.songButton').forEach(button => {
+      button.addEventListener('click', function() {
+        musicPlayer.src = this.getAttribute('data-src');
+        toggleSetting();
+      });
+      setupTimeoutHandler(button, () => button.click());
 });
 
 
 
+function playMusic (){
+    musicPlayer.play();
+    //console.log('here');
+    toggleSetting(); // Close settings panel after clicking play
+    //console.log('here1');
+  };
+  
+function pauseMusic() {
+    musicPlayer.pause();
+    toggleSetting(); // Close settings panel after clicking play
+  };
+  
+function stopMusic()  {
+    musicPlayer.pause();
+    musicPlayer.currentTime = 0;
+    toggleSetting(); // Close settings panel after clicking play
+  };
 
 // newPage functions
 function newPage(){
+    saveCanvasState();
     const canvasContainer = document.getElementById('canvas-container');
     canvas.width = canvasContainer.offsetWidth;
     canvas.height = canvasContainer.offsetHeight;
@@ -1016,6 +1039,7 @@ function newPage(){
 }
 
 function resetImage() {
+    saveCanvasState();
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
     ctx.putImageData(originalImageData, 0, 0); // Restore original image
     p=0;
@@ -1042,7 +1066,6 @@ function confirmYes(){
   }
 
 //initialization function
-
 document.addEventListener('DOMContentLoaded', function() {
 
     canvas.width = canvasContainer.offsetWidth;
@@ -1059,6 +1082,7 @@ document.addEventListener('DOMContentLoaded', function() {
     settingsscreen.style.display= 'none';
     colorPicker.value = "#00000F";
 
+ 
     resetImageButton.addEventListener('click', function() {showConfirmation('resetImage');});
     newPageButton.addEventListener('click', function() {showConfirmation('newPage');});
     level1Button.addEventListener('click', function() {createPictureButtons('level1', level1Palette, 1, 10);});
@@ -1092,7 +1116,6 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleBrushSizeButton.addEventListener('click',toggleBrushSizeFrame);
     PenTransparencyButton.addEventListener('click',toggleTransparencyOptions);
     settingsbutton.addEventListener('click',toggleSetting);
-    
     MatrixButton.addEventListener('click',MatrixDownload);
     redColorButton.addEventListener('click', select_immidiate_color);
     greenColorButton.addEventListener('click', select_immidiate_color);
@@ -1102,7 +1125,9 @@ document.addEventListener('DOMContentLoaded', function() {
     magentaColorButton.addEventListener('click', select_immidiate_color);
     confirmYesButton.addEventListener('click', confirmYes);
     confirmNoButton.addEventListener('click', confirmNo);
-
+    play_Button.addEventListener('click', function() {playMusic();});
+    pause_Button.addEventListener('click', function() {pauseMusic();});
+    stop_Button.addEventListener('click', function() {stopMusic();});
 
     
     [undoButton, saveButton, resetImageButton,newPageButton,PauseButton,zoomInButton,zoomOutButton,DragButton
@@ -1110,6 +1135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rectangleButton,lineButton ,circleButton,elipsaButton,triangleButton,IsoscelesTriangleButton,
         selectColorButton,redColorButton,greenColorButton,cyanColorButton,magentaColorButton,yellowColorButton,blueColorButton,toggleBrushSizeButton,PenTransparencyButton,settingsbutton, playButton,pauseButton,stopButton,MatrixButton
         ,confirmYesButton,confirmNoButton,switchToPencil1Button,switchToPencil2Button,switchToSprayButton,switchToSplashButton
+        ,play_Button,pause_Button,stop_Button
     ].forEach(button => {
         let timeoutId;
 
@@ -1127,24 +1153,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-//change the background
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('backgroundColor').addEventListener('click', function() {
-      const colorButtons = document.getElementById('backgroundColorButtons');
-      if (colorButtons.style.display === 'none' || colorButtons.style.display === '') {
-        colorButtons.style.display = 'flex';
-      } else {
-        colorButtons.style.display = 'none';
-      }
-    });
-  
-    var colorButtons = document.querySelectorAll('.colorButton');
-    
-    colorButtons.forEach(function(button) {
-      button.addEventListener('click', function() {
-        var color = this.getAttribute('data-color');
-        document.body.style.backgroundImage = 'none'; // Remove background image
-        document.body.style.backgroundColor = color; // Set background color
-      });
-    });
-  });
+
+
+
+
