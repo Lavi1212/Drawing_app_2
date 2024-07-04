@@ -945,6 +945,8 @@ function toggleSetting() {
     figuresContainer.style.display ='none';
     pencilButtonsContainer.style.display ='none';
 }
+//close setting
+document.getElementById('close').addEventListener('click', toggleSetting);
 
 document.querySelectorAll('.timesetting-button').forEach(button => {
     button.addEventListener('click', function() {
