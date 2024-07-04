@@ -215,7 +215,8 @@ function Drawing(event) {
                 }
             }   
            else if (isPencilMode){
-            pencilmode();
+                if (row%2==0){
+            pencilmode();}
            }
            else if (isPencil_noCompass || isEraserMode){
             if (isEraserMode){
