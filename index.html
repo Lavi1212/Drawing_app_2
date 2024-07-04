@@ -799,6 +799,30 @@ input[type="file"]::-webkit-file-upload-button {
   background-color: #ddd;
 }
 
+/*close setting*/
+.closeSettingsButtons {
+  position: absolute;
+  top: 10px; /* Position from the top */
+  left: 10px; /* Position from the left */
+}
+
+.close-button {
+  width: 100px; /* Set the width for the close button */
+  height: 40px; /* Set the height for the close button */
+  border: 2px solid #000; /* Add a border */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  background-color: #fff; /* Set background color */
+  cursor: pointer; /* Show pointer cursor on hover */
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  font-size: 14px; /* Set the font size */
+}
+
+.close-button:hover {
+  background-color: #ddd; /* Change background color on hover */
+}
+
 
     
 body.secondary-palette-visible .transparency-container, 
@@ -1074,6 +1098,11 @@ body.secondary-palette-visible .settings-container {
             <button id="level1" class="level-button">Level 1</button>
           <button id="level2" class="level-button">Level 2</button>
           <button id="level3" class="level-button">Level 3</button>
+        </div>
+
+        <button id="closeSettingsButton"></button>
+        <div class="closeSettingsButtons">
+            <button id="close" class="close-button">Close</button>
         </div>
 
         
