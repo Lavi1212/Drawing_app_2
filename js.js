@@ -1210,6 +1210,57 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+//grid on 
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to draw a grid on the grid canvas
+    function drawGrid(ctx, canvas) {
+        const gridSize = 20; // Size of the grid squares
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous grid
+        ctx.strokeStyle = '#e0e0e0'; // Grid line color
+        ctx.lineWidth = 0.5; // Grid line width
+
+        for (let x = 0; x <= canvas.width; x += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+        }
+
+        for (let y = 0; y <= canvas.height; y += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+        }
+    }
+
+    // Function to toggle the grid overlay
+    function toggleGrid() {
+        const gridCanvas = document.getElementById('gridCanvas');
+        const gridCtx = gridCanvas.getContext('2d');
+        const gridVisible = gridCanvas.style.display !== 'none';
+
+        if (gridVisible) {
+            gridCanvas.style.display = 'none';
+        } else {
+            drawGrid(gridCtx, gridCanvas);
+            gridCanvas.style.display = 'block';
+        }
+    }
+
+    // Event listener for the Toggle Grid button
+    document.getElementById('toggleGridButton').addEventListener('click', function() {
+        toggleGrid();
+    });
+
+
+});
+
+
+
+
 
 
 
