@@ -515,16 +515,18 @@ input[type="file"]::-webkit-file-upload-button {
 .settings-screen {
   display: none; /* Hide by default */
   position: absolute;
-  top: 40px; /* Adjust the top position */
+  top: 20px; /* Adjust the top position */
   left: 0px; /* Center horizontally */
   width: 1200px; /* Set the width */
-  height: 530px; /* Set the height */
+  height: auto; /* Set the height to auto */
+  max-height: calc(100vh - 50px); /* Make sure it doesn't exceed the viewport height minus some space */
   background-color: #d1e2f9;
   border: 2px solid #000;
   border-radius: 5px;
   padding: 10px;
   overflow-y: auto; /* Add scrollbars if content exceeds height */
 }
+
 
 .settings-screen1 {
   display: flex;
@@ -886,17 +888,18 @@ body.secondary-palette-visible .settings-container {
 
 
 #toggleGridButton {
-  width: 150px; /* Set the width for the toggle grid button */
-  height: 40px; /* Set the height for the toggle grid button */
-  border: 2px solid #000; /* Add a border */
+  width: 100%; /* Make the button fill its container width */
+  height: 40px; /* Set button height */
+  margin-bottom: 10px; /* Add margin at the bottom */
+  border: 2px solid #000; /* Add border */
   border-radius: 5px; /* Add border radius for rounded corners */
   background-color: #fff; /* Set background color */
+  color: #000; /* Set text color */
+  font-size: 16px; /* Adjust font size */
   cursor: pointer; /* Show pointer cursor on hover */
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
-  font-size: 14px; /* Set the font size */
-  margin-top: 10px; /* Add some margin at the top */
 }
 
 #toggleGridButton:hover {
@@ -1086,13 +1089,13 @@ body.secondary-palette-visible .settings-container {
 
 
 
-  <div class="settings-container">
-    <div>
+<div class="settings-container">
+  <div>
     <button id="settingsbutton"><img src="setting.png" class="button-img"></button>
     <div id="settingsscreen" class="settings-screen">
       <div class="settings-screen1">
         <div class="closeSettingsButtons">
-            <button id="close" class="close-button">Close</button>
+          <button id="close" class="close-button">Close</button>
         </div>
         <button id="setting1">Time Setting</button>
         <div class="timesetting-buttons">
@@ -1127,32 +1130,29 @@ body.secondary-palette-visible .settings-container {
           </div>
           <audio id="musicPlayer" src="song1.mp3"></audio>
         </div>
- 
         <button id="leveldraw">Your Level</button>
         <div class="leveldrawbuttons">
-            <button id="level1" class="level-button">Level 1</button>
+          <button id="level1" class="level-button">Level 1</button>
           <button id="level2" class="level-button">Level 2</button>
           <button id="level3" class="level-button">Level 3</button>
         </div>
-        
         <button id="backgroundColor">Color Background</button>
         <div class="backgroundColorButtons">
-            <button class="colorButton" data-color="#FFFFFF">White</button>
-            <button class="colorButton" data-color="#000000">Black</button>
-            <button class="colorButton" data-color="#90EE90">Light Green</button>
-            <button class="colorButton" data-color="#00008B">Dark Blue</button>
-            <button class="colorButton" data-color="#ADD8E6">Light Blue</button>
+          <button class="colorButton" data-color="#FFFFFF">White</button>
+          <button class="colorButton" data-color="#000000">Black</button>
+          <button class="colorButton" data-color="#90EE90">Light Green</button>
+          <button class="colorButton" data-color="#00008B">Dark Blue</button>
+          <button class="colorButton" data-color="#ADD8E6">Light Blue</button>
         </div>
         <button id="toggleGridButton">Toggle Grid</button>
         <button id="downloadBtn">Download Matrix</button>
       </div>
-      </div>
     </div>
   </div>
- <div id="level1Palette" class="picture-palette"></div>
-  <div id="level2Palette" class="picture-palette"></div>
-  <div id="level3Palette" class="picture-palette"></div>
-
+</div>
+<div id="level1Palette" class="picture-palette"></div>
+<div id="level2Palette" class="picture-palette"></div>
+<div id="level3Palette" class="picture-palette"></div>
 
 
   <div id="confirmationDialog" style="display:none;">
