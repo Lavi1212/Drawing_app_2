@@ -71,6 +71,11 @@ const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const containerWidth = canvasContainer.clientWidth;
 const containerHeight = canvasContainer.clientHeight;
+const gridSize = 20; // Size of the grid squares
+const gridCanvas = document.getElementById('gridCanvas');
+const gridCtx = gridCanvas.getContext('2d');
+const gridVisible = gridCanvas.style.display !== 'none';
+
 
 
 let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isEraserMode = false,isZoomOutMode = false,isZoomInMode = false,
@@ -1216,7 +1221,6 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     // Function to draw a grid on the grid canvas
     function drawGrid(ctx, canvas) {
-        const gridSize = 20; // Size of the grid squares
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous grid
         ctx.strokeStyle = '#e0e0e0'; // Grid line color
         ctx.lineWidth = 0.5; // Grid line width
@@ -1238,10 +1242,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to toggle the grid overlay
     function toggleGrid() {
-        const gridCanvas = document.getElementById('gridCanvas');
-        const gridCtx = gridCanvas.getContext('2d');
-        const gridVisible = gridCanvas.style.display !== 'none';
-
         if (gridVisible) {
             gridCanvas.style.display = 'none';
         } else {
