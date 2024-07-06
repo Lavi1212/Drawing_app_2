@@ -1247,13 +1247,13 @@ document.addEventListener('DOMContentLoaded', function() {
             drawGrid(gridCtx, gridCanvas);
             gridCanvas.style.display = 'block';
         }
+
+        // Close the settings panel
+        document.getElementById('settingsscreen').style.display = 'none';
     }
 
     // Event listener for the Toggle Grid button
     document.getElementById('toggleGridButton').addEventListener('click', function() {
         toggleGrid();
     });
-
-
 });
-
