@@ -103,7 +103,7 @@ for (let i = 0; i < numberOfRows; i++) {//initalizing matrix_mousePosition
         mouse_movement[i][j]=[];
     }
 }
-}
+
 
 
 canvas.addEventListener("mousedown", startDraw);
