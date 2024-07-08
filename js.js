@@ -85,7 +85,7 @@ let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isErase
 // currentX: The place the mouse is in the call to every event function.
 // endX/Y: Only for compass use. The place with Z distance from currentX/Y, inside the compass.
 
-let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [];
+let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [],mouse_movement=[],eyes_position=[];;
 let data1X, data1Y,data;
 let A = 0.5; // Parameter to control the speed of compass drawing
 
@@ -95,9 +95,14 @@ let numberOfRows = 10000; //number of matrix_mousePosition rows
 
 for (let i = 0; i < numberOfRows; i++) {//initalizing matrix_mousePosition
     matrix_mousePosition[i] = [];
+    eyes_position[i]=[];
+    mouse_movement[i]=[];
     for (let j = 0; j < 3; j++) {
         matrix_mousePosition[i][j] = [];
+        eyes_position[i][j]=[];
+        mouse_movement[i][j]=[];
     }
+}
 }
 
 
