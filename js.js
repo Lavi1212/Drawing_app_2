@@ -86,7 +86,7 @@ let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isErase
 // endX/Y: Only for compass use. The place with Z distance from currentX/Y, inside the compass.
 
 let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [],mouse_movement=[],eyes_position=[];;
-let data1X, data1Y,data;
+let data1X, data1Y,data,new_round;
 let A = 0.5; // Parameter to control the speed of compass drawing
 
 let timesetting = 2000; // Default timesetting value
@@ -230,21 +230,25 @@ function Drawing(event) {
              data1Y = currentY;
              console.log("1data1Y:",data1Y);
              }
-            if (row%3==2){
+            if (row%3 == 2 &&  data1X != 0 ){
             data1X = currentX+data1X;
             data1Y = currentY+data1Y;
             console.log("2data1Y:",data1Y);
             }
-            if (row%3==0){
+            if (row%3 == 0  &&  data1X != 0 ){
                 data1X=(currentX+data1X)/3;
                 data1Y=(currentY+data1Y)/3;
                 console.log("3data1Y:",data1Y);
-                mouse_movement[row/3][1]=data1Y;
-                console.log("mouse_movement[row/3][1]:",mouse_movement[row/3][1])
-                if(row>8){
-                pencilmode(data1X,(mouse_movement[row/3][1]+mouse_movement[(row/3)-1][1]+mouse_movement[(row/3)-2][1])/3);
+                mouse_movement[new_round/3][1]=data1Y;
+               mouse_movement[new_round/3][0]=data1X;
+                console.log("mouse_movement[row/3][1]:",mouse_movement[new_round/3][1])
+                if(new_round>1){
+                pencilmode((mouse_movement[new_round/3][0]+mouse_movement[(new_round/3)-1][0]+mouse_movement[(new_round/3)-2][0])/3,(mouse_movement[new_round/3][1]+mouse_movement[(new_round/3)-1][1]+mouse_movement[(new_round/3)-2][1])/3);
                 }
                 else{ pencilmode(data1X,data1Y);}
+                 data1X=0;
+                 data1Y=0;
+                 new_round++;
             }
            }
            else if (isPencil_noCompass || isEraserMode){
@@ -306,6 +310,7 @@ function stopdraw() {
 
 
 function click_happened(){
+     new_round=0;
     movement_check=1; 
     if(!(isPenMode || isZoomInMode|| isZoomOutMode||isDragMode||isPencilMode)){
     saveCanvasState(2);
