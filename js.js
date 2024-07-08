@@ -219,7 +219,7 @@ function Drawing(event) {
                 ctx.fill();
                 }
             }   
-           else if (isPencilMode){
+          else if (isPencilMode){
            // if ((row>3)&&(Math.abs(eyes_position[row-1][1]-eyes_position[row-2][1]))<2){
             //    currentY=mouse_movement[Math.floor((row-1)/3)][1];
               //  console.log("mouse_movement[Math.floor(row/3)][1]:",mouse_movement[Math.floor(row/3)][1])
@@ -238,19 +238,19 @@ function Drawing(event) {
             if (row%3 == 0  &&  data1X != 0 ){
                 data1X=(currentX+data1X)/3;
                 data1Y=(currentY+data1Y)/3;
-                console.log("3data1Y:",data1Y);
-                mouse_movement[new_round/3][1]=data1Y;
-               mouse_movement[new_round/3][0]=data1X;
-                console.log("mouse_movement[row/3][1]:",mouse_movement[new_round/3][1])
+                console.log("new_round/3:",new_round/3);
+                mouse_movement[row/3][1]=data1Y;
+               mouse_movement[row/3][0]=data1X;
+                console.log("mouse_movement[row/3][1]:",mouse_movement[row/3][1])
                 if(new_round>1){
-                pencilmode((mouse_movement[new_round/3][0]+mouse_movement[(new_round/3)-1][0]+mouse_movement[(new_round/3)-2][0])/3,(mouse_movement[new_round/3][1]+mouse_movement[(new_round/3)-1][1]+mouse_movement[(new_round/3)-2][1])/3);
+                pencilmode((mouse_movement[row/3][0]+mouse_movement[(row/3)-1][0]+mouse_movement[(row/3)-2][0])/3,(mouse_movement[row/3][1]+mouse_movement[(row/3)-1][1]+mouse_movement[(row/3)-2][1])/3);
                 }
                 else{ pencilmode(data1X,data1Y);}
                  data1X=0;
                  data1Y=0;
                  new_round++;
             }
-           }
+        }
            else if (isPencil_noCompass || isEraserMode){
             if (isEraserMode){
                 ctx.strokeStyle = "#fff";
