@@ -86,7 +86,7 @@ let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isErase
 // endX/Y: Only for compass use. The place with Z distance from currentX/Y, inside the compass.
 
 let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [];
-
+let data1X, data1Y,data;
 let A = 0.5; // Parameter to control the speed of compass drawing
 
 let timesetting = 2000; // Default timesetting value
@@ -215,8 +215,32 @@ function Drawing(event) {
                 }
             }   
            else if (isPencilMode){
-                if (row%2==0){
-            pencilmode();}
+           // if ((row>3)&&(Math.abs(eyes_position[row-1][1]-eyes_position[row-2][1]))<2){
+            //    currentY=mouse_movement[Math.floor((row-1)/3)][1];
+              //  console.log("mouse_movement[Math.floor(row/3)][1]:",mouse_movement[Math.floor(row/3)][1])
+            //console.log(row-1, Math.floor((row-1)/3));
+           // }
+            if (row%3==1){
+             data1X = currentX;
+             data1Y = currentY;
+             console.log("1data1Y:",data1Y);
+             }
+            if (row%3==2){
+            data1X = currentX+data1X;
+            data1Y = currentY+data1Y;
+            console.log("2data1Y:",data1Y);
+            }
+            if (row%3==0){
+                data1X=(currentX+data1X)/3;
+                data1Y=(currentY+data1Y)/3;
+                console.log("3data1Y:",data1Y);
+                mouse_movement[row/3][1]=data1Y;
+                console.log("mouse_movement[row/3][1]:",mouse_movement[row/3][1])
+                if(row>8){
+                pencilmode(data1X,(mouse_movement[row/3][1]+mouse_movement[(row/3)-1][1]+mouse_movement[(row/3)-2][1])/3);
+                }
+                else{ pencilmode(data1X,data1Y);}
+            }
            }
            else if (isPencil_noCompass || isEraserMode){
             if (isEraserMode){
@@ -324,9 +348,12 @@ function click_happened(){
         }
     }
 }
-
-function pencilmode() {
-    distance = getDistance(start_drawingX, start_drawingY, currentX, currentY);
+function pencilmode(mediumX , mediumY) {
+    distance = getDistance(start_drawingX, start_drawingY, mediumX, mediumY);
+    //console.log("start_drawingX:",start_drawingX);
+    //console.log("currentY:",currentY);
+    //console.log("mediumX:",mediumX);
+    //console.log("mediumY:",mediumY);
     DeleteMarkings();
 
     if (distance >= threshold && distance <= threshold*2) {
@@ -334,11 +361,12 @@ function pencilmode() {
         interval = Math.max(1, 100 / speed); // Calculate interval based on speed
 
         // Calculate angle from current point to last mouse position
-        const angle = Math.atan2(start_drawingY - currentY, start_drawingX - currentX);
+        const angle = Math.atan2(start_drawingY - mediumY, start_drawingX - mediumX);
+        console.log("here");
 
         // Calculate endpoint at distance Z from currentX, currentY in the angle direction
-        const endX = currentX + threshold * Math.cos(angle);
-        const endY = currentY + threshold * Math.sin(angle);
+        const endX = mediumX + threshold * Math.cos(angle);
+        const endY = mediumY + threshold * Math.sin(angle);
 
         ctx.beginPath();
       
@@ -360,6 +388,7 @@ function pencilmode() {
     //    pencilmode();
    // }, interval); // Way to control the velocity
 }   
+
 
 function handleMouseDownPen() {
     isDrawing= false;
