@@ -859,16 +859,17 @@ input[type="file"]::-webkit-file-upload-button {
 
 
 /*help setting*/
+/*help setting*/
 .helpSettingsButtons {
   position: absolute;
   top: 10px; /* Position from the top */
-  left: 1120px; /* Position from the left */
+  left: 1119px; /* Position from the left */
   z-index: 100; /* Ensure it appears on top of other elements */
 }
 
 .help-button {
-  width: 100px; /* Set the width for the close button */
-  height: 40px; /* Set the height for the close button */
+  width: 100px; /* Set the width for the help button */
+  height: 200px; /* Set the height for the help button */
   border: 2px solid #000; /* Add a border */
   border-radius: 5px; /* Add border radius for rounded corners */
   background-color: #fff; /* Set background color */
@@ -886,7 +887,7 @@ input[type="file"]::-webkit-file-upload-button {
 .help-screen {
   display: none; /* Hide by default */
   position: fixed;
-  top: 20px; /* Adjust the top position */
+  top: 10px; /* Adjust the top position */
   left: 50%;
   transform: translateX(-50%);
   width: 90%; /* Set the width */
@@ -894,14 +895,22 @@ input[type="file"]::-webkit-file-upload-button {
   background-color: rgba(0, 0, 0, 0.8);
   border: 2px solid #000;
   border-radius: 5px;
-  padding: 10px;
+  padding: 20px;
   overflow-y: auto; /* Add scrollbars if content exceeds height */
   z-index: 1000; /* Ensure it appears on top of other elements */
 }
 
+.help-images-container {
+  display: flex;
+  flex-direction: column; /* Arrange items in a column */
+  gap: 20px; /* Add space between the images */
+  width: 100%;
+  height: auto;
+}
+
 .help-image {
   width: 100%; /* Make the image fill the container width */
-  height: 100%; /* Adjust height to maintain aspect ratio */
+  height: auto; /* Adjust height to maintain aspect ratio */
 }
 
 .closeHelpButton {
@@ -911,8 +920,8 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 .close-button {
-  width: 100px; /* Set the width for the close button */
-  height: 40px; /* Set the height for the close button */
+  width: 150px; /* Set the width for the close button */
+  height: 50px; /* Set the height for the close button */
   border: 2px solid #000; /* Add a border */
   border-radius: 5px; /* Add border radius for rounded corners */
   background-color: #fff; /* Set background color */
@@ -920,12 +929,13 @@ input[type="file"]::-webkit-file-upload-button {
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
-  font-size: 14px; /* Set the font size */
+  font-size: 18px; /* Set the font size */
 }
 
 .close-button:hover {
   background-color: #ddd; /* Change background color on hover */
 }
+
 
 
     
@@ -1254,8 +1264,12 @@ body.secondary-palette-visible .settings-container {
   <div class="closeHelpButton">
     <button id="closeHelp" class="close-button">Close</button>
   </div>
-  <img src="helppage.jpg" alt="Help Page" class="help-image">
+  <div class="help-images-container">
+    <img src="helppage.jpg" alt="Help Page 1" class="help-image help-image-top">
+    <img src="helppage2.jpg" alt="Help Page 2" class="help-image help-image-bottom">
+  </div>
 </div>
+
 
 <div id="level1Palette" class="picture-palette"></div>
 <div id="level2Palette" class="picture-palette"></div>
