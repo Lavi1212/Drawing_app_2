@@ -1295,3 +1295,41 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleGrid();
     });
 });
+
+
+
+//help page
+  // Get the modal
+  var helpModal = document.getElementById("helpModal");
+
+  // Get the button that opens the modal
+  var helpBtn = document.getElementById("openHelpModalBtn");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+  // Get the image element in the modal
+  var helpModalImg = document.getElementById("helpModalImg");
+
+  // When the user clicks the button, open the modal 
+  helpBtn.onclick = function() {
+    helpModal.style.display = "block";
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    helpModal.style.display = "none";
+  }
+
+  // When the user clicks on the image, close the modal
+  helpModalImg.onclick = function() {
+    helpModal.style.display = "none";
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == helpModal) {
+      helpModal.style.display = "none";
+    }
+  }
+
