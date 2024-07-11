@@ -69,6 +69,8 @@ body {
   border: 2px solid #000;
   border-radius: 5px;
   cursor: pointer;
+  background-color: white; /* Optional: Set background color */
+
 }
 
 
@@ -126,41 +128,36 @@ input[type="file"]::-webkit-file-upload-button {
   margin-top: 140px;
   margin-left: 400px;
   transform: translateX(-50%); /* Center horizontally using transform */
-  width: 800px; /* Allow width to adjust based on content */
+  width: auto; /* Allow width to adjust based on content */
   height: auto; /* Allow height to adjust based on content */
   gap: 40px; /* Add space between the squares */
 }
 
-.button-container2 > div {
-  width: 100px; /* Set a fixed width for the color palette */
-  height:80px; /* Set a fixed height for the color palette */
-  border: 2px solid #000; /* Add border around the color palette */
-  border-radius: 5px; /* Add border radius for rounded corners */
+.button-container2 button {
+  width: 100px; /* Set a fixed width for the buttons */
+  height: 80px; /* Set a fixed height for the buttons */
+  padding: 0; /* Remove any padding */
+  margin: 0; /* Remove any margin */
+  border: 2px solid #000; /* Add border */
+  border-radius: 5px; /* Add border radius */
+  background-color: white; /* Optional: Set background color */
+  cursor: pointer; /* Show pointer cursor on hover */
   display: flex;
   align-items: center; /* Center content vertically */
   justify-content: center; /* Center content horizontally */
-  background-color: white; /* Optional: Set background color */
-}
-.button {
-  width: 100%; /* Ensure button fills the container */
-  height: 100%; /* Ensure button fills the container */
-  padding: 0; /* Remove any padding */
-  margin: 0; /* Remove any margin */
-  border: none; /* Remove any border */
-  background: none; /* Remove any background */
-  background-color: white; /* Optional: Set background color */
-
 }
 
 .button-img {
-  width: 100%; /* Set image width to fill the button */
-  height: 94%; /* Set image height to fill the button */
-  object-fit: cover; /* Ensure the image covers the entire button without distortion */
+  max-width: 100%; /* Set max image width to fill the button */
+  max-height: 100%; /* Set max image height to fill the button */
+  object-fit: contain; /* Ensure the image covers the entire button without distortion */
   padding: 0; /* Remove any padding */
   margin: 0; /* Remove any margin */
+  border-radius: 5px; /* Add border radius for rounded corners */
   background-color: white; /* Optional: Set background color */
-
 }
+
+
 /*column right- pen eraser figures*/
 
 .button-container3 {
@@ -216,6 +213,8 @@ input[type="file"]::-webkit-file-upload-button {
   border: 2px solid #000; /* Add border */
   border-radius: 5px; /* Add border radius */
   cursor: pointer; /* Change cursor on hover */
+  background-color: white;
+
 }
 
 /* Hide the figures palette by default */
@@ -490,26 +489,52 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 /*settings*/
-.settings-container{
+.settings-container {
   position: static;
   display: flex;
   flex-direction: row; /* Arrange items in a row */
   gap: 20px;
+  background-color: white; /* Optional: Set background color */
 }
 
-.settings-container> div {
-  position: static;
-  width: 100px; /* Set a fixed width for the color palette */
-  height: 100px; /* Set a fixed height for the color palette */
-  margin-top: -210px;
-  margin-left:0px;
-  border: 2px solid #000; /* Add border around the color palette */
-  border-radius: 5px; /* Add border radius for rounded corners */
+.settings-container > div {
   display: flex;
   align-items: center; /* Center content vertically */
   justify-content: center; /* Center content horizontally */
+  width: 100px; /* Set a fixed width for the color palette */
+  height: 100px; /* Set a fixed height for the color palette */
+  border: 2px solid #000; /* Add border around the color palette */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  background-color: white; /* Optional: Set background color */
+  margin-top: -210px;
+  margin-left:0px;
+}
+
+.settings-container button {
+  width: 100%; /* Ensure button fills the container */
+  height: 100%; /* Ensure button fills the container */
+  padding: 0; /* Remove any padding */
+  margin: 0; /* Remove any margin */
+  border: none; /* Remove any border */
+  background: none; /* Remove any background */
+  display: flex;
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+}
+
+.settings-container .button-img {
+  max-width: 100%; /* Set image width to fill the button */
+  max-height: 100%; /* Set image height to fill the button */
+  object-fit: contain; /* Ensure the image covers the entire button without distortion */
+  padding: 0; /* Remove any padding */
+  margin: 0; /* Remove any margin */
+  border-radius: 5px; /* Add border radius for rounded corners */
   background-color: white; /* Optional: Set background color */
 }
+
+
+
+
 
 
 .settings-screen {
@@ -533,6 +558,7 @@ input[type="file"]::-webkit-file-upload-button {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
+  
   flex-direction: column; /* Change to column layout */
 }
 
@@ -958,26 +984,16 @@ body.secondary-palette-visible .settings-container {
       </div>
     </div>
 
+
     <div class="button-container2">
-      <div>
-        <button id="Pause"><img src="pause.png" class="button-img"></button>
-      </div>
-      <div>
-        <button id="ZoomIn"><img src="zoomin.jpg" class="button-img"></button>
-      </div>
-      <div>
-        <button id="ZoomOut"><img src="zoomout.png" class="button-img"></button>
-      </div>
-      <div>
-        <button id="Drag"><img src="drag.png" class="button-img"></button>
-      </div>
-      <div>
-      <button id="undoButton"><img src="undo.png" class="button-img"></button>
-      </div>
-      <div>
-      <button id="saveButton"><img src="saveimage.png" class="button-img"></button>
-    </div>
-    </div>
+      <button id="Pause" class="button"><img src="pause.png" class="button-img"></button>
+      <button id="ZoomIn" class="button"><img src="zoomin.jpg" class="button-img"></button>
+      <button id="ZoomOut" class="button"><img src="zoomout.png" class="button-img"></button>
+      <button id="Drag" class="button"><img src="drag.png" class="button-img"></button>
+      <button id="undoButton" class="button"><img src="undo.png" class="button-img"></button>
+      <button id="saveButton" class="button"><img src="saveimage.png" class="button-img"></button>
+  </div>
+  
 
 
 
