@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById('imageCanvas');
 const ctx = canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
