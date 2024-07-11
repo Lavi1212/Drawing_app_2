@@ -452,14 +452,6 @@ input[type="file"]::-webkit-file-upload-button {
 
 
 
-
-
-
-
-
-
-
-
 /* transparency */
 .transparency-container {
   position: static;
@@ -553,10 +545,10 @@ input[type="file"]::-webkit-file-upload-button {
 .settings-screen {
   display: none; /* Hide by default */
   position: absolute;
-  top: 20px; /* Adjust the top position */
+  top: 10px; /* Adjust the top position */
   left: 0px; /* Center horizontally */
   width: 1200px; /* Set the width */
-  height: auto; /* Set the height to auto */
+  height: 980px; /* Set the height to auto */
   max-height: calc(100vh - 50px); /* Make sure it doesn't exceed the viewport height minus some space */
   background-color: #d1e2f9;
   border: 2px solid #000;
@@ -577,6 +569,7 @@ input[type="file"]::-webkit-file-upload-button {
 
 .settings-screen1 button {
   width: 70px;
+  height: 40px; 
   border: 2px solid #000;
   border-radius: 5px;
   background-color: #fff;
@@ -590,6 +583,7 @@ input[type="file"]::-webkit-file-upload-button {
 
 .settings-screen1 button:hover {
   background-color: #ddd;
+  
 }
 
 #setting1 {
@@ -844,6 +838,76 @@ input[type="file"]::-webkit-file-upload-button {
   position: absolute;
   top: 10px; /* Position from the top */
   left: 10px; /* Position from the left */
+}
+
+.close-button {
+  width: 100px; /* Set the width for the close button */
+  height: 40px; /* Set the height for the close button */
+  border: 2px solid #000; /* Add a border */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  background-color: #fff; /* Set background color */
+  cursor: pointer; /* Show pointer cursor on hover */
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  font-size: 14px; /* Set the font size */
+}
+
+.close-button:hover {
+  background-color: #ddd; /* Change background color on hover */
+}
+
+
+/*help setting*/
+.helpSettingsButtons {
+  position: absolute;
+  top: 10px; /* Position from the top */
+  left: 1120px; /* Position from the left */
+  z-index: 100; /* Ensure it appears on top of other elements */
+}
+
+.help-button {
+  width: 100px; /* Set the width for the close button */
+  height: 40px; /* Set the height for the close button */
+  border: 2px solid #000; /* Add a border */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  background-color: #fff; /* Set background color */
+  cursor: pointer; /* Show pointer cursor on hover */
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  font-size: 14px; /* Set the font size */
+}
+
+.help-button:hover {
+  background-color: #ddd; /* Change background color on hover */
+}
+
+.help-screen {
+  display: none; /* Hide by default */
+  position: fixed;
+  top: 20px; /* Adjust the top position */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%; /* Set the width */
+  height: 90%; /* Set the height */
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid #000;
+  border-radius: 5px;
+  padding: 10px;
+  overflow-y: auto; /* Add scrollbars if content exceeds height */
+  z-index: 1000; /* Ensure it appears on top of other elements */
+}
+
+.help-image {
+  width: 100%; /* Make the image fill the container width */
+  height: 100%; /* Adjust height to maintain aspect ratio */
+}
+
+.closeHelpButton {
+  position: absolute;
+  top: 10px; /* Position from the top */
+  right: 10px; /* Position from the right */
 }
 
 .close-button {
@@ -1126,6 +1190,12 @@ body.secondary-palette-visible .settings-container {
         <div class="closeSettingsButtons">
           <button id="close" class="close-button">Close</button>
         </div>
+
+        <div class="helpSettingsButtons">
+          <button id="help" class="help-button">help</button>
+        </div>
+
+
         <button id="setting1">Time Setting</button>
         <div class="timesetting-buttons">
           <button class="timesetting-button" data-value="500">500</button>
@@ -1179,6 +1249,14 @@ body.secondary-palette-visible .settings-container {
     </div>
   </div>
 </div>
+
+<div id="helpScreen" class="help-screen">
+  <div class="closeHelpButton">
+    <button id="closeHelp" class="close-button">Close</button>
+  </div>
+  <img src="helppage.jpg" alt="Help Page" class="help-image">
+</div>
+
 <div id="level1Palette" class="picture-palette"></div>
 <div id="level2Palette" class="picture-palette"></div>
 <div id="level3Palette" class="picture-palette"></div>
@@ -1190,9 +1268,12 @@ body.secondary-palette-visible .settings-container {
     <button id="confirmNo">No</button>
   </div>
 
+
+
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <div id="plot1"></div>
   <div id="plot2"></div>
+
 
   <script src="js.js"></script>
 </body>
