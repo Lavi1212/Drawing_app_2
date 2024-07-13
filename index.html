@@ -6,6 +6,7 @@
   
   <style>
 
+
 body {
   font-family: Arial, sans-serif;
   color: #333;
@@ -46,7 +47,7 @@ body {
 }
 
 
-/*column right- reset undo and save*/
+/*column left*/
 .button-container1 {
   position: static; /* Change to static positioning */
   display: flex;
@@ -69,9 +70,12 @@ body {
   border: 2px solid #000;
   border-radius: 5px;
   cursor: pointer;
-  background-color: white; /* Optional: Set background color */
-
 }
+
+.button-container1 button:hover {
+  transform: scale(1.1);
+}
+
 
 input[type="file"] {
   color: transparent;
@@ -86,9 +90,14 @@ input[type="file"]::-webkit-file-upload-button {
   border: 2px solid #000;
   border-radius: 5px;
   cursor: pointer;
-
+background-color: white; /* Optional: Set background color */
 }
-
+/*
+input[type="file"]:hover::-webkit-file-upload-button {
+  transform: scale(1.1); 
+  border-width: 5px; 
+}
+*/
 
 #confirmationDialog {
   position: fixed;
@@ -118,7 +127,7 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 
-/*zoom in and out and Drag*/
+/*low row of buttons*/
 .button-container2 {
   position: static;
   display: flex;
@@ -126,32 +135,33 @@ input[type="file"]::-webkit-file-upload-button {
   margin-top: 140px;
   margin-left: 400px;
   transform: translateX(-50%); /* Center horizontally using transform */
-  width: auto; /* Allow width to adjust based on content */
+  width: 800px; /* Allow width to adjust based on content */
   height: auto; /* Allow height to adjust based on content */
   gap: 40px; /* Add space between the squares */
 }
 
-.button-container2 button {
-  width: 100px; /* Set a fixed width for the buttons */
-  height: 80px; /* Set a fixed height for the buttons */
-  padding: 0; /* Remove any padding */
-  margin: 0; /* Remove any margin */
-  border: 2px solid #000; /* Add border */
-  border-radius: 5px; /* Add border radius */
-  background-color: white; /* Optional: Set background color */
-  cursor: pointer; /* Show pointer cursor on hover */
+.button-container2 > div {
+  width: 100px; /* Set a fixed width for the color palette */
+  height:80px; /* Set a fixed height for the color palette */
+  border: 2px solid #000; /* Add border around the color palette */
+  border-radius: 5px; /* Add border radius for rounded corners */
   display: flex;
   align-items: center; /* Center content vertically */
   justify-content: center; /* Center content horizontally */
+  background-color: white; /* Optional: Set background color */
+}
+.button-container2 button:hover {
+  transform: scale(1.1);
 }
 
+
+
 .button-img {
-  max-width: 100%; /* Set max image width to fill the button */
-  max-height: 100%; /* Set max image height to fill the button */
-  object-fit: contain; /* Ensure the image covers the entire button without distortion */
+  width: 100%; /* Set image width to fill the button */
+  height: 94%; /* Set image height to fill the button */
+  object-fit: cover; /* Ensure the image covers the entire button without distortion */
   padding: 0; /* Remove any padding */
   margin: 0; /* Remove any margin */
-  border-radius: 5px; /* Add border radius for rounded corners */
   background-color: white; /* Optional: Set background color */
 }
 
@@ -162,14 +172,12 @@ input[type="file"]::-webkit-file-upload-button {
   position: static;
   margin-top: -530px;
   margin-left:1050px;
-  flex-direction: column;
-
+  flex-direction: column;;
 }
 .button-container3 > div {
   display: flex;
   flex-direction: column;
   gap: 0px; /* Add gap between buttons */
-
 }
 
 .button-container3 button {
@@ -179,8 +187,7 @@ input[type="file"]::-webkit-file-upload-button {
   border-radius: 5px; /* Add border radius for rounded corners */
   margin-bottom: 10px; /* Adjust margin between color options */
   cursor: pointer;
-  background-color: white; /* Optional: Set background color */
-
+  background-color: white; 
 }
 .button-container3 img {
   width: 100%; /* Ensure image fills the square button */
@@ -216,7 +223,6 @@ input[type="file"]::-webkit-file-upload-button {
   border-radius: 5px; /* Add border radius */
   cursor: pointer; /* Change cursor on hover */
   background-color: white;
-
 }
 
 /* Hide the figures palette by default */
@@ -236,7 +242,9 @@ input[type="file"]::-webkit-file-upload-button {
   overflow-y: hidden; /* Add scrollbars if content exceeds height */
   z-index: 10; /* Ensure it appears on top of other elements */
   background-color: #d1e2f9;
+
 }
+
 
 
 .palette-container.show {
@@ -255,49 +263,57 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 
+
 .color-palette-container {
-  position: static; /* Static positioning */
+  position: static; /* Change to static positioning */
   display: flex;
-  flex-direction: row; /* Arrange items in a row */
+  flex-direction: row;
   gap: 40px; /* Adjust gap between columns */
   align-items: flex-start; /* Align items to the start */
   margin-top: -540px; /* Adjust top margin as needed */
   margin-left: 150px; /* Adjust left margin as needed */
 }
 
-.color-palette-container > div {
+
+
+.color-palette-container > div  {
   display: flex;
-  flex-direction: row; /* Arrange items in a row */
+  flex-direction: row;
   gap: 20px; /* Adjust gap between buttons */
 }
 
-.color-palette-container button {
-  width: 100px; /* Set fixed width for each button */
-  height: 70px; /* Set fixed height for each button */
-  padding: 0; /* Remove any padding */
-  margin: 0; /* Remove any margin */
-  border: 2px solid #000; /* Add border */
-  border-radius: 5px; /* Add border radius for rounded corners */
-  background-color: white; /* Set background color */
-  cursor: pointer; /* Show pointer cursor on hover */
-  display: flex; /* Use flexbox for alignment */
-  align-items: center; /* Center content vertically */
-  justify-content: center; /* Center content horizontally */
+.color-button {
+  width: 100px;
+  height: 70px;
+  border: 2px solid #000;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.color-button:hover {
+  transform: scale(1.1);
 }
 
-.color-palette-container .button-img {
-  max-width: 100%; /* Ensure the image width does not exceed button width */
-  max-height: 100%; /* Ensure the image height does not exceed button height */
-  object-fit: contain; /* Ensure the image covers the entire button without distortion */
-  padding: 0; /* Remove any padding */
-  margin: 0; /* Remove any margin */
-  border-radius: 5px; /* Add border radius for rounded corners */
+.color-button::after {
+  content: '';
+  position: absolute;
+  width: 10px; /* Size of the red dot */
+  height: 10px; /* Size of the red dot */
+  margin-top: -6.5px; /* Adjust top margin as needed */
+  margin-left: -8px; /* Adjust left margin as needed */
+  background-color: #000; /* Color of the red dot */
+  border-radius: 50%; /* Make the dot circular */
 }
 
-#chosenColor {
-  border: 5px solid #000; /* Add border to differentiate it */
+.chosen-color-button {
+    width: 50px; /* Adjust as needed */
+    height: 50px; /* Adjust as needed */
+    border: none; /* Remove the default border */
+    border-radius: 50%; /* Make the button circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
-
 
 
 
@@ -310,20 +326,25 @@ input[type="file"]::-webkit-file-upload-button {
   display: none;
 }
 .color-palette {
-  position: absolute;
-  display: flex;
-  flex-direction: row; /* Arrange items in a row */
-  left: 1060px; /* Center horizontally */
-  top: 20px; /* Adjust the top position to move it lower */
-  transform: translateX(-50%); /* Center horizontally using transform */
-  width: 100px; /* Set a fixed width for the color palette */
-  height: 70px; /* Set a fixed height for the color palette */
-  border: 2px solid rgb(5, 0, 8); /* Add border around the color palette */
-  border-radius: 5px; /* Add border radius for rounded corners */
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
-  background-color: white; /* Optional: Set background color */
-  overflow: hidden; /* Ensure the image does not overflow */
+    position: absolute;
+    display: flex;
+    flex-direction: row; /* Arrange items in a row */
+    left: 1060px; /* Center horizontally */
+    top: 20px; /* Adjust the top position to move it lower */
+    transform: translateX(-50%); /* Center horizontally using transform */
+    width: 90px; /* Set a fixed width for the color palette */
+    height: 70px; /* Set a fixed height for the color palette */
+    border: 2px solid rgb(5, 0, 8); /* Add border around the color palette */
+    border-radius: 5px; /* Add border radius for rounded corners */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    background-color: white; /* Optional: Set background color */
+    overflow: hidden; 
+}
+
+
+#selectColor:hover {
+  transform: scale(1.1);
 }
 
 
@@ -382,6 +403,9 @@ input[type="file"]::-webkit-file-upload-button {
   border-radius: 5px; /* Add border radius for rounded corners */
   background-color: white; /* Optional: Set background color */
 }
+#toggleBrushSizeButtons:hover{
+  transform: scale(1.1);
+}
 
 .brush-size-frame {
   display: none; /* Hide by default */
@@ -397,6 +421,7 @@ input[type="file"]::-webkit-file-upload-button {
   overflow-y: auto; /* Add scrollbars if content exceeds height */
   z-index: 10;
 }
+
 
 .brush-size-buttons {
   display: flex;
@@ -421,6 +446,7 @@ input[type="file"]::-webkit-file-upload-button {
 
 .brush-size-buttons button:hover {
   background-color: #ddd;
+  transform: scale(1.05);
 }
 
 #brushSizeValue {
@@ -452,6 +478,14 @@ input[type="file"]::-webkit-file-upload-button {
 
 
 
+
+
+
+
+
+
+
+
 /* transparency */
 .transparency-container {
   position: static;
@@ -466,8 +500,15 @@ input[type="file"]::-webkit-file-upload-button {
   border: 2px solid #000;
   border-radius: 5px;
   background-color: #fff;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   font-size: 14px;
+}
+
+.transparency-container button:hover {
+  transform: scale(1.1);
+  transform-origin: center; 
 }
 
 .transparency-options {
@@ -483,6 +524,8 @@ input[type="file"]::-webkit-file-upload-button {
   z-index: 10;
 }
 
+
+
 .transparency-options .special-button {
   display: block;
   width: 100%;
@@ -494,6 +537,10 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 /*settings*/
+#settingsbutton:hover{
+  transform: scale(1.1);
+}
+
 .settings-container {
   position: static;
   display: flex;
@@ -937,7 +984,6 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 
-
     
 body.secondary-palette-visible .transparency-container, 
 body.secondary-palette-visible .brush-size-container,
@@ -1042,6 +1088,7 @@ body.secondary-palette-visible .settings-container {
 
 
 
+
   </style>
 </head>
 <body>
@@ -1051,12 +1098,13 @@ body.secondary-palette-visible .settings-container {
 
 
   
+
   <div class="container">
     <div id="canvas-container">
       <canvas id="imageCanvas" width="900" height="450" willReadFrequently></canvas>
       <canvas id="gridCanvas" width="900" height="450" style="position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none;"></canvas>
     </div>
-    
+
   <div class="color-pick">
     <div id="canvas-container1">
       <input type="color" id="colorPicker" value="#007bff">
@@ -1065,22 +1113,32 @@ body.secondary-palette-visible .settings-container {
     <div class="button-container1">
       <div>
         
-        <input type="file"  src ="file.png" id="fileInput" accept="image/*">
+        <input type="file" id="fileInput" accept="image/*">
         <button id="resetImage"><img src="reset.png" class="button-img"></button>
         <button id="newPage"><img src="newpage.png" class="button-img"></button>
       </div>
     </div>
 
-
     <div class="button-container2">
-      <button id="Pause" class="button"><img src="pause.png" class="button-img"></button>
-      <button id="ZoomIn" class="button"><img src="zoomin.jpg" class="button-img"></button>
-      <button id="ZoomOut" class="button"><img src="zoomout.png" class="button-img"></button>
-      <button id="Drag" class="button"><img src="drag.png" class="button-img"></button>
-      <button id="undoButton" class="button"><img src="undo.png" class="button-img"></button>
-      <button id="saveButton" class="button"><img src="saveimage.png" class="button-img"></button>
-  </div>
-  
+      <div>
+        <button id="Pause"><img src="pause.png" class="button-img"></button>
+      </div>
+      <div>
+        <button id="ZoomIn"><img src="zoomin.jpg" class="button-img"></button>
+      </div>
+      <div>
+        <button id="ZoomOut"><img src="zoomout.png" class="button-img"></button>
+      </div>
+      <div>
+        <button id="Drag"><img src="drag.png" class="button-img"></button>
+      </div>
+      <div>
+      <button id="undoButton"><img src="undo.png" class="button-img"></button>
+      </div>
+      <div>
+      <button id="saveButton"><img src="saveimage.png" class="button-img"></button>
+    </div>
+    </div>
 
 
 
@@ -1092,15 +1150,15 @@ body.secondary-palette-visible .settings-container {
           <button id="switchToEraser"><img src="eraser-icon1.png" alt="Eraser"></button>
           <button id="switchToPencil"><img src="pen-icon.png" alt="Pencil"></button>
           <div id="pencilButtons" style="display: none;">
-            <button id="switchToPencil1"> <img src="pencil.jpg"></button>
-            <button id="switchToPencil2"><img src="pencilwithcompass.png"></button>
-            <button id="switchToSpray"> <img src="pencilspray.jpg"></button>
-            <button id="switchToSplash"> <img src="pencilspray2.jpg"></button>
+            <button id="switchToPencil1"> Pencil with no compass</button>
+            <button id="switchToPencil2"> Pencil with compass</button>
+            <button id="switchToSpray"> Spray</button>
+            <button id="switchToSplash"> Splash</button>
         </div>
           <button id="toggleFigures"><img src="shape-icon.png" alt="shape-icon"></button>
           <div id="figures-container" class="palette-container">
             <button id="rectangleButton"><img src="rectangle.png" alt="Rectangle"></button>
-            <button id="lineButton"><img src="line.jpg" alt="line-icon"></button>
+            <button id="lineButton"><img src="line-icon.jpg" alt="line-icon"></button>
             <button id="circleButton"><img src="circle-icon.png" alt="circle-icon"></button>
             <button id="elipsaButton"><img src="elipse-icon.png" alt="triangle-icon"></button>
             <button id="triangleButton"><img src="righttriangle-icon.png" alt="triangle-icon"></button>
@@ -1112,13 +1170,13 @@ body.secondary-palette-visible .settings-container {
   
     <div class="color-palette-container">
       <div>
-      <button id="redColor" style="background-color: #ff0000;"></button>
-      <button id="greenColor" style="background-color: #00ff00;"></button>
-      <button id="blueColor" style="background-color: #0000ff;"></button>
-      <button id="yellowColor" style="background-color: #ffff00;"></button>
-      <button id="cyanColor" style="background-color: #00ffff;"></button>
-      <button id="magentaColor" style="background-color: #ff00ff;"></button>
-      <button id="chosenColor" style="background-color: #007bff;">Chosen Color</button>
+      <button id="redColor" class= "color-button" style="background-color: #ff0000;"></button>
+      <button id="greenColor" class= "color-button" style="background-color: #00ff00;"></button>
+      <button id="blueColor"  class= "color-button" style="background-color: #0000ff;"></button>
+      <button id="yellowColor"  class= "color-button" style="background-color: #ffff00;"></button>
+      <button id="cyanColor"  class= "color-button" style="background-color: #00ffff;"></button>
+      <button id="magentaColor"  class= "color-button" style="background-color: #ff00ff;"></button>
+      <button id="chosenColor" class= "chosen-color" style="background-color: #000000;">Chosen Color</button>
       </div>
     </div>
 
@@ -1260,20 +1318,20 @@ body.secondary-palette-visible .settings-container {
   </div>
 </div>
 
-<div id="helpScreen" class="help-screen">
-  <div class="closeHelpButton">
-    <button id="closeHelp" class="close-button">Close</button>
+  <div id="helpScreen" class="help-screen">
+    <div class="closeHelpButton">
+      <button id="closeHelp" class="close-button">Close</button>
+    </div>
+    <div class="help-images-container">
+      <img src="helppage.jpg" alt="Help Page 1" class="help-image help-image-top">
+      <img src="helppage2.jpg" alt="Help Page 2" class="help-image help-image-bottom">
+    </div>
   </div>
-  <div class="help-images-container">
-    <img src="helppage.jpg" alt="Help Page 1" class="help-image help-image-top">
-    <img src="helppage2.jpg" alt="Help Page 2" class="help-image help-image-bottom">
-  </div>
-</div>
 
+ <div id="level1Palette" class="picture-palette"></div>
+  <div id="level2Palette" class="picture-palette"></div>
+  <div id="level3Palette" class="picture-palette"></div>
 
-<div id="level1Palette" class="picture-palette"></div>
-<div id="level2Palette" class="picture-palette"></div>
-<div id="level3Palette" class="picture-palette"></div>
 
 
   <div id="confirmationDialog" style="display:none;">
@@ -1282,13 +1340,11 @@ body.secondary-palette-visible .settings-container {
     <button id="confirmNo">No</button>
   </div>
 
-
-
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <div id="plot1"></div>
   <div id="plot2"></div>
 
-
   <script src="js.js"></script>
 </body>
 </html>
+
