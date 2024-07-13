@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById('imageCanvas');
 const ctx = canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
@@ -84,9 +85,10 @@ let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isErase
 // currentX: The place the mouse is in the call to every event function.
 // endX/Y: Only for compass use. The place with Z distance from currentX/Y, inside the compass.
 
-let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [],mouse_movement=[],eyes_position=[];;
+let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [],mouse_movement=[];
+
+
 let data1X, data1Y,data,new_round;
-let A = 0.5; // Parameter to control the speed of compass drawing
 
 let timesetting = 2000; // Default timesetting value
 let threshold = 40,user_threshold=40; // Default threshold value
@@ -94,15 +96,12 @@ let numberOfRows = 10000; //number of matrix_mousePosition rows
 
 for (let i = 0; i < numberOfRows; i++) {//initalizing matrix_mousePosition
     matrix_mousePosition[i] = [];
-    eyes_position[i]=[];
     mouse_movement[i]=[];
     for (let j = 0; j < 3; j++) {
         matrix_mousePosition[i][j] = [];
-        eyes_position[i][j]=[];
         mouse_movement[i][j]=[];
     }
 }
-
 
 
 canvas.addEventListener("mousedown", startDraw);
@@ -122,9 +121,9 @@ function startDraw(event) {
     movement_check=1;
 }
 
-
 function Drawing(event) {
 
+   
     const color = colorPicker.value;
     const rgbaColor = hexToRgba(color, penAlpha);
     currentX = event.offsetX;
@@ -179,7 +178,7 @@ function Drawing(event) {
     }
 
 
-
+    
     if (movement_check==0){
         ctx.strokeStyle = rgbaColor;
         ctx.fillStyle = rgbaColor; 
@@ -218,18 +217,13 @@ function Drawing(event) {
                 ctx.fill();
                 }
             }   
-          else if (isPencilMode){
-           // if ((row>3)&&(Math.abs(eyes_position[row-1][1]-eyes_position[row-2][1]))<2){
-            //    currentY=mouse_movement[Math.floor((row-1)/3)][1];
-              //  console.log("mouse_movement[Math.floor(row/3)][1]:",mouse_movement[Math.floor(row/3)][1])
-            //console.log(row-1, Math.floor((row-1)/3));
-           // }
+      else if (isPencilMode){
             if (row%3==1){
              data1X = currentX;
              data1Y = currentY;
              console.log("1data1Y:",data1Y);
              }
-            if (row%3 == 2 &&  data1X != 0 ){
+            if (row%3 == 2 &&  data1X != 0 ){ //we Make sure in the start we go in the order: row%3==1,row%3 == 2,row%3 == 0 ...
             data1X = currentX+data1X;
             data1Y = currentY+data1Y;
             console.log("2data1Y:",data1Y);
@@ -239,12 +233,14 @@ function Drawing(event) {
                 data1Y=(currentY+data1Y)/3;
                 console.log("new_round/3:",new_round/3);
                 mouse_movement[row/3][1]=data1Y;
-               mouse_movement[row/3][0]=data1X;
+                mouse_movement[row/3][0]=data1X;
                 console.log("mouse_movement[row/3][1]:",mouse_movement[row/3][1])
                 if(new_round>1){
                 pencilmode((mouse_movement[row/3][0]+mouse_movement[(row/3)-1][0]+mouse_movement[(row/3)-2][0])/3,(mouse_movement[row/3][1]+mouse_movement[(row/3)-1][1]+mouse_movement[(row/3)-2][1])/3);
                 }
-                else{ pencilmode(data1X,data1Y);}
+                else{ 
+                    pencilmode(data1X,data1Y);
+                }
                  data1X=0;
                  data1Y=0;
                  new_round++;
@@ -290,6 +286,47 @@ function Drawing(event) {
     }
 }
 
+function pencilmode(mediumX , mediumY) {
+    distance = getDistance(start_drawingX, start_drawingY, mediumX, mediumY);
+    //console.log("start_drawingX:",start_drawingX);
+    //console.log("currentY:",currentY);
+    //console.log("mediumX:",mediumX);
+    //console.log("mediumY:",mediumY);
+    DeleteMarkings();
+
+    if (distance >= threshold && distance <= threshold*3) {
+        //const speed = A * distance; // Speed is proportional to the distance
+        //interval = Math.max(1, 100 / speed); // Calculate interval based on speed
+
+        // Calculate angle from current point to last mouse position
+        const angle = Math.atan2(start_drawingY - mediumY, start_drawingX - mediumX);
+        console.log("here");
+
+        // Calculate endpoint at distance Z from currentX, currentY in the angle direction
+        const endX = mediumX + threshold * Math.cos(angle);
+        const endY = mediumY + threshold * Math.sin(angle);
+
+        ctx.beginPath();
+      
+        ctx.moveTo(start_drawingX, start_drawingY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        // Update start_drawingX, start_drawingY to the endpoint of the drawn line
+        [start_drawingX, start_drawingY] = [endX, endY];
+    } 
+  
+    saveCanvasState(1);
+    drawBlackCircle(start_drawingX,start_drawingY,threshold+2);
+    //drawBlackCircle(start_drawingX,start_drawingY,3*threshold);
+    //drawNeedleArray();
+    drawNeedle();
+    
+  //  setTimeout(() => {
+    //    pencilmode();
+   // }, interval); // Way to control the velocity
+}   
+
 function stopdraw() {
     p=0;
     if (isDrawing){
@@ -298,7 +335,7 @@ function stopdraw() {
     }
     //if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode) {undoLastAction();}
     DeleteMarkings();
-    console.log(musicPlayer.src);
+    //console.log(musicPlayer.src);
     //if (musicPlayer.src == 'file:///C:/Users/Lavi/Desktop/Final_Project/Git_Hub/song1.mp3'){
         //console.log('here1');
         //musicPlayer.src= ('song2.mp3');
@@ -309,7 +346,9 @@ function stopdraw() {
 
 
 function click_happened(){
-     new_round=0;
+    data1X=0;
+    data1Y=0;
+    new_round=0;
     movement_check=1; 
     if(!(isPenMode || isZoomInMode|| isZoomOutMode||isDragMode||isPencilMode)){
     saveCanvasState(2);
@@ -357,46 +396,7 @@ function click_happened(){
         }
     }
 }
-function pencilmode(mediumX , mediumY) {
-    distance = getDistance(start_drawingX, start_drawingY, mediumX, mediumY);
-    //console.log("start_drawingX:",start_drawingX);
-    //console.log("currentY:",currentY);
-    //console.log("mediumX:",mediumX);
-    //console.log("mediumY:",mediumY);
-    DeleteMarkings();
 
-    if (distance >= threshold && distance <= threshold*2) {
-        const speed = A * distance; // Speed is proportional to the distance
-        interval = Math.max(1, 100 / speed); // Calculate interval based on speed
-
-        // Calculate angle from current point to last mouse position
-        const angle = Math.atan2(start_drawingY - mediumY, start_drawingX - mediumX);
-        console.log("here");
-
-        // Calculate endpoint at distance Z from currentX, currentY in the angle direction
-        const endX = mediumX + threshold * Math.cos(angle);
-        const endY = mediumY + threshold * Math.sin(angle);
-
-        ctx.beginPath();
-      
-        ctx.moveTo(start_drawingX, start_drawingY);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
-
-        // Update start_drawingX, start_drawingY to the endpoint of the drawn line
-        [start_drawingX, start_drawingY] = [endX, endY];
-    } 
-  
-    saveCanvasState(1);
-    drawBlackCircle(start_drawingX,start_drawingY,threshold+2);
-    //drawBlackCircle(start_drawingX,start_drawingY,3*threshold);
-    //drawNeedleArray();
-    drawNeedle();
-    
-  //  setTimeout(() => {
-    //    pencilmode();
-   // }, interval); // Way to control the velocity
-}   
 
 
 function handleMouseDownPen() {
@@ -699,7 +699,8 @@ function handleFileSelect(event) {
     p=0;
     scale=1;
     threshold=user_threshold;
-    updateTransform()
+    updateTransform();
+    toggleAllFigures();
 }
 
 function saveImage() {
@@ -771,13 +772,15 @@ function adjustBrightness(imageData) {
     }
 
 function resetScaleTransform() {
-    switchToEraserButton.style.transform = 'scale(1)';
-    switchToPenButton.style.transform = 'scale(1)';
-    switchToPencilButton.style.transform = 'scale(1)';
-    zoomInButton.style.transform = 'scale(1)';
-    zoomOutButton.style.transform = 'scale(1)';
-    DragButton.style.transform = 'scale(1)';
-    toggleFiguresButton.style.transform = 'scale(1)';
+    switchToEraserButton.style.transform = '';
+    switchToPenButton.style.transform = '';
+    switchToPencilButton.style.transform = '';
+    zoomInButton.style.transform = '';
+    zoomOutButton.style.transform = '';
+    DragButton.style.transform = '';
+    toggleFiguresButton.style.transform = '';
+    PauseButton.style.transform = '';
+ 
 }
 
 function scaleTransform() {
@@ -786,24 +789,29 @@ function scaleTransform() {
     if (isEraserMode) {
         switchToEraserButton.style.transform = 'scale(1.1)';
     }
-    if (isPenMode) {
+    else if (isPenMode) {
         switchToPenButton.style.transform = 'scale(1.1)';
     }
-    if (isPencilMode||isSprayMode||isSplashMode) {
+    else if (isPencilMode||isSprayMode||isSplashMode||isPencil_noCompass) {
         switchToPencilButton.style.transform = 'scale(1.1)';
     }
-    if (isZoomInMode) {
+    else if (isZoomInMode) {
         zoomInButton.style.transform = 'scale(1.1)';
     }
-    if (isZoomOutMode) {
+    else if (isZoomOutMode) {
         zoomOutButton.style.transform = 'scale(1.1)';
     }
-    if (isDragMode) {
+    else if (isDragMode) {
         DragButton.style.transform = 'scale(1.1)';
     }
-    if (isRectangleMode || isCircleMode || isTriangleMode || isLineMode || isIsoscelesTriangleMode || isEllipseMode) {
+    else if (isRectangleMode || isCircleMode || isTriangleMode || isLineMode || isIsoscelesTriangleMode || isEllipseMode) {
         toggleFiguresButton.style.transform = 'scale(1.1)';
     }
+    else  {
+        PauseButton.style.transform = 'scale(1.1)';
+    }
+   
+
 }
 
 function switchToIsoscelesTriangle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=true; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
@@ -812,17 +820,17 @@ function switchToCircle ()  { isPencil_noCompass=false; isSprayMode = false; isS
 function switchToTriangle  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = true; isLineMode = false;  scaleTransform();toggleFigures();}
 function switchToLine  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = true;  scaleTransform();toggleFigures();}
 function switchToElipsa ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= true; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleFigures(); }
-function switchToPen () {p=0;  isPencil_noCompass=false;isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); }
-function switchToEraser() {t=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = true; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();}
-function activateZoomInMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();    }
-function activateZoomOutMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
-function activateDragMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();}
+function switchToPen () {p=0;  isPencil_noCompass=false;isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); toggleAllFigures();}
+function switchToEraser() {t=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = true; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleAllFigures();}
+function activateZoomInMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();  toggleAllFigures(); }
+function activateZoomOutMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
+function activateDragMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
 function switchToSpray () {  isPencil_noCompass=false;  isSprayMode = true; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();   switchToPenciloptoins();}
 function switchToSplash () { isPencil_noCompass=false;   isSprayMode = false; isSplashMode = true; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins(); }
 function switchToPencil () {t=0; isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = true; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
 function switchToPencil_noCompass () {isPencil_noCompass=true; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
 
-function Pause() { isDragMode = false; isPenMode = false;  isZoomInMode = false;isZoomOutMode = false; isPencilMode = false; isDrawing = false; }
+function Pause() { isDragMode = false; isPenMode = false;  isZoomInMode = false;isZoomOutMode = false; isPencilMode = false; isDrawing = false;scaleTransform();toggleAllFigures(); }
 
 
 
@@ -913,6 +921,14 @@ function toggleFigures() {
     brushSizeFrame.style.display ='none';
     pencilButtonsContainer.style.display ='none';
 }
+function toggleAllFigures() {
+    figuresContainer.style.display =  'none';
+    transparencyOptions.style.display = 'none';
+    settingsscreen.style.display = 'none';
+    brushSizeFrame.style.display ='none';
+    pencilButtonsContainer.style.display ='none';
+}
+
 
 function switchToPenciloptoins(){
     pencilButtonsContainer.style.display = pencilButtonsContainer.style.display === 'none' ? 'block' : 'none';
@@ -983,8 +999,6 @@ function toggleSetting() {
     figuresContainer.style.display ='none';
     pencilButtonsContainer.style.display ='none';
 }
-//close setting
-document.getElementById('close').addEventListener('click', toggleSetting);
 
 document.querySelectorAll('.timesetting-button').forEach(button => {
     button.addEventListener('click', function() {
@@ -1132,6 +1146,7 @@ function newPage(){
     scale=1;
     threshold=user_threshold;
     updateTransform();
+    toggleAllFigures();
 }
 
 function resetImage() {
@@ -1142,6 +1157,7 @@ function resetImage() {
     scale=1;
     threshold=user_threshold;
     updateTransform();
+    toggleAllFigures();
   }
 
 function showConfirmation(action) {
@@ -1177,6 +1193,8 @@ document.addEventListener('DOMContentLoaded', function() {
     transparencyOptions.style.display= 'none';
     settingsscreen.style.display= 'none';
     colorPicker.value = "#00000F";
+
+    
 
  
     resetImageButton.addEventListener('click', function() {showConfirmation('resetImage');});
@@ -1246,6 +1264,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+
+
+
+
 
 
 
