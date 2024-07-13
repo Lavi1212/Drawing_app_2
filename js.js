@@ -1328,3 +1328,4 @@ document.getElementById('help').addEventListener('click', function() {
   document.getElementById('closeHelp').addEventListener('click', function() {
     document.getElementById('helpScreen').style.display = 'none';
   });
+document.getElementById('close').addEventListener('click', toggleSetting);
