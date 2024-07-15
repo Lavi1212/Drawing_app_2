@@ -1,0 +1,168 @@
+<html>
+<link rel="stylesheet" href="fontello/css/fontello.css">
+
+<script type="text/javascript">
+
+
+    const openDialog =()=>{
+        let dialog = document.createElement('div');
+        dialog.style.position = 'absolute';
+        dialog.style.top = '50%';
+        dialog.style.left = '50%';
+        dialog.style.transform = 'translate(-50%, -50%)';
+        dialog.style.width = '300px';
+        dialog.style.height = '300px';
+        dialog.style.backgroundColor = '#fff';
+        dialog.style.borderRadius = '10px';
+        dialog.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+        dialog.style.zIndex = '1000';
+        document.querySelector('body').appendChild(dialog);
+        dialog.addEventListener('click',()=>{
+            dialog.remove();
+        })
+    }
+
+    window.onload = ()=>{
+ const headerButton =[{
+     icon:'icon-heart-1',
+     id: 'heart',
+ },{
+     icon:'icon-zoom-out',
+     id: 'zoom',
+ },{
+     icon:'icon-heart-1',
+ },{
+     icon:'icon-heart-1',
+ },{
+     icon:'icon-heart-1',
+ },{
+     icon:'icon-heart-1',
+ }]
+
+        headerButton.forEach((item, index)=>{
+            let button = document.createElement('div');
+            button.className = `button icon-font ${item.icon}`;
+            document.querySelector(".header").appendChild(button);
+            button.addEventListener('click',()=>{
+                openDialog();
+            })
+        });
+
+    }
+
+</script>
+<style>
+    .container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        background-color: #000;
+    }
+
+    .header {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 100px;
+        background-color: #f00;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .left {
+        position: absolute;
+        top: 100px;
+        left: 0;
+        bottom: 101px;
+        width: 100px;
+        background-color: #0f0;
+    }
+
+    .right {
+        position: absolute;
+        top: 101px;
+        right: 0;
+        bottom: 100px;
+        width: 100px;
+        background-color: #00f;
+    }
+
+    .footer {
+        position: absolute;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        height: 100px;
+        background-color: #ff0;
+    }
+
+    .button{
+        height:80px;
+        width:80px;
+        background-color: #fff;
+        border-radius: 10px;
+    }
+
+
+    .button.icon-font:before{
+        font-size: 50px;
+        line-height: 80px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .button:hover.icon-font:before{
+        color: #f00;
+
+    }
+
+    .button:active{
+        background: #08c!important;
+    }
+
+    .shekel:before{
+        content: "@";
+    }
+
+    /*@media (max-width: 768px) {*/
+
+    /*    .header {*/
+    /*        height: 50px;*/
+    /*    }*/
+
+    /*    .left {*/
+    /*        top: 50px;*/
+    /*        bottom: 50px;*/
+    /*        width: 50px;*/
+    /*    }*/
+
+    /*    .right {*/
+
+    /*        top: 50px;*/
+    /*        bottom: 50px;*/
+    /*        width: 50px;*/
+    /*    }*/
+
+    /*    .footer {*/
+    /*        height: 50px;*/
+    /*    }*/
+    /*}*/
+</style>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div tabindex="-1" class="button icon-font icon-heart-1"></div>
+    </div>
+    <div class="left"></div>
+    <div class="right"></div>
+    <div class="footer"></div>
+    <div class="content"></div>
+</div>
+
+</body>
+</html>
