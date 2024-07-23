@@ -226,15 +226,15 @@ function Drawing(event) {
             if (row%3 == 2 &&  data1X != 0 ){ //we Make sure in the start we go in the order: row%3==1,row%3 == 2,row%3 == 0 ...
             data1X = currentX+data1X;
             data1Y = currentY+data1Y;
-            console.log("2data1Y:",data1Y);
+           //console.log("2data1Y:",data1Y);
             }
             if (row%3 == 0  &&  data1X != 0 ){
                 data1X=(currentX+data1X)/3;
                 data1Y=(currentY+data1Y)/3;
-                console.log("new_round/3:",new_round/3);
+                //console.log("new_round/3:",new_round/3);
                 mouse_movement[row/3][1]=data1Y;
                 mouse_movement[row/3][0]=data1X;
-                console.log("mouse_movement[row/3][1]:",mouse_movement[row/3][1])
+                //console.log("mouse_movement[row/3][1]:",mouse_movement[row/3][1])
                 if(new_round>1){
                 pencilmode((mouse_movement[row/3][0]+mouse_movement[(row/3)-1][0]+mouse_movement[(row/3)-2][0])/3,(mouse_movement[row/3][1]+mouse_movement[(row/3)-1][1]+mouse_movement[(row/3)-2][1])/3);
                 }
@@ -300,7 +300,7 @@ function pencilmode(mediumX , mediumY) {
 
         // Calculate angle from current point to last mouse position
         const angle = Math.atan2(start_drawingY - mediumY, start_drawingX - mediumX);
-        console.log("here");
+       // console.log("here");
 
         // Calculate endpoint at distance Z from currentX, currentY in the angle direction
         const endX = mediumX + threshold * Math.cos(angle);
