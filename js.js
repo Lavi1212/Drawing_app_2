@@ -92,7 +92,7 @@ let data1X, data1Y,data,new_round;
 
 let timesetting = 2000; // Default timesetting value
 let threshold = 40,user_threshold=40; // Default threshold value
-let numberOfRows = 10000; //number of matrix_mousePosition rows
+let numberOfRows = 20000; //number of matrix_mousePosition rows
 
 for (let i = 0; i < numberOfRows; i++) {//initalizing matrix_mousePosition
     matrix_mousePosition[i] = [];
@@ -686,7 +686,7 @@ function handleFileSelect(event) {
 
                 // Store the original image data
                 originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                originalImageData = adjustBrightness(originalImageData);
+                //originalImageData = adjustBrightness(originalImageData);
                 ctx.putImageData(originalImageData, 0, 0);
             };
             img.src = event.target.result; // Set the source of the image to the result of FileReader
