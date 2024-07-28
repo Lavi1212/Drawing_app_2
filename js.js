@@ -46,6 +46,7 @@ const playButton = document.getElementById('playButton');
 const pauseButton = document.getElementById('pauseButton');
 const stopButton = document.getElementById('stopButton');
 const MatrixButton = document.getElementById('downloadBtn');
+const functionStopButton = document.getElementById('functionsStopButton');
 const redColorButton = document.getElementById('redColor');
 const greenColorButton = document.getElementById('greenColor');
 const blueColorButton = document.getElementById('blueColor');
@@ -54,6 +55,8 @@ const cyanColorButton = document.getElementById('cyanColor');
 const magentaColorButton = document.getElementById('magentaColor');
 const confirmYesButton = document.getElementById('confirmYes');
 const confirmNoButton = document.getElementById('confirmNo');
+const NoColorButton = document.getElementById('Black and White');
+const YesColorButton = document.getElementById('Color');
 
 const level1Button = document.getElementById('level1');
 const level2Button = document.getElementById('level2');
@@ -86,10 +89,10 @@ let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isErase
 // endX/Y: Only for compass use. The place with Z distance from currentX/Y, inside the compass.
 
 let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [],mouse_movement=[];
-
-
+let Chosen_img, Chosen_newHeight,Chosen_newWidth;
+let NoMusic=1;
 let data1X, data1Y,data,new_round;
-
+let functionStop=0;
 let timesetting = 2000; // Default timesetting value
 let threshold = 40,user_threshold=40; // Default threshold value
 let numberOfRows = 20000; //number of matrix_mousePosition rows
@@ -335,11 +338,7 @@ function stopdraw() {
     }
     //if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode) {undoLastAction();}
     DeleteMarkings();
-    //console.log(musicPlayer.src);
-    //if (musicPlayer.src == 'file:///C:/Users/Lavi/Desktop/Final_Project/Git_Hub/song1.mp3'){
-        //console.log('here1');
-        //musicPlayer.src= ('song2.mp3');
-        //musicPlayer.play();}
+    musicPlayer.pause();
     clearTimeout(timeoutId);
     timeoutId = null;
 }
@@ -356,10 +355,14 @@ function click_happened(){
     }
     
      if (isPenMode) { 
+        musicPlayer.src= ('song3.mp3');
+        if (!NoMusic)
+        {musicPlayer.play();}
         DeleteMarkings();
         saveCanvasState(3);
         handleMouseDownPen();
         p=0;
+        //musicPlayer.pause();
      }
      else if (isZoomInMode) {
         if (scale<5){
@@ -380,13 +383,13 @@ function click_happened(){
     else if (isDrawing){
         isDrawing=false;
         DeleteMarkings(); //command to delete the circle/dot
-        //musicPlayer.src= ('song2.mp3');
-        //musicPlayer.play();
+        musicPlayer.pause();
     }
     else if (!isDrawing){
         isDrawing=true;
-        //musicPlayer.src= ('song1.mp3');
-        //musicPlayer.play();
+        musicPlayer.src= ('song1.mp3');
+        if (!NoMusic)
+            {musicPlayer.play();}
         if (isPencilMode){
             start_drawingX=currentX;
             start_drawingY=currentY;
@@ -663,17 +666,17 @@ function handleFileSelect(event) {
         const reader = new FileReader();
 
         reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
+            Chosen_img = new Image();
+            Chosen_img.onload = function() {
                 const canvas = document.getElementById('imageCanvas');
                 const ctx = canvas.getContext('2d');
 
                 // Calculate the scaling factor for resizing the image
-                const scaleFactor = Math.min(900 / img.width, 450 / img.height);
+                const scaleFactor = Math.min(900 / Chosen_img.width, 450 / Chosen_img.height);
 
                 // Calculate the new dimensions for the resized image
-                const newWidth = img.width * scaleFactor;
-                const newHeight = img.height * scaleFactor;
+                Chosen_newWidth = Chosen_img.width * scaleFactor;
+                 Chosen_newHeight = Chosen_img.height * scaleFactor;
 
                 // Clear the canvas to plain white
                 canvas.width = 900;
@@ -682,14 +685,14 @@ function handleFileSelect(event) {
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 // Draw the resized image on the canvas
-                ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
+                //ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
 
                 // Store the original image data
-                originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                //originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 //originalImageData = adjustBrightness(originalImageData);
-                ctx.putImageData(originalImageData, 0, 0);
+               // ctx.putImageData(originalImageData, 0, 0);
             };
-            img.src = event.target.result; // Set the source of the image to the result of FileReader
+            Chosen_img.src = event.target.result; // Set the source of the image to the result of FileReader
         };
 
         reader.readAsDataURL(file);
@@ -701,8 +704,27 @@ function handleFileSelect(event) {
     threshold=user_threshold;
     updateTransform();
     toggleAllFigures();
+    showBlackAndWhite();
 }
+function showBlackAndWhite() {
+    BlackAndWhiteDialog.style.display = 'block';
+  }
 
+  function NoColor(){
+    ctx.drawImage(Chosen_img, (canvas.width - Chosen_newWidth) / 2, (canvas.height - Chosen_newHeight) / 2, Chosen_newWidth, Chosen_newHeight);
+    originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    originalImageData = adjustBrightness(originalImageData);
+    ctx.putImageData(originalImageData, 0, 0);
+    BlackAndWhiteDialog.style.display = 'none';
+}
+function YesColor(){
+     ctx.drawImage(Chosen_img, (canvas.width - Chosen_newWidth) / 2, (canvas.height - Chosen_newHeight) / 2, Chosen_newWidth, Chosen_newHeight);
+    originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    ctx.putImageData(originalImageData, 0, 0);
+    BlackAndWhiteDialog.style.display = 'none';
+}
+NoColorButton.addEventListener('click',NoColor);
+YesColorButton.addEventListener('click',YesColor);
 function saveImage() {
     const canvas = document.getElementById('imageCanvas');
     const link = document.createElement("a");
@@ -822,9 +844,9 @@ function switchToLine  () { isPencil_noCompass=false; isSprayMode = false; isSpl
 function switchToElipsa ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= true; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleFigures(); }
 function switchToPen () {p=0;  isPencil_noCompass=false;isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); toggleAllFigures();}
 function switchToEraser() {t=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = true; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleAllFigures();}
-function activateZoomInMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();  toggleAllFigures(); }
-function activateZoomOutMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
-function activateDragMode() {p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
+function activateZoomInMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();  toggleAllFigures(); }
+function activateZoomOutMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
+function activateDragMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
 function switchToSpray () {  isPencil_noCompass=false;  isSprayMode = true; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();   switchToPenciloptoins();}
 function switchToSplash () { isPencil_noCompass=false;   isSprayMode = false; isSplashMode = true; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins(); }
 function switchToPencil () {t=0; isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = true; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
@@ -887,6 +909,9 @@ function populateSecondaryPalette(primaryColor) {
 }
 
 function addColorOption(color, column) {
+    musicPlayer.src= ('song2.mp3');
+    if (!NoMusic)
+        {musicPlayer.play();}
     let colorOption = document.createElement("div");
     colorOption.classList.add("color-option");
     colorOption.style.backgroundColor = color;
@@ -897,6 +922,7 @@ function addColorOption(color, column) {
         document.getElementById("secondaryColorPalette").style.display = "none";
         document.body.classList.remove('secondary-palette-visible'); // Remove class to show brush-size-container and settings
         chosenColorButton.style.backgroundColor = color;
+        musicPlayer.pause();
     }
 
     colorOption.onclick = selectColor;
@@ -1025,57 +1051,72 @@ document.querySelectorAll('.colorButton').forEach(button=> {
     });
     setupTimeoutHandler(button, () => button.click());
   });
-
-function createPictureButtons(level, palette, start, end) {
+  function createPictureButtons(level, palette, start, end) {
     toggleSetting();
     palette.style.display = 'block';
     palette.innerHTML = '';
-
+    let realtimesetting = timesetting;
+    let timesettingchange = false;
+  
+    // Adjust timesetting so the picture sellect will take 1000 miliseconds
+    if (timesetting < 1000) {
+        realtimesetting = timesetting;
+        timesetting = 1000;
+        timesettingchange = true;
+    }
+  
     for (let i = start; i <= end; i++) {
         const button = document.createElement('button');
         button.classList.add('picture-button');
         button.dataset.pictureNumber = i;
-
+  
         const buttonText = document.createTextNode(`Picture ${i}`);
         button.appendChild(buttonText);
-
+  
         const imgSrc = `picture${i}.jpg`;
         const img = document.createElement('img');
         img.src = imgSrc;
         img.classList.add('button-image');
         button.appendChild(img);
-        
-
-                    
-            button.addEventListener('click', function() {
-                level1Palette.style.display='none';
-                level2Palette.style.display='none';
-                level3Palette.style.display='none';
-                const scaleFactor = Math.min(900 / img.width, 450 / img.height);
-
-                // Calculate the new dimensions for the resized image
-                const newWidth = img.width * scaleFactor;
-                const newHeight = img.height * scaleFactor;
-
-                // Clear the canvas to plain white
-                canvas.width = 900;
-                canvas.height = 450;
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Draw the resized image on the canvas
-                //img=adjustBrightness(img);
-                ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
-
-                // Store the original image data
-                originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                originalImageData = adjustBrightness(originalImageData);
-                ctx.putImageData(originalImageData, 0, 0);
-            });
-            setupTimeoutHandler(button, () => button.click());
+  
+        button.addEventListener('click', function() {
+            level1Palette.style.display = 'none';
+            level2Palette.style.display = 'none';
+            level3Palette.style.display = 'none';
+            if (timesettingchange) {
+                timesetting = realtimesetting;
+            }
+            const scaleFactor = Math.min(900 / img.width, 450 / img.height);
+  
+            // Calculate the new dimensions for the resized image
+            const newWidth = img.width * scaleFactor;
+            const newHeight = img.height * scaleFactor;
+  
+            // Clear the canvas to plain white
+            canvas.width = 900;
+            canvas.height = 450;
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+            // Draw the resized image on the canvas
+            // img = adjustBrightness(img);
+            ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
+  
+            // Store the original image data
+            originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            originalImageData = adjustBrightness(originalImageData);
+            ctx.putImageData(originalImageData, 0, 0);
+          
+        });
+  
+        setupTimeoutHandler(button, () => button.click());
+  
         palette.appendChild(button);
     }
-}
+  
+  
+    
+  }
 
 function matrixToCSV(matrix) {
     // Add headers
@@ -1115,21 +1156,23 @@ document.querySelectorAll('.songButton').forEach(button => {
 
 
 function playMusic (){
-    musicPlayer.play();
+    //musicPlayer.play();
     //console.log('here');
     toggleSetting(); // Close settings panel after clicking play
+    NoMusic=0;
     //console.log('here1');
   };
   
 function pauseMusic() {
-    musicPlayer.pause();
+   // musicPlayer.pause();
     toggleSetting(); // Close settings panel after clicking play
   };
   
 function stopMusic()  {
-    musicPlayer.pause();
-    musicPlayer.currentTime = 0;
+    //musicPlayer.pause();
+    //musicPlayer.currentTime = 0;
     toggleSetting(); // Close settings panel after clicking play
+    NoMusic=1;
   };
 
 // newPage functions
@@ -1150,6 +1193,7 @@ function newPage(){
 }
 
 function resetImage() {
+    
     saveCanvasState();
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
     ctx.putImageData(originalImageData, 0, 0); // Restore original image
@@ -1161,6 +1205,7 @@ function resetImage() {
   }
 
 function showConfirmation(action) {
+    if (functionStop){return;}
     currentAction = action;
     confirmationDialog.style.display = 'block';
   }
@@ -1231,6 +1276,7 @@ document.addEventListener('DOMContentLoaded', function() {
     PenTransparencyButton.addEventListener('click',toggleTransparencyOptions);
     settingsbutton.addEventListener('click',toggleSetting);
     MatrixButton.addEventListener('click',MatrixDownload);
+    //functionStopButton.addEventListener('click',FunctionStop);
     redColorButton.addEventListener('click', select_immidiate_color);
     greenColorButton.addEventListener('click', select_immidiate_color);
     blueColorButton.addEventListener('click', select_immidiate_color);
@@ -1265,8 +1311,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+document.getElementById('functionsStopButton').addEventListener('click', function() {
+    if (functionStop){
+        functionStop =0;
+        this.textContent = `Functions Are On`;}
+    else { 
+         functionStop =1;
+        this.textContent = `Functions Are Off`;}
+    toggleSetting();
+});
 
 
+document.querySelectorAll('.color-button').forEach(button => {
+    button.addEventListener('mouseover', () => {
+        musicPlayer.src= ('song2.mp3');
+        if (!NoMusic)
+            {musicPlayer.play();}
+    });
+    button.addEventListener('mouseout', () => {
+        musicPlayer.pause();
+    });
+    
+});
 
 
 
