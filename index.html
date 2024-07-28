@@ -6,6 +6,7 @@
   
   <style>
 
+
 body {
   font-family: Arial, sans-serif;
   color: #333;
@@ -97,7 +98,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
 }
 */
 
-#confirmationDialog {
+#confirmationDialog , #BlackAndWhiteDialog{
   position: fixed;
   top: 50%;
   left: 50%;
@@ -112,11 +113,11 @@ input[type="file"]:hover::-webkit-file-upload-button {
   
 }
 
-#confirmationDialog h2 {
+#confirmationDialog h2, #BlackAndWhiteDialog h2 {
   margin-bottom: 20px; /* Add space below the heading */
 }
 
-#confirmationDialog button {
+#confirmationDialog button, #BlackAndWhiteDialog button {
   width: 150px;
   height: 150px;
   margin: 30px; /* Add margin around the buttons */
@@ -988,27 +989,6 @@ body.secondary-palette-visible .brush-size-container,
 body.secondary-palette-visible .settings-container {
   display: none;
 }
-
-#downloadBtn {
-  width: 100%; /* Make the button fill its container width */
-  height: 40px; /* Set button height */
-  margin-bottom: 10px; /* Add margin at the bottom */
-  border: 2px solid #000; /* Add border */
-  border-radius: 5px; /* Add border radius for rounded corners */
-  background-color: #fff; /* Set background color */
-  color: #000; /* Set text color */
-  font-size: 16px; /* Adjust font size */
-  cursor: pointer; /* Show pointer cursor on hover */
-  display: flex; /* Use flexbox for alignment */
-  align-items: center; /* Center items vertically */
-  justify-content: center; /* Center items horizontally */
-}
-
-#downloadBtn:hover {
-  background-color: #ddd; /* Change background color on hover */
-}
-
-    
 .picture-palette {
   position: absolute;
   display: none;
@@ -1043,9 +1023,14 @@ body.secondary-palette-visible .settings-container {
 }
 
 
+.button-container-settings {
+  display: flex; /* Use flexbox for alignment */
+  gap: 10px; /* Add space between buttons */
+}
 
-#toggleGridButton {
-  width: 100%; /* Make the button fill its container width */
+#toggleGridButton, #downloadBtn, #functionsStopButton {
+  width: auto; /* Set width to auto to prevent filling container */
+  flex: 1; /* Allow buttons to grow equally */
   height: 40px; /* Set button height */
   margin-bottom: 10px; /* Add margin at the bottom */
   border: 2px solid #000; /* Add border */
@@ -1059,10 +1044,9 @@ body.secondary-palette-visible .settings-container {
   justify-content: center; /* Center items horizontally */
 }
 
-#toggleGridButton:hover {
+#toggleGridButton:hover, #downloadBtn:hover, #functionsStopButton:hover {
   background-color: #ddd; /* Change background color on hover */
 }
-
 #canvas-container {
   position: relative;
 }
@@ -1090,8 +1074,7 @@ body.secondary-palette-visible .settings-container {
   </style>
 </head>
 <body>
-  
-  <meta charset="UTF-8">
+ <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
@@ -1308,8 +1291,11 @@ body.secondary-palette-visible .settings-container {
           <button class="colorButton" data-color="#00008B">Dark Blue</button>
           <button class="colorButton" data-color="#ADD8E6">Light Blue</button>
         </div>
-        <button id="toggleGridButton">Toggle Grid</button>
-        <button id="downloadBtn">Download Matrix</button>
+        <div class="button-container-settings">
+          <button id="toggleGridButton">Toggle Grid</button>
+          <button id="downloadBtn">Download Matrix</button>
+          <button id="functionsStopButton">Functions Are On</button>
+      </div>
       </div>
     </div>
   </div>
@@ -1337,6 +1323,13 @@ body.secondary-palette-visible .settings-container {
     <button id="confirmNo">No</button>
   </div>
 
+  <div id="BlackAndWhiteDialog" style="display:none;">
+    <p>Which picture type?</p>
+    <button id="Black and White">Black and White</button>
+    <button id="Color">Color</button>
+  </div>
+
+
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <div id="plot1"></div>
   <div id="plot2"></div>
@@ -1344,4 +1337,3 @@ body.secondary-palette-visible .settings-container {
   <script src="js.js"></script>
 </body>
 </html>
-
