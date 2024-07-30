@@ -1070,7 +1070,7 @@ document.querySelectorAll('.colorButton').forEach(button=> {
         button.classList.add('picture-button');
         button.dataset.pictureNumber = i;
   
-        const buttonText = document.createTextNode(`Picture ${i}`);
+        const buttonText = document.createTextNode(`/Picture ${i}`);
         button.appendChild(buttonText);
   
         const imgSrc = `picture/picture${i}.jpg`;
