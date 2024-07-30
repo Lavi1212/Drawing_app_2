@@ -1050,14 +1050,15 @@ document.querySelectorAll('.colorButton').forEach(button=> {
       toggleSetting();
     });
     setupTimeoutHandler(button, () => button.click());
-  });function createPictureButtons(level, palette, start, end) {
+  });
+  function createPictureButtons(level, palette, start, end) {
     toggleSetting();
     palette.style.display = 'block';
     palette.innerHTML = '';
     let realtimesetting = timesetting;
     let timesettingchange = false;
   
-    // Adjust timesetting so the picture select will take 1000 milliseconds
+    // Adjust timesetting so the picture sellect will take 1000 miliseconds
     if (timesetting < 1000) {
         realtimesetting = timesetting;
         timesetting = 1000;
@@ -1076,13 +1077,6 @@ document.querySelectorAll('.colorButton').forEach(button=> {
         const img = document.createElement('img');
         img.src = imgSrc;
         img.classList.add('button-image');
-        
-        // Set the image dimensions to match the button size
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '5px'; // Matching button border radius
-  
         button.appendChild(img);
   
         button.addEventListener('click', function() {
@@ -1112,17 +1106,8 @@ document.querySelectorAll('.colorButton').forEach(button=> {
             originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             originalImageData = adjustBrightness(originalImageData);
             ctx.putImageData(originalImageData, 0, 0);
+          
         });
-  
-        palette.appendChild(button);
-    }
-  
-    // Reset timesetting if it was changed
-    if (timesettingchange) {
-        timesetting = realtimesetting;
-    }
-}
-
   
         setupTimeoutHandler(button, () => button.click());
   
