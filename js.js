@@ -1286,7 +1286,6 @@ document.addEventListener('DOMContentLoaded', function() {
     confirmYesButton.addEventListener('click', confirmYes);
     confirmNoButton.addEventListener('click', confirmNo);
     play_Button.addEventListener('click', function() {playMusic();});
-    pause_Button.addEventListener('click', function() {pauseMusic();});
     stop_Button.addEventListener('click', function() {stopMusic();});
 
     
