@@ -1072,7 +1072,7 @@ document.querySelectorAll('.colorButton').forEach(button=> {
         const buttonText = document.createTextNode(`Picture ${i}`);
         button.appendChild(buttonText);
   
-        const imgSrc = `picture/picture${i}.jpg`;
+        const imgSrc = `picture${i}.jpg`;
         const img = document.createElement('img');
         img.src = imgSrc;
         img.classList.add('button-image');
