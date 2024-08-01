@@ -1126,6 +1126,7 @@ body.secondary-palette-visible .settings-container {
 
 
   
+  
   <div class="container">
     <div id="canvas-container">
       <canvas id="imageCanvas" width="900" height="450" willReadFrequently></canvas>
@@ -1169,8 +1170,6 @@ body.secondary-palette-visible .settings-container {
 
 
 
-
-    
     <div class="button-container3">
       <div>
         <button id="switchToPen"><img src="picture/fill-color-icon.png" alt="Pen"></button>
@@ -1179,8 +1178,8 @@ body.secondary-palette-visible .settings-container {
           <div id="pencilButtons" style="display: none;">
             <button id="switchToPencil1"><img src="picture/pencil.jpg"></button>
             <button id="switchToPencil2"><img src="picture/pencilwithcompass.png"></button>
-            <button id="switchToSpray"><img src="picture/pencilspray.jpg"></button>
-            <button id="switchToSplash"><img src="picture/pencilspray2.jpg"></button>
+            <button id="switchToSpray"><img src="picture/sprayicon.png"></button>
+            <button id="switchToSplash"><img src="picture/splashicon.png"></button>
         </div>
           <button id="toggleFigures"><img src="picture/shape-icon.png" alt="shape-icon"></button>
           <div id="figures-container" class="palette-container">
@@ -1193,6 +1192,7 @@ body.secondary-palette-visible .settings-container {
           </div>
       </div>
     </div>
+
 
   
     <div class="color-palette-container">
@@ -1215,55 +1215,55 @@ body.secondary-palette-visible .settings-container {
     
 
     
+    
    <div class="brush-size-container">
-      <button id="toggleBrushSizeButtons"><img src="picture/brushsize.png" class="button-img"></button>
-        <div id="brushSizeFrame" class="brush-size-frame">
-          <div class="brush-size-buttons">
-            <button id="brushSize1" class="special-button">
-                <span class="button-text">1</span>
-                <img src="picture/pinceau1.jpg" class="button-image">
-            </button>
-            <button id="brushSize2" class="special-button">
-                <span class="button-text">2</span>
-                <img src="picture/pinceau2.jpg" class="button-image">
-            </button>
-            <button id="brushSize3" class="special-button">
-                <span class="button-text">3</span>
-                <img src="picture/pinceau3.jpg" class="button-image">
-            </button>
-            <button id="brushSize4" class="special-button">
-                <span class="button-text">4</span>
-                <img src="picture/pinceau4.jpg" class="button-image">
-            </button>
-            <button id="brushSize5" class="special-button">
-                <span class="button-text">5</span>
-                <img src="picture/pinceau5.jpg" class="button-image">
-            </button>
-            <button id="brushSize6" class="special-button">
-                <span class="button-text">6</span>
-                <img src="picture/pinceau6.jpg" class="button-image">
-            </button>
-            <button id="brushSize7" class="special-button">
-                <span class="button-text">7</span>
-                <img src="picture/pinceau7.jpg" class="button-image">
-            </button>
-            <button id="brushSize8" class="special-button">
-                <span class="button-text">8</span>
-                <img src="picture/pinceau8.jpg" class="button-image">
-            </button>
-            <button id="brushSize9" class="special-button">
-                <span class="button-text">9</span>
-                <img src="picture/pinceau9.jpg" class="button-image">
-            </button>
-            <button id="brushSize10" class="special-button">
-                <span class="button-text">10</span>
-                <img src="picture/pinceau10.jpg" class="button-image">
-            </button>
-      </div>
+    <button id="toggleBrushSizeButtons"><img src="picture/brushsize.png" class="button-img"></button>
+      <div id="brushSizeFrame" class="brush-size-frame">
+        <div class="brush-size-buttons">
+          <button id="brushSize1" class="special-button">
+              <span class="button-text">1</span>
+              <img src="picture/pinceau1.jpg" class="button-image">
+          </button>
+          <button id="brushSize2" class="special-button">
+              <span class="button-text">2</span>
+              <img src="picture/pinceau2.jpg" class="button-image">
+          </button>
+          <button id="brushSize3" class="special-button">
+              <span class="button-text">3</span>
+              <img src="picture/pinceau3.jpg" class="button-image">
+          </button>
+          <button id="brushSize4" class="special-button">
+              <span class="button-text">4</span>
+              <img src="picture/pinceau4.jpg" class="button-image">
+          </button>
+          <button id="brushSize5" class="special-button">
+              <span class="button-text">5</span>
+              <img src="picture/pinceau5.jpg" class="button-image">
+          </button>
+          <button id="brushSize6" class="special-button">
+              <span class="button-text">6</span>
+              <img src="picture/pinceau6.jpg" class="button-image">
+          </button>
+          <button id="brushSize7" class="special-button">
+              <span class="button-text">7</span>
+              <img src="picture/pinceau7.jpg" class="button-image">
+          </button>
+          <button id="brushSize8" class="special-button">
+              <span class="button-text">8</span>
+              <img src="picture/pinceau8.jpg" class="button-image">
+          </button>
+          <button id="brushSize9" class="special-button">
+              <span class="button-text">9</span>
+              <img src="picture/pinceau9.jpg" class="button-image">
+          </button>
+          <button id="brushSize10" class="special-button">
+              <span class="button-text">10</span>
+              <img src="picture/pinceau10.jpg" class="button-image">
+          </button>
     </div>
-    <span id="brushSizeValue">1</span>
   </div>
-
+  <span id="brushSizeValue">1</span>
+</div>
   
   <div class="transparency-container">
     <button id="toggleTransparencyOptions"><img src="picture/transparency.jpg"></button>
@@ -1342,12 +1342,16 @@ body.secondary-palette-visible .settings-container {
 </div>
 
   <div id="helpScreen" class="help-screen">
+    <div class="READMEButtons">
+      <button id="READMEHebrew" class="README" onclick="openPPT('help/READMEHebrew.pptx')">README Hebrew</button>
+       <button id="READMEEnglish" class="README" onclick="openPPT('help/READMEEnglish.pptx')">README English</button>
+    </div>
     <div class="closeHelpButton">
       <button id="closeHelp" class="close-button">Close</button>
     </div>
     <div class="help-images-container">
-      <img src="picture/helppage.jpg" alt="Help Page 1" class="help-image help-image-top">
-      <img src="picture/helppage2.jpg" alt="Help Page 2" class="help-image help-image-bottom">
+      <img src="help/helppage.jpg" alt="Help Page 1" class="help-image help-image-top">
+      <img src="help/helppage2.jpg" alt="Help Page 2" class="help-image help-image-bottom">
     </div>
   </div>
 
@@ -1359,10 +1363,10 @@ body.secondary-palette-visible .settings-container {
 
   <div id="confirmationDialog" style="display:none;">
     <p>Are you sure?</p>
-    <button id="confirmYes">Yes</button>
-    <button id="confirmNo">No</button>
+    <button id="confirmYes" class="confirmation-button"><img src="yes.png" class="button-img"></button>
+    <button id="confirmNo" class="confirmation-button"><img src="no.png" class="button-img"></button>
   </div>
-
+  
   <div id="BlackAndWhiteDialog" style="display:none;">
     <p>Which picture type?</p>
     <button id="Black and White">Black and White</button>
