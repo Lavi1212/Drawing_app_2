@@ -42,9 +42,6 @@ const selectColorButton = document.getElementById('selectColor');
 const toggleBrushSizeButton = document.getElementById('toggleBrushSizeButtons');
 const PenTransparencyButton = document.getElementById('toggleTransparencyOptions');
 const settingsbutton=document.getElementById('settingsbutton');
-const playButton = document.getElementById('playButton');
-const pauseButton = document.getElementById('pauseButton');
-const stopButton = document.getElementById('stopButton');
 const MatrixButton = document.getElementById('downloadBtn');
 const functionStopButton = document.getElementById('functionsStopButton');
 const redColorButton = document.getElementById('redColor');
@@ -67,7 +64,7 @@ const level3Palette = document.getElementById('level3Palette');
 
 const musicPlayer = document.getElementById('musicPlayer');
 const play_Button = document.getElementById('playButton');
-const pause_Button = document.getElementById('pauseButton');
+//const pause_Button = document.getElementById('pauseButton');
 const stop_Button = document.getElementById('stopButton');
 
 const canvasWidth = canvas.width;
@@ -349,15 +346,17 @@ function click_happened(){
     data1Y=0;
     new_round=0;
     movement_check=1; 
+    musicPlayer.pause();
+   if(!(isPencilMode||isPencil_noCompass||isSprayMode||isSplashMode)){
+    musicPlayer.src= ('song3.mp3');
+    if (!NoMusic)
+    {musicPlayer.play();}}
     if(!(isPenMode || isZoomInMode|| isZoomOutMode||isDragMode||isPencilMode)){
     saveCanvasState(2);
     drawRedDot(currentX, currentY);
     }
     
      if (isPenMode) { 
-        musicPlayer.src= ('song3.mp3');
-        if (!NoMusic)
-        {musicPlayer.play();}
         DeleteMarkings();
         saveCanvasState(3);
         handleMouseDownPen();
@@ -383,13 +382,14 @@ function click_happened(){
     else if (isDrawing){
         isDrawing=false;
         DeleteMarkings(); //command to delete the circle/dot
-        musicPlayer.pause();
+       
     }
     else if (!isDrawing){
         isDrawing=true;
-        musicPlayer.src= ('song1.mp3');
-        if (!NoMusic)
-            {musicPlayer.play();}
+        if (!NoMusic&& ( isPencil_noCompass|| isSprayMode|| isSplashMode|| isIsoscelesTriangleMode|| isEllipseMode || isPenMode ||isPencilMode || isEraserMode || isRectangleMode || isCircleMode ||isTriangleMode ||isLineMode))
+            {musicPlayer.pause();
+            musicPlayer.src= ('song1.mp3');
+            musicPlayer.play();}
         if (isPencilMode){
             start_drawingX=currentX;
             start_drawingY=currentY;
@@ -862,6 +862,9 @@ function setupTimeoutHandler(button, clickFunction) {
 
     button.addEventListener('mouseenter', function() {
         timeoutId = setTimeout(function() {
+            musicPlayer.src= ('song4.mp3');
+            if (!NoMusic)
+                {musicPlayer.play();}
             clickFunction(); // Trigger the click function after delay
         }, timesetting); 
     });
@@ -923,6 +926,10 @@ function addColorOption(color, column) {
         document.body.classList.remove('secondary-palette-visible'); // Remove class to show brush-size-container and settings
         chosenColorButton.style.backgroundColor = color;
         musicPlayer.pause();
+        musicPlayer.src= ('song3.mp3');
+        if (!NoMusic)
+            {musicPlayer.play();}
+        
     }
 
     colorOption.onclick = selectColor;
@@ -1070,7 +1077,7 @@ document.querySelectorAll('.colorButton').forEach(button=> {
         button.classList.add('picture-button');
         button.dataset.pictureNumber = i;
   
-        const buttonText = document.createTextNode(`/Picture ${i}`);
+        const buttonText = document.createTextNode(`Picture ${i}`);
         button.appendChild(buttonText);
   
         const imgSrc = `picture/picture${i}.jpg`;
@@ -1292,15 +1299,19 @@ document.addEventListener('DOMContentLoaded', function() {
     [undoButton, saveButton, resetImageButton,newPageButton,PauseButton,zoomInButton,zoomOutButton,DragButton
         ,switchToPenButton,switchToEraserButton,switchToPencilButton ,toggleFiguresButton,level1Button,level2Button,level3Button,
         rectangleButton,lineButton ,circleButton,elipsaButton,triangleButton,IsoscelesTriangleButton,
-        selectColorButton,redColorButton,greenColorButton,cyanColorButton,magentaColorButton,yellowColorButton,blueColorButton,toggleBrushSizeButton,PenTransparencyButton,settingsbutton, playButton,pauseButton,stopButton,MatrixButton
+        selectColorButton,redColorButton,greenColorButton,cyanColorButton,magentaColorButton,yellowColorButton,blueColorButton,toggleBrushSizeButton,PenTransparencyButton,settingsbutton,MatrixButton
         ,confirmYesButton,confirmNoButton,switchToPencil1Button,switchToPencil2Button,switchToSprayButton,switchToSplashButton
-        ,play_Button,pause_Button,stop_Button
+        ,play_Button,stop_Button
     ].forEach(button => {
         let timeoutId;
 
         button.addEventListener('mouseenter', function() {
             timeoutId = setTimeout(function() {
+                musicPlayer.src= ('song4.mp3');
+                if (!NoMusic)
+                {musicPlayer.play();}
                 button.click(); // Trigger button click after delay
+            
             }, timesetting); 
         });
 
@@ -1319,22 +1330,6 @@ document.getElementById('functionsStopButton').addEventListener('click', functio
         this.textContent = `Functions Are Off`;}
     toggleSetting();
 });
-
-
-document.querySelectorAll('.color-button').forEach(button => {
-    button.addEventListener('mouseover', () => {
-        musicPlayer.src= ('song2.mp3');
-        if (!NoMusic)
-            {musicPlayer.play();}
-    });
-    button.addEventListener('mouseout', () => {
-        musicPlayer.pause();
-    });
-    
-});
-
-
-
 
 
 
@@ -1394,3 +1389,7 @@ document.getElementById('help').addEventListener('click', function() {
     document.getElementById('helpScreen').style.display = 'none';
   });
 document.getElementById('close').addEventListener('click', toggleSetting);
+
+function openPPT(fileName) {
+    window.open(fileName, '_blank');
+}
