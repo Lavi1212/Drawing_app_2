@@ -38,6 +38,7 @@ body {
   border-radius: 5px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
 }
 
 .color-pick{
@@ -66,13 +67,13 @@ body {
 .button-container1 button {
   width: 100px;
   height: 100px;
-  border: 2px solid #000;
+  border: 5px solid #000;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .button-container1 button:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 
@@ -86,26 +87,66 @@ input[type="file"] {
 input[type="file"]::-webkit-file-upload-button {
   width: 100px;
   height: 100px;
-  border: 2px solid #000;
+  border: 5px solid #000;
   border-radius: 5px;
   cursor: pointer;
 background-color: white; /* Optional: Set background color */
 }
-/*
-input[type="file"]:hover::-webkit-file-upload-button {
-  transform: scale(1.1); 
+
+input[type="file"]:hover {
+  transform: scale(1.2); 
   border-width: 5px; 
 }
-*/
-
-#confirmationDialog , #BlackAndWhiteDialog{
+#confirmationDialog{
   position: fixed;
   top: 50%;
   left: 50%;
   width: auto; /* Set a fixed width */
   padding: 20px;
   background-color: white;
-  border: 2px solid #000;
+  border: 5px solid #000;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  text-align: center; /* Center the text inside the dialog */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
+
+#confirmationDialog p {
+  margin-bottom: 20px; /* Add space below the paragraph */
+}
+
+.confirmation-button {
+  width: 150px;
+  height: 150px;
+  margin: 30px; /* Add margin around the buttons */
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-block; /* Ensure buttons stay in a row */
+  overflow: hidden; /* Ensure images don't overflow the button box */
+  padding: 0;
+}
+
+.confirmation-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the button area */
+}
+
+.confirmation-button:hover img {
+  transform: scale(1.1); /* Scale up the button on hover */
+  transition: transform 0.3s ease;
+}
+
+ #BlackAndWhiteDialog{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: auto; /* Set a fixed width */
+  padding: 20px;
+  background-color: white;
+  border: 5px solid #000;
   transform: translate(-50%, -50%);
   z-index: 1000;
   text-align: center; /* Center the text inside the dialog */
@@ -113,11 +154,11 @@ input[type="file"]:hover::-webkit-file-upload-button {
   
 }
 
-#confirmationDialog h2, #BlackAndWhiteDialog h2 {
+#BlackAndWhiteDialog h2 {
   margin-bottom: 20px; /* Add space below the heading */
 }
 
-#confirmationDialog button, #BlackAndWhiteDialog button {
+ #BlackAndWhiteDialog button {
   width: 150px;
   height: 150px;
   margin: 30px; /* Add margin around the buttons */
@@ -131,26 +172,28 @@ input[type="file"]:hover::-webkit-file-upload-button {
   position: static;
   display: flex;
   flex-direction: row; /* Arrange items in a row */
-  margin-top: 140px;
+  margin-top: 133px;
   margin-left: 400px;
   transform: translateX(-50%); /* Center horizontally using transform */
   width: 800px; /* Allow width to adjust based on content */
   height: auto; /* Allow height to adjust based on content */
   gap: 40px; /* Add space between the squares */
+
 }
 
 .button-container2 > div {
   width: 100px; /* Set a fixed width for the color palette */
   height:80px; /* Set a fixed height for the color palette */
-  border: 2px solid #000; /* Add border around the color palette */
+  border: 5px solid #000; /* Add border around the color palette */
   border-radius: 5px; /* Add border radius for rounded corners */
   display: flex;
   align-items: center; /* Center content vertically */
   justify-content: center; /* Center content horizontally */
   background-color: white; /* Optional: Set background color */
+ 
 }
-.button-container2 button:hover {
-  transform: scale(1.1);
+.button-container2> div:hover {
+  transform: scale(1.2);
 }
 
 
@@ -162,6 +205,8 @@ input[type="file"]:hover::-webkit-file-upload-button {
   padding: 0; /* Remove any padding */
   margin: 0; /* Remove any margin */
   background-color: white; /* Optional: Set background color */
+  cursor: pointer;
+  
 }
 
 
@@ -182,7 +227,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
 .button-container3 button {
   width: 100px; /* Set width for each color option */
   height: 100px; /* Set height for each color option */
-  border: 2px solid #000; /* Add border around each color option */
+  border: 5px solid #000; /* Add border around each color option */
   border-radius: 5px; /* Add border radius for rounded corners */
   margin-bottom: 10px; /* Adjust margin between color options */
   cursor: pointer;
@@ -194,7 +239,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
 }
 
 .button-container3 button:hover {
-  transform: scale(1.1); /* Scale up the button slightly on hover */
+  transform: scale(1.2); /* Scale up the button slightly on hover */
   opacity:1.1; /* Reduce opacity slightly on hover */
 }
 
@@ -207,7 +252,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
   height:500px; 
   background-color: white;
   padding: 10px;
-  border: 2px solid #000; /* Add border */
+  border: 5px solid #000; /* Add border */
   border-radius: 5px; /* Add border radius */
   display: flex;
   flex-direction: row;
@@ -218,7 +263,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
   height: 100px; /* Adjust button height */
   margin: 10px; /* Add margin around the buttons */
   font-size: 16px; /* Adjust font size */
-  border: 2px solid #000; /* Add border */
+  border: 5px solid #000; /* Add border */
   border-radius: 5px; /* Add border radius */
   cursor: pointer; /* Change cursor on hover */
   background-color: white;
@@ -255,7 +300,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
 .palette-container button {
   width: 100px; /* Set width for each figure button */
   height: 120px; /* Set height for each figure button */
-  border: 2px solid #000; /* Add border around each figure button */
+  border: 5px solid #000; /* Add border around each figure button */
   border-radius: 5px; /* Add border radius for rounded corners */
   cursor: pointer;
   
@@ -284,12 +329,12 @@ input[type="file"]:hover::-webkit-file-upload-button {
 .color-button {
   width: 100px;
   height: 70px;
-  border: 2px solid #000;
+  border: 5px solid #000;
   border-radius: 5px;
   cursor: pointer;
 }
 .color-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .color-button::after {
@@ -328,12 +373,12 @@ input[type="file"]:hover::-webkit-file-upload-button {
     position: absolute;
     display: flex;
     flex-direction: row; /* Arrange items in a row */
-    left: 1060px; /* Center horizontally */
-    top: 20px; /* Adjust the top position to move it lower */
-    transform: translateX(-50%); /* Center horizontally using transform */
+    left: 1000px; /* Center horizontally */
+    top: 18px; /* Adjust the top position to move it lower */
+    /*transform: translateX(-50%);  Center horizontally using transform */
     width: 90px; /* Set a fixed width for the color palette */
     height: 70px; /* Set a fixed height for the color palette */
-    border: 2px solid rgb(5, 0, 8); /* Add border around the color palette */
+    border: 5px solid rgb(5, 0, 8); /* Add border around the color palette */
     border-radius: 5px; /* Add border radius for rounded corners */
     align-items: center; /* Center content vertically */
     justify-content: center; /* Center content horizontally */
@@ -342,8 +387,8 @@ input[type="file"]:hover::-webkit-file-upload-button {
 }
 
 
-#selectColor:hover {
-  transform: scale(1.1);
+.color-palette:hover {
+  transform: scale(1.2);
 }
 
 
@@ -378,7 +423,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
   margin: 20px;
 }
 .color-option:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 
@@ -388,7 +433,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
 /* brush size */
 .brush-size-container {
   position: static;
-  margin-top: 480px;
+  margin-top: 470px;
   margin-left: 840px;
   width: auto; /* Set a fixed width for the color palette */
   height: auto; 
@@ -397,13 +442,13 @@ input[type="file"]:hover::-webkit-file-upload-button {
 #toggleBrushSizeButtons {
   position: static;
   width: 100px; /* Set a fixed width for the color palette */
-  height: 80px; /* Set a fixed height for the color palette */
-  border: 2px solid rgb(5, 0, 8); /* Add border around the color palette */
+  height: 90px; /* Set a fixed height for the color palette */
+  border: 5px solid rgb(5, 0, 8); /* Add border around the color palette */
   border-radius: 5px; /* Add border radius for rounded corners */
   background-color: white; /* Optional: Set background color */
 }
 #toggleBrushSizeButtons:hover{
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .brush-size-frame {
@@ -478,21 +523,27 @@ input[type="file"]:hover::-webkit-file-upload-button {
 
 
 
+
+
+
+
+
+
+
 /* transparency */
 .transparency-container {
   position: static;
   display: inline-block;
-  margin-top: -80px;
-  margin-left: 970px;
+  margin-top: -90px;
+  margin-left: 975px;
 }
 
 .transparency-container button {
   width: 100px;
-  height: 80px;
-  border: 2px solid #000;
+  height: 90px;
+  border: 5px solid #000;
   border-radius: 5px;
   background-color: #fff;
-  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -500,15 +551,8 @@ input[type="file"]:hover::-webkit-file-upload-button {
 }
 
 .transparency-container button:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
   transform-origin: center; 
-}
-
-.transparency-container button img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 5px;
 }
 
 .transparency-options {
@@ -524,6 +568,13 @@ input[type="file"]:hover::-webkit-file-upload-button {
   z-index: 10;
 }
 
+.transparency-container button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
 .transparency-options .special-button {
   display: block;
   width: 100%;
@@ -534,11 +585,8 @@ input[type="file"]:hover::-webkit-file-upload-button {
   background-color: #ddd;
 }
 
-
 /*settings*/
-#settingsbutton:hover{
-  transform: scale(1.1);
-}
+
 
 .settings-container {
   position: static;
@@ -546,15 +594,16 @@ input[type="file"]:hover::-webkit-file-upload-button {
   flex-direction: row; /* Arrange items in a row */
   gap: 20px;
   background-color: white; /* Optional: Set background color */
+  
 }
 
 .settings-container > div {
   display: flex;
-  align-items: center; /* Center content vertically */
+ 
   justify-content: center; /* Center content horizontally */
-  width: 100px; /* Set a fixed width for the color palette */
+  width: 95px; /* Set a fixed width for the color palette */
   height: 100px; /* Set a fixed height for the color palette */
-  border: 2px solid #000; /* Add border around the color palette */
+  border: 5px solid #000; /* Add border around the color palette */
   border-radius: 5px; /* Add border radius for rounded corners */
   background-color: white; /* Optional: Set background color */
   margin-top: -210px;
@@ -562,12 +611,13 @@ input[type="file"]:hover::-webkit-file-upload-button {
 }
 
 .settings-container button {
-  width: 100%; /* Ensure button fills the container */
-  height: 100%; /* Ensure button fills the container */
+  width: 100px; /* Ensure button fills the container */
+  height: 100px; /* Ensure button fills the container */
   padding: 0; /* Remove any padding */
   margin: 0; /* Remove any margin */
   border: none; /* Remove any border */
   background: none; /* Remove any background */
+  
   display: flex;
   align-items: center; /* Center content vertically */
   justify-content: center; /* Center content horizontally */
@@ -583,7 +633,12 @@ input[type="file"]:hover::-webkit-file-upload-button {
   background-color: white; /* Optional: Set background color */
 }
 
-
+#settingsbutton img:hover{
+  transform: scale(1.2);
+  border: 5px solid #000; /* Add border around the color palette */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  
+}
 
 
 
@@ -609,7 +664,6 @@ input[type="file"]:hover::-webkit-file-upload-button {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  
   flex-direction: column; /* Change to column layout */
 }
 
@@ -619,7 +673,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
   border: 2px solid #000;
   border-radius: 5px;
   background-color: #fff;
-  cursor: pointer;
+  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -627,10 +681,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
   flex-direction: column; /* Change to column layout */
 }
 
-.settings-screen1 button:hover {
-  background-color: #ddd;
-  
-}
+
 
 #setting1 {
   width: 100%; /* Make the button fill its container width */
@@ -641,15 +692,11 @@ input[type="file"]:hover::-webkit-file-upload-button {
   background-color: #fff; /* Set background color */
   color: #000; /* Set text color */
   font-size: 16px; /* Adjust font size */
-  cursor: pointer; /* Show pointer cursor on hover */
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
 }
 
-#setting1:hover {
-  background-color: #ddd; /* Change background color on hover */
-}
 
 .timesetting-buttons {
   display: flex;
@@ -686,15 +733,12 @@ input[type="file"]:hover::-webkit-file-upload-button {
   background-color: #fff; /* Set background color */
   color: #000; /* Set text color */
   font-size: 16px; /* Adjust font size */
-  cursor: pointer; /* Show pointer cursor on hover */
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
 }
 
-#setting2:hover {
-  background-color: #ddd; /* Change background color on hover */
-}
+
 
 .thresholdsetting-buttons {
   display: flex;
@@ -733,52 +777,33 @@ input[type="file"]:hover::-webkit-file-upload-button {
   background-color: #fff; /* Set background color */
   color: #000; /* Set text color */
   font-size: 16px; /* Adjust font size */
-  cursor: pointer; /* Show pointer cursor on hover */
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
 }
 
-#musicsetting:hover {
-  background-color: #ddd; /* Change background color on hover */
-}
 .music-player {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: -10px; /* Adjust top margin as needed */
+  margin-top: 0px; /* Adjust top margin as needed */
   gap: 10px; /* Space between elements */
+  height: 15px;
 }
 
-.control-buttons, .song-buttons {
+.control-buttons {
   display: flex;
   gap: 10px; /* Space between buttons */
+  margin-top: -25px; 
 }
 
 .control-buttons {
   margin-bottom: 10px; /* Space between control buttons and song buttons */
 }
 
-.songButton, #playButton, #pauseButton, #stopButton {
-  width: 150px; /* Adjust width as needed */
-  height: 40px;
-  border: 2px solid #000;
-  border-radius: 5px;
-  background-color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-}
-.songButton {
-  width: 150px; /* Adjust width as needed */
-  height: 40px;
-  border: 2px solid #000;
-  border-radius: 5px;
-  background-color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-}
 
-#playButton, #pauseButton, #stopButton {
+
+#playButton,  #stopButton {
   width: 150px;
   height: 40px;
   border: 2px solid #000;
@@ -789,6 +814,9 @@ input[type="file"]:hover::-webkit-file-upload-button {
   margin-top: 10px; /* Add some space between the song buttons and control buttons */
 }
 
+#playButton:hover,  #stopButton:hover {
+background-color: #ddd;
+}
 
 #leveldraw {
   width: 100%; /* Make the button fill its container width */
@@ -799,15 +827,12 @@ input[type="file"]:hover::-webkit-file-upload-button {
   background-color: #fff; /* Set background color */
   color: #000; /* Set text color */
   font-size: 16px; /* Adjust font size */
-  cursor: pointer; /* Show pointer cursor on hover */
+
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
 }
 
-#leveldraw:hover {
-  background-color: #ddd; /* Change background color on hover */
-}
 
 .leveldrawbuttons {
   display: flex;
@@ -816,7 +841,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
   gap: 5px; /* Space between buttons */
 }
 
-.leveldraw-button {
+.leveldrawbuttons button {
   width: 100px; /* Adjust button width as needed */
   height: 40px; /* Adjust button height as needed */
   border: 2px solid #000;
@@ -829,7 +854,7 @@ input[type="file"]:hover::-webkit-file-upload-button {
   font-size: 14px;
 }
 
-.leveldraw-button:hover {
+.leveldrawbuttons button:hover {
   background-color: #ddd;
 }
 
@@ -844,13 +869,9 @@ input[type="file"]:hover::-webkit-file-upload-button {
   background-color: #fff; /* Set background color */
   color: #000; /* Set text color */
   font-size: 16px; /* Adjust font size */
-  cursor: pointer; /* Show pointer cursor on hover */
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
-}
-#backgroundColor:hover {
-  background-color: #ddd; /* Change background color on hover */
 }
 
 .backgroundColorbuttons {
@@ -905,11 +926,10 @@ input[type="file"]:hover::-webkit-file-upload-button {
 
 
 /*help setting*/
-/*help setting*/
 .helpSettingsButtons {
   position: absolute;
   top: 10px; /* Position from the top */
-  left: 1119px; /* Position from the left */
+  left: 1122px; /* Position from the left */
   z-index: 100; /* Ensure it appears on top of other elements */
 }
 
@@ -961,8 +981,9 @@ input[type="file"]:hover::-webkit-file-upload-button {
 
 .closeHelpButton {
   position: absolute;
-  top: 10px; /* Position from the top */
-  right: 10px; /* Position from the right */
+  top: 20px; /* Position from the top */
+  right: 20px; /* Position from the right */
+  
 }
 
 .close-button {
@@ -970,18 +991,45 @@ input[type="file"]:hover::-webkit-file-upload-button {
   height: 50px; /* Set the height for the close button */
   border: 2px solid #000; /* Add a border */
   border-radius: 5px; /* Add border radius for rounded corners */
-  background-color: #fff; /* Set background color */
   cursor: pointer; /* Show pointer cursor on hover */
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
   font-size: 18px; /* Set the font size */
+  background-color: rgb(100, 212, 100);
 }
 
 .close-button:hover {
-  background-color: #ddd; /* Change background color on hover */
+  background-color: rgb(100, 212, 100);
+  transform: scale(1.2); 
 }
 
+.READMEButtons {
+  position: absolute;
+  top: 20px; /* Position from the top */
+  left: 20px; /* Position from the right */
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.README {
+  width: 150px; /* Set the width for the close button */
+  height: 50px; /* Set the height for the close button */
+  border: 2px solid #000; /* Add a border */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  cursor: pointer; /* Show pointer cursor on hover */
+  display: flex; /* Use flexbox for alignment */
+  flex-direction: row;
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  font-size: 18px; /* Set the font size */
+  background-color: rgb(100, 212, 100);
+}
+
+.README:hover {
+  transform: scale(1.2);
+}
 
     
 body.secondary-palette-visible .transparency-container, 
@@ -1067,7 +1115,6 @@ body.secondary-palette-visible .settings-container {
   margin: 5px auto;
    /*border-radius: 50%; Makes the image round */
 }
-
 
 
 
