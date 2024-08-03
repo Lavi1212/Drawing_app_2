@@ -523,7 +523,13 @@ input[type="file"]:hover {
 }
 
 
-
+.button-image {
+  width: 250px; /* Adjust size as needed */
+  height: 250px; /* Adjust size as needed */
+  display: block;
+  margin: 5px auto;
+   /*border-radius: 50%; Makes the image round */
+}
 
 
 
@@ -1076,7 +1082,7 @@ body.secondary-palette-visible .settings-container {
   gap: 10px; /* Add space between buttons */
 }
 
-#toggleGridButton, #downloadBtn, #functionsStopButton {
+#toggleGridButton, #downloadBtn, #functionsStopButton, #immediateMode {
   width: auto; /* Set width to auto to prevent filling container */
   flex: 1; /* Allow buttons to grow equally */
   height: 40px; /* Set button height */
@@ -1092,7 +1098,7 @@ body.secondary-palette-visible .settings-container {
   justify-content: center; /* Center items horizontally */
 }
 
-#toggleGridButton:hover, #downloadBtn:hover, #functionsStopButton:hover {
+#toggleGridButton:hover, #downloadBtn:hover, #functionsStopButton:hover,#immediateMode:hover {
   background-color: #ddd; /* Change background color on hover */
 }
 #canvas-container {
@@ -1107,5 +1113,4 @@ body.secondary-palette-visible .settings-container {
   pointer-events: none; /* Ensure grid does not interfere with drawing */
   display: 'none';
 }
-
 
