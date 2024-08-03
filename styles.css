@@ -1,5 +1,4 @@
 
-
 body {
   font-family: Arial, sans-serif;
   color: #333;
@@ -25,7 +24,7 @@ body {
   width: 900px; /* Set fixed width for the canvas container */
   height: 450px; /* Set fixed height for the canvas container */
   /* Adjust the top position to move it lower */
-  margin-top: 80px;
+  margin-top: 75px;
   margin-left: 120px;
   border: 5px solid rgb(6, 0, 11);
   border-radius: 5px;
@@ -189,7 +188,16 @@ input[type="file"]:hover {
   transform: scale(1.2);
 }
 
+.button-img2 {
+  width: 100%; /* Set image width to fill the button */
+  height: 94%; /* Set image height to fill the button */
+  object-fit: cover; /* Ensure the image covers the entire button without distortion */
+  padding: 0; /* Remove any padding */
+  margin: 0; /* Remove any margin */
+  background-color: white; /* Optional: Set background color */
+  cursor: pointer;
 
+}
 
 .button-img {
   width: 100%; /* Set image width to fill the button */
@@ -367,7 +375,7 @@ input[type="file"]:hover {
     display: flex;
     flex-direction: row; /* Arrange items in a row */
     left: 1000px; /* Center horizontally */
-    top: 18px; /* Adjust the top position to move it lower */
+    top: 12px; /* Adjust the top position to move it lower */
     /*transform: translateX(-50%);  Center horizontally using transform */
     width: 90px; /* Set a fixed width for the color palette */
     height: 70px; /* Set a fixed height for the color palette */
@@ -642,7 +650,7 @@ input[type="file"]:hover {
   top: 10px; /* Adjust the top position */
   left: 0px; /* Center horizontally */
   width: 1200px; /* Set the width */
-  height: 980px; /* Set the height to auto */
+  height: 900px; /* Set the height to auto */
   max-height: calc(100vh - 50px); /* Make sure it doesn't exceed the viewport height minus some space */
   background-color: #d1e2f9;
   border: 2px solid #000;
@@ -655,7 +663,7 @@ input[type="file"]:hover {
 .settings-screen1 {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 14px;
   justify-content: center;
   flex-direction: column; /* Change to column layout */
 }
@@ -695,7 +703,7 @@ input[type="file"]:hover {
   display: flex;
   justify-content: center; /* Center buttons horizontally */
   margin-top: -10px; /* Adjust top margin as needed */
-  gap: 5px; /* Space between buttons */
+  gap: 10px; /* Space between buttons */
 }
 
 .timesetting-button {
@@ -737,7 +745,7 @@ input[type="file"]:hover {
   display: flex;
   justify-content: center; /* Center buttons horizontally */
   margin-top: -10px; /* Adjust top margin as needed */
-  gap: 5px; /* Space between buttons */
+  gap: 10px; /* Space between buttons */
 
 }
 
@@ -761,6 +769,7 @@ input[type="file"]:hover {
 
 
 /*music settings*/
+
 #musicsetting {
   width: 100%; /* Make the button fill its container width */
   height: 40px; /* Set button height */
@@ -773,6 +782,7 @@ input[type="file"]:hover {
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
   justify-content: center; /* Center items horizontally */
+  gap:2px;
 }
 
 .music-player {
@@ -781,17 +791,13 @@ input[type="file"]:hover {
   align-items: center;
   margin-top: 0px; /* Adjust top margin as needed */
   gap: 10px; /* Space between elements */
-  height: 15px;
+  height: 40px;
 }
 
 .control-buttons {
   display: flex;
   gap: 10px; /* Space between buttons */
   margin-top: -25px; 
-}
-
-.control-buttons {
-  margin-bottom: 10px; /* Space between control buttons and song buttons */
 }
 
 
@@ -804,7 +810,7 @@ input[type="file"]:hover {
   background-color: #fff;
   cursor: pointer;
   font-size: 14px;
-  margin-top: 10px; /* Add some space between the song buttons and control buttons */
+  margin-top: 20px; /* Add some space between the song buttons and control buttons */
 }
 
 #playButton:hover,  #stopButton:hover {
@@ -831,7 +837,7 @@ background-color: #ddd;
   display: flex;
   justify-content: center; /* Center buttons horizontally */
   margin-top: -10px; /* Adjust top margin as needed */
-  gap: 5px; /* Space between buttons */
+  gap: 10px; /* Space between buttons */
 }
 
 .leveldrawbuttons button {
@@ -871,7 +877,7 @@ background-color: #ddd;
   display: flex;
   justify-content: center; /* Center buttons horizontally */
   margin-top: -10px; /* Adjust top margin as needed */
-  gap: 5px; /* Space between buttons */
+  gap: 10px; /* Space between buttons */
   
 }
 
@@ -922,7 +928,7 @@ background-color: #ddd;
 .helpSettingsButtons {
   position: absolute;
   top: 10px; /* Position from the top */
-  left: 1122px; /* Position from the left */
+  left: 1140px; /* Position from the left */
   z-index: 100; /* Ensure it appears on top of other elements */
 }
 
@@ -979,7 +985,7 @@ background-color: #ddd;
   
 }
 
-.close-button {
+.close-button_help {
   width: 150px; /* Set the width for the close button */
   height: 50px; /* Set the height for the close button */
   border: 2px solid #000; /* Add a border */
@@ -992,7 +998,7 @@ background-color: #ddd;
   background-color: rgb(100, 212, 100);
 }
 
-.close-button:hover {
+.close-button_help:hover {
   background-color: rgb(100, 212, 100);
   transform: scale(1.2); 
 }
@@ -1073,7 +1079,7 @@ body.secondary-palette-visible .settings-container {
   width: auto; /* Set width to auto to prevent filling container */
   flex: 1; /* Allow buttons to grow equally */
   height: 40px; /* Set button height */
-  margin-bottom: 10px; /* Add margin at the bottom */
+  margin-bottom: 0px; /* Add margin at the bottom */
   border: 2px solid #000; /* Add border */
   border-radius: 5px; /* Add border radius for rounded corners */
   background-color: #fff; /* Set background color */
@@ -1096,16 +1102,9 @@ body.secondary-palette-visible .settings-container {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 0;
   pointer-events: none; /* Ensure grid does not interfere with drawing */
+  display: 'none';
 }
 
-/* Style for the button images */
-.button-image {
-  width: 250px; /* Adjust size as needed */
-  height: 250px; /* Adjust size as needed */
-  display: block;
-  margin: 5px auto;
-   /*border-radius: 50%; Makes the image round */
-}
 
