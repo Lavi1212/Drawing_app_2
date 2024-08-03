@@ -1,23 +1,22 @@
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ColoringPage</title>
-  
-   <link rel="stylesheet" href="styles.css">
-
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
- <meta charset="UTF-8">
+  
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
   
-  
   <div class="container">
     <div id="canvas-container">
       <canvas id="imageCanvas" width="900" height="450" willReadFrequently></canvas>
-      <canvas id="gridCanvas" width="900" height="450" style="position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none;"></canvas>
+      <canvas id="gridCanvas" width="900" height="450" ></canvas>
     </div>
 
   <div class="color-pick">
@@ -36,26 +35,24 @@
 
     <div class="button-container2">
       <div>
-        <button id="Pause"><img src="picture/pause.png" class="button-img"></button>
+        <button id="Pause"><img src="picture/pause.png" class="button-img2" id="imgPause"></button>
       </div>
       <div>
-        <button id="ZoomIn"><img src="picture/zoomin.jpg" class="button-img"></button>
+        <button id="ZoomIn"><img src="picture/zoomin.jpg" class="button-img2" id="imgZoomIn"></button>
       </div>
       <div>
-        <button id="ZoomOut"><img src="picture/zoomout.png" class="button-img"></button>
+        <button id="ZoomOut"><img src="picture/zoomout.png" class="button-img2" id="imgZoomOut"></button>
       </div>
       <div>
-        <button id="Drag"><img src="picture/drag.png" class="button-img"></button>
+        <button id="Drag"><img src="picture/drag.png" class="button-img2" id="imgDrag"></button>
       </div>
       <div>
-      <button id="undoButton"><img src="picture/undo.png" class="button-img"></button>
+        <button id="undoButton"><img src="picture/undo.png" class="button-img2" id="imgUndo"></button>
       </div>
       <div>
-      <button id="saveButton"><img src="picture/saveimage.png" class="button-img"></button>
+        <button id="saveButton"><img src="picture/saveimage.png" class="button-img2" id="imgSave"></button>
+      </div>
     </div>
-    </div>
-
-
 
     <div class="button-container3">
       <div>
@@ -178,13 +175,13 @@
         </div>
 
 
-        <button id="setting1">Time Setting</button>
+        <button id="setting1">Time Setting (seconds)</button>
         <div class="timesetting-buttons">
-          <button class="timesetting-button" data-value="500">500</button>
-          <button class="timesetting-button" data-value="1000">1000</button>
-          <button class="timesetting-button" data-value="2000">2000</button>
-          <button class="timesetting-button" data-value="3000">3000</button>
-          <button class="timesetting-button" data-value="5000">5000</button>
+          <button class="timesetting-button" data-value="500">0.5</button>
+          <button class="timesetting-button" data-value="1000">1</button>
+          <button class="timesetting-button" data-value="2000">2</button>
+          <button class="timesetting-button" data-value="3000">3</button>
+          <button class="timesetting-button" data-value="5000">5</button>
           <button class="timesetting-button" data-value="100000">mouse mode</button>
         </div>
         <button id="setting2">Threshold Setting</button>
@@ -204,7 +201,7 @@
           </div>
           <audio id="musicPlayer" src="song1.mp3"></audio>
         </div>
-        <button id="leveldraw">Your Level</button>
+        <button id="leveldraw">Picture Level</button>
         <div class="leveldrawbuttons">
           <button id="level1" class="level-button">Level 1</button>
           <button id="level2" class="level-button">Level 2</button>
@@ -215,13 +212,13 @@
           <button class="colorButton" data-color="#FFFFFF">White</button>
           <button class="colorButton" data-color="#000000">Black</button>
           <button class="colorButton" data-color="#90EE90">Light Green</button>
-          <button class="colorButton" data-color="#00008B">Dark Blue</button>
           <button class="colorButton" data-color="#ADD8E6">Light Blue</button>
+          <button class="colorButton" data-color="0" data-image="picture/background.jpg">Original</button>
         </div>
         <div class="button-container-settings">
           <button id="toggleGridButton">Toggle Grid</button>
-          <button id="downloadBtn">Download Matrix</button>
           <button id="functionsStopButton">Functions Are On</button>
+          <button id="downloadBtn">Download Eye-position Matrix</button>
       </div>
       </div>
     </div>
@@ -234,11 +231,11 @@
        <button id="READMEEnglish" class="README" onclick="openPPT('help/READMEEnglish.pptx')">README English</button>
     </div>
     <div class="closeHelpButton">
-      <button id="closeHelp" class="close-button">Close</button>
+      <button id="closeHelp" class="close-button_help">Close</button>
     </div>
     <div class="help-images-container">
-      <img src="picture/helppage.jpg" alt="Help Page 1" class="help-image help-image-top">
-      <img src="picture/helppage2.jpg" alt="Help Page 2" class="help-image help-image-bottom">
+      <img src="help/helppage.jpg" alt="Help Page 1" class="help-image help-image-top">
+      <img src="help/helppage2.jpg" alt="Help Page 2" class="help-image help-image-bottom">
     </div>
   </div>
 
