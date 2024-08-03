@@ -76,6 +76,7 @@ const canvasHeight = canvas.height;
 const containerWidth = canvasContainer.clientWidth;
 const containerHeight = canvasContainer.clientHeight;
 const gridButton = document.getElementById('toggleGridButton');
+const immidiateModeButton = document.getElementById('immediateMode');
 
 
 
@@ -95,6 +96,7 @@ let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [],mouse_moveme
 let Chosen_img, Chosen_newHeight,Chosen_newWidth;
 let NoMusic=1;
 let first_grid=0,first_help=0;
+let immidiate_mode=0,num1=0;
 let data1X, data1Y,data,new_round;
 let functionStop=0;
 let timesetting = 2000; // Default timesetting value
@@ -128,9 +130,9 @@ function startDraw(event) {
     movement_check=1;
 }
 
+
 function Drawing(event) {
 
-   
     const color = colorPicker.value;
     const rgbaColor = hexToRgba(color, penAlpha);
     currentX = event.offsetX;
@@ -141,6 +143,9 @@ function Drawing(event) {
         matrix_mousePosition[row] = `${time},${currentX},${currentY}`;
         row++;
     }
+
+
+   if (!(immidiate_mode&&(isPencilMode||isSprayMode||isSplashMode||isPencil_noCompass||isEraserMode))){//not case when no need for dwell-click 
 
     if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode){// Drawing black circle for help 
         DeleteMarkings();
@@ -185,6 +190,16 @@ function Drawing(event) {
     }
 
 
+    }
+    else{// immidiate_mode&&(isPencilMode||isSprayMode||isSplashMode||isPencil_noCompass||isEraserMode)
+        movement_check=0;
+        isDrawing=1;
+        // creating new path to draw
+        originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        if (num1==0){
+            ctx.beginPath();
+        num1++;} 
+    }
     
     if (movement_check==0){
         ctx.strokeStyle = rgbaColor;
@@ -192,7 +207,7 @@ function Drawing(event) {
         ctx.lineWidth = brushSize;
 
         if (isDrawing){
-           if (!isSprayMode && !isSplashMode && !isPencilMode){
+           if (!isSprayMode && !isSplashMode && !isPencilMode ){
                 ctx.putImageData(originalData, 0, 0);} 
 
            if (isSprayMode){
@@ -224,7 +239,7 @@ function Drawing(event) {
                 ctx.fill();
                 }
             }   
-      else if (isPencilMode){
+      else if (isPencilMode && immidiate_mode==0){
             if (row%3==1){
              data1X = currentX;
              data1Y = currentY;
@@ -253,12 +268,14 @@ function Drawing(event) {
                  new_round++;
             }
         }
-           else if (isPencil_noCompass || isEraserMode){
+           else if (isPencil_noCompass || isEraserMode||(isPencilMode&& immidiate_mode)){
             if (isEraserMode){
                 ctx.strokeStyle = "#fff";
             }
-            ctx.lineTo(currentX, currentY);
+       
+            ctx.lineTo(currentX, currentY); 
             ctx.stroke();
+         
            }
              else if (isRectangleMode) {
                 ctx.strokeRect(start_drawingX, start_drawingY, currentX - start_drawingX,currentY-start_drawingY);
@@ -345,6 +362,7 @@ function stopdraw() {
     musicPlayer.pause();
     clearTimeout(timeoutId);
     timeoutId = null;
+    num1=0;
 }
 
 
@@ -1056,23 +1074,6 @@ function toggleSetting() {
     pencilButtonsContainer.style.display ='none';
 }
 
-document.querySelectorAll('.timesetting-button').forEach(button => {
-    button.addEventListener('click', function() {
-        timesetting = parseInt(this.dataset.value); // Update timesetting with button's data-value
-        toggleSetting(); // Close the settings panel after selecting the option
-    });
-    setupTimeoutHandler(button, () => button.click());
-});
-
-document.querySelectorAll('.thresholdsetting-button').forEach(button => {
-    button.addEventListener('click', function() {
-        user_threshold = parseInt(this.dataset.value); // Update threshold with button's data-value
-        threshold = user_threshold;
-        toggleSetting(); // Close the settings panel after selecting the option
-    });
-    setupTimeoutHandler(button, () => button.click());
-});;
-
 document.querySelectorAll('.colorButton').forEach(button=> { 
     button.addEventListener('click', function() {
         document.body.style.backgroundImage = 'none'; // Remove background image
@@ -1084,7 +1085,7 @@ document.querySelectorAll('.colorButton').forEach(button=> {
         }
           //document.body.style.backgroundColor = ''; // Clear any background color
         
-        toggleSetting();
+       // toggleSetting();
     });
     setupTimeoutHandler(button, () => button.click());
   });
@@ -1178,7 +1179,7 @@ function downloadCSV(filename, text) {
 function MatrixDownload () {
     const csvString = matrixToCSV(matrix_mousePosition);
     downloadCSV('matrix_export.csv', csvString);
-    toggleSetting(); // Close settings panel after clicking play
+    //toggleSetting(); // Close settings panel after clicking play
 };
 
 
@@ -1234,7 +1235,7 @@ function toggleGrid() {
             gridCanvas.style.display = 'block';
             first_grid++;
         }
-        toggleSetting();
+        //toggleSetting();
     }
 
 
@@ -1246,8 +1247,10 @@ function openPPT(fileName) {
 function playMusic (){
     //musicPlayer.play();
     //console.log('here');
-    toggleSetting(); // Close settings panel after clicking play
+   // toggleSetting(); // Close settings panel after clicking play
     NoMusic=0;
+    play_Button.style.background='#ddd';
+    stop_Button.style.background='#fff';
     //console.log('here1');
   };
 
@@ -1255,8 +1258,10 @@ function playMusic (){
 function stopMusic()  {
     //musicPlayer.pause();
     //musicPlayer.currentTime = 0;
-    toggleSetting(); // Close settings panel after clicking play
+    //toggleSetting(); // Close settings panel after clicking play
     NoMusic=1;
+    stop_Button.style.background='#ddd';
+    play_Button.style.background='#fff';
   };
 
 // newPage functions
@@ -1308,7 +1313,7 @@ function confirmYes(){
 
 //initialization function
 document.addEventListener('DOMContentLoaded', function() {
-
+    
     canvas.width = canvasContainer.offsetWidth;
     canvas.height = canvasContainer.offsetHeight;
     // Fill the canvas with white color
@@ -1372,7 +1377,8 @@ document.addEventListener('DOMContentLoaded', function() {
     confirmNoButton.addEventListener('click', confirmNo);
     play_Button.addEventListener('click', function() {playMusic();});
     stop_Button.addEventListener('click', function() {stopMusic();});
-    gridButton.addEventListener(('click'), toggleGrid);
+    gridButton.addEventListener('click', toggleGrid);
+    immidiateModeButton.addEventListener('click', immidiateModeChange);
 
     
     [undoButton, saveButton, resetImageButton,newPageButton,PauseButton,zoomInButton,zoomOutButton,DragButton
@@ -1380,7 +1386,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rectangleButton,lineButton ,circleButton,elipsaButton,triangleButton,IsoscelesTriangleButton,
         selectColorButton,redColorButton,greenColorButton,cyanColorButton,magentaColorButton,yellowColorButton,blueColorButton,toggleBrushSizeButton,PenTransparencyButton,settingsbutton,MatrixButton
         ,confirmYesButton,confirmNoButton,switchToPencil1Button,switchToPencil2Button,switchToSprayButton,switchToSplashButton
-        ,play_Button,stop_Button,gridButton,closeButton,close_help_Button,help_Button
+        ,play_Button,stop_Button,gridButton,immidiateModeButton,closeButton,close_help_Button,help_Button
     ].forEach(button => {
         let timeoutId;
 
@@ -1398,15 +1404,60 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(timeoutId); // Clear timeout on mouse leave
         });
     });
+    
+
+      document.querySelectorAll('.timesetting-button').forEach(button => {
+        if (button.getAttribute('data-value') === '2000') {button.style.backgroundColor = '#ddd';}
+
+            button.addEventListener('click', function() {
+            timesetting = parseInt(this.dataset.value); 
+            document.querySelectorAll('.timesetting-button').forEach(btn => {
+                btn.style.backgroundColor = '#fff'; // Default background color
+              });
+            this.style.background ='#ddd';
+           // toggleSetting(); // Close the settings panel after selecting the option
+        });
+        setupTimeoutHandler(button, () => button.click());
+    });
+
+            
+        document.querySelectorAll('.thresholdsetting-button').forEach(button => {
+            if (button.getAttribute('data-value') === '40') {button.style.backgroundColor = '#ddd';}
+            button.addEventListener('click', function() {
+                user_threshold = parseInt(this.dataset.value); // Update threshold with button's data-value
+                threshold = user_threshold;
+                document.querySelectorAll('.thresholdsetting-button').forEach(btn => {
+                    btn.style.backgroundColor = '#fff'; // Default background color
+                  });
+                this.style.background ='#ddd';
+                //toggleSetting(); // Close the settings panel after selecting the option
+            });
+            setupTimeoutHandler(button, () => button.click());
+        });;
+
+    
+        stop_Button.style.background ='#ddd';
+
+
 });
 
 document.getElementById('functionsStopButton').addEventListener('click', function() {
     if (functionStop){
         functionStop =0;
-        this.textContent = `Functions Are On`;}
+        this.textContent = `No Functions Mode Is Off`;}
     else { 
          functionStop =1;
-        this.textContent = `Functions Are Off`;}
-    toggleSetting();
+        this.textContent = `No Functions Mode Is On`;}
+   // toggleSetting();
 });
 
+function immidiateModeChange(){
+    if (immidiate_mode)
+       { immidiate_mode=0;
+        immidiateModeButton.textContent= 'Immediate Mode Is Off';}
+    else{
+        immidiate_mode=1;
+        immidiateModeButton.textContent= 'Immediate Mode Is On';
+    }
+    //toggleSetting();
+}
