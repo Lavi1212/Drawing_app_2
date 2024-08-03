@@ -246,7 +246,7 @@ input[type="file"]:hover {
 
 #pencilButtons {
   position: absolute;
-  top: 105px; /* Adjust as needed */
+  top: 70px; /* Adjust as needed */
   left: 900px; /* Adjust as needed */
   z-index: 1000;
   width: 120px; /* Adjust button width */
@@ -276,8 +276,8 @@ input[type="file"]:hover {
 }
 .palette-container {
   position: absolute;
-  top: 100px;
-  left: 800px; 
+  top: 95px;
+  left: 790px; 
   width: 220px; /* Set the width */
   height: 420px; /* Set the height */
   background-color: white;
@@ -396,11 +396,11 @@ input[type="file"]:hover {
 
 #secondaryColorPalette {
   position: fixed;
-  top: 50%; /* Adjusted to 50% to center vertically */
+  top: 300px; /* Adjusted to 50% to center vertically */
   left: 50%; /* Adjusted to 50% to center horizontally */
   transform: translate(-48%, -43%); /* Center the palette */
-  width:1300px;
-  height:700px;
+  width:1200px;
+  height:600px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -455,10 +455,10 @@ input[type="file"]:hover {
 .brush-size-frame {
   display: none; /* Hide by default */
   position: absolute;
-  top: 30px; /* Adjust the top position */
-  width: 1200px; /* Set the width */
-  height: 450px; /* Set the height */
-  left: 0px; /* Center horizontally */
+  top: 40px; /* Adjust the top position */
+  width: 1000px; /* Set the width */
+  height: 490px; /* Set the height */
+  left: 30px; /* Center horizontally */
   background-color: #d1e2f9;
   border: 2px solid #000;
   border-radius: 5px;
@@ -473,11 +473,12 @@ input[type="file"]:hover {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
+   margin-top: 20px;
 }
 
 .brush-size-buttons button {
   width: 70px;
-  height: 400px;
+  height: 450px;
   border: 2px solid #000;
   border-radius: 5px;
   background-color: #fff;
@@ -559,8 +560,8 @@ input[type="file"]:hover {
 .transparency-options {
   display: none;
   position: absolute;
-  top: 190px;
-  left: 820px;
+  top: 147px;
+  left: 822px;
   width: 200px;
   padding: 10px;
   background-color: #fff;
