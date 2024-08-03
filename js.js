@@ -14,7 +14,7 @@ const resetImageButton = document.getElementById('resetImage');
 const newPageButton = document.getElementById('newPage');
 const fileInputButton = document.getElementById('fileInput');
 const PauseButton = document.getElementById('Pause');
-const zoomInButton = document.getElementById('ZoomIn');
+const zoomInButton = document.querySelector('.button-container2 > div > #ZoomIn');
 const zoomOutButton = document.getElementById('ZoomOut');
 const DragButton = document.getElementById('Drag');
 const switchToPenButton=document.getElementById('switchToPen');
@@ -30,6 +30,7 @@ const toggleFiguresButton=document.getElementById('toggleFigures');
 const brushSizeFrame = document.getElementById('brushSizeFrame');
 const transparencyOptions = document.getElementById('transparencyOptions');
 const settingsscreen = document.getElementById('settingsscreen');
+const helpScreen = document.getElementById('helpScreen');
 const figuresContainer = document.getElementById("figures-container");
 
 const rectangleButton = document.getElementById('rectangleButton');
@@ -64,13 +65,18 @@ const level3Palette = document.getElementById('level3Palette');
 
 const musicPlayer = document.getElementById('musicPlayer');
 const play_Button = document.getElementById('playButton');
-//const pause_Button = document.getElementById('pauseButton');
 const stop_Button = document.getElementById('stopButton');
+const help_Button = document.getElementById('help');
+const close_help_Button = document.getElementById('closeHelp');
+const closeButton = document.getElementById('close');
+
 
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 const containerWidth = canvasContainer.clientWidth;
 const containerHeight = canvasContainer.clientHeight;
+const gridButton = document.getElementById('toggleGridButton');
+
 
 
 let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isEraserMode = false,isZoomOutMode = false,isZoomInMode = false,
@@ -88,6 +94,7 @@ let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isErase
 let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [],mouse_movement=[];
 let Chosen_img, Chosen_newHeight,Chosen_newWidth;
 let NoMusic=1;
+let first_grid=0,first_help=0;
 let data1X, data1Y,data,new_round;
 let functionStop=0;
 let timesetting = 2000; // Default timesetting value
@@ -802,6 +809,14 @@ function resetScaleTransform() {
     DragButton.style.transform = '';
     toggleFiguresButton.style.transform = '';
     PauseButton.style.transform = '';
+    switchToEraserButton.style.border = ''; // Clear background color
+    switchToPenButton.style.border = '';
+    switchToPencilButton.style.border = '';
+    zoomInButton.style.border = '';
+    zoomOutButton.style.border = '';
+    DragButton.style.border = '';
+    toggleFiguresButton.style.border = '';
+    PauseButton.style.border = '';
  
 }
 
@@ -810,27 +825,35 @@ function scaleTransform() {
 
     if (isEraserMode) {
         switchToEraserButton.style.transform = 'scale(1.1)';
+        switchToEraserButton.style.border = '5px solid red';
     }
     else if (isPenMode) {
         switchToPenButton.style.transform = 'scale(1.1)';
+        switchToPenButton.style.border = '5px solid red';
     }
     else if (isPencilMode||isSprayMode||isSplashMode||isPencil_noCompass) {
         switchToPencilButton.style.transform = 'scale(1.1)';
+        switchToPencilButton.style.border = '5px solid red';
     }
     else if (isZoomInMode) {
         zoomInButton.style.transform = 'scale(1.1)';
+        zoomInButton.style.border = '5px solid red';
     }
     else if (isZoomOutMode) {
         zoomOutButton.style.transform = 'scale(1.1)';
+        zoomOutButton.style.border = '5px solid red';
     }
     else if (isDragMode) {
         DragButton.style.transform = 'scale(1.1)';
+        DragButton.style.border = '5px solid red';
     }
     else if (isRectangleMode || isCircleMode || isTriangleMode || isLineMode || isIsoscelesTriangleMode || isEllipseMode) {
         toggleFiguresButton.style.transform = 'scale(1.1)';
+        toggleFiguresButton.style.border = '5px solid red';
     }
     else  {
         PauseButton.style.transform = 'scale(1.1)';
+        PauseButton.style.border = '5px solid red';
     }
    
 
@@ -1052,9 +1075,16 @@ document.querySelectorAll('.thresholdsetting-button').forEach(button => {
 
 document.querySelectorAll('.colorButton').forEach(button=> { 
     button.addEventListener('click', function() {
-      document.body.style.backgroundImage = 'none'; // Remove background image
-      document.body.style.backgroundColor = this.getAttribute('data-color'); // Set background color
-      toggleSetting();
+        document.body.style.backgroundImage = 'none'; // Remove background image
+
+        if (this.getAttribute('data-color') != '0') {
+          document.body.style.backgroundColor = this.getAttribute('data-color');
+        } else {
+          document.body.style.backgroundImage = `url('${this.getAttribute('data-image')}')`;
+        }
+          //document.body.style.backgroundColor = ''; // Clear any background color
+        
+        toggleSetting();
     });
     setupTimeoutHandler(button, () => button.click());
   });
@@ -1160,7 +1190,58 @@ document.querySelectorAll('.songButton').forEach(button => {
       setupTimeoutHandler(button, () => button.click());
 });
 
+function toggle_help() {
+  
+    if (helpScreen.style.display === 'none'||first_help==0 ) {
+        helpScreen.style.display = 'block';
+        first_help++;
+    }
+     else {
+        helpScreen.style.display = 'none';
+     }
+}
+function drawGrid(ctx, canvas) {
+        const gridSize = 35; // Size of the grid squares
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous grid
+        ctx.strokeStyle = '#000000'; // Grid line color
+        ctx.lineWidth = 0.5; // Grid line width
 
+        for (let x = 0; x <= canvas.width; x += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+        }
+
+        for (let y = 0; y <= canvas.height; y += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+        }
+    }
+
+function toggleGrid() {
+        const gridCanvas = document.getElementById('gridCanvas');
+        const gridCtx = gridCanvas.getContext('2d');
+        const gridVisible = gridCanvas.style.display !== 'none';
+
+        if (gridVisible && (!first_grid==0)) {
+            gridCanvas.style.display = 'none';
+            
+        } else {
+            drawGrid(gridCtx, gridCanvas);
+            gridCanvas.style.display = 'block';
+            first_grid++;
+        }
+        toggleSetting();
+    }
+
+
+
+function openPPT(fileName) {
+    window.open(fileName, '_blank');
+}
 
 function playMusic (){
     //musicPlayer.play();
@@ -1169,11 +1250,7 @@ function playMusic (){
     NoMusic=0;
     //console.log('here1');
   };
-  
-function pauseMusic() {
-   // musicPlayer.pause();
-    toggleSetting(); // Close settings panel after clicking play
-  };
+
   
 function stopMusic()  {
     //musicPlayer.pause();
@@ -1269,8 +1346,9 @@ document.addEventListener('DOMContentLoaded', function() {
     switchToSprayButton.addEventListener('click', switchToSpray);
     switchToSplashButton.addEventListener('click', switchToSplash);
 
-    
-    
+    help_Button.addEventListener('click',toggle_help);
+    close_help_Button.addEventListener('click',toggle_help);
+    closeButton.addEventListener('click', toggleSetting);
     toggleFiguresButton.addEventListener("click", toggleFigures);
     rectangleButton.addEventListener('click', switchToRectangle);
     lineButton.addEventListener('click', switchToLine);
@@ -1294,6 +1372,7 @@ document.addEventListener('DOMContentLoaded', function() {
     confirmNoButton.addEventListener('click', confirmNo);
     play_Button.addEventListener('click', function() {playMusic();});
     stop_Button.addEventListener('click', function() {stopMusic();});
+    gridButton.addEventListener(('click'), toggleGrid);
 
     
     [undoButton, saveButton, resetImageButton,newPageButton,PauseButton,zoomInButton,zoomOutButton,DragButton
@@ -1301,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rectangleButton,lineButton ,circleButton,elipsaButton,triangleButton,IsoscelesTriangleButton,
         selectColorButton,redColorButton,greenColorButton,cyanColorButton,magentaColorButton,yellowColorButton,blueColorButton,toggleBrushSizeButton,PenTransparencyButton,settingsbutton,MatrixButton
         ,confirmYesButton,confirmNoButton,switchToPencil1Button,switchToPencil2Button,switchToSprayButton,switchToSplashButton
-        ,play_Button,stop_Button
+        ,play_Button,stop_Button,gridButton,closeButton,close_help_Button,help_Button
     ].forEach(button => {
         let timeoutId;
 
@@ -1331,65 +1410,3 @@ document.getElementById('functionsStopButton').addEventListener('click', functio
     toggleSetting();
 });
 
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Function to draw a grid on the grid canvas
-    function drawGrid(ctx, canvas) {
-        const gridSize = 20; // Size of the grid squares
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous grid
-        ctx.strokeStyle = '#e0e0e0'; // Grid line color
-        ctx.lineWidth = 0.5; // Grid line width
-
-        for (let x = 0; x <= canvas.width; x += gridSize) {
-            ctx.beginPath();
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, canvas.height);
-            ctx.stroke();
-        }
-
-        for (let y = 0; y <= canvas.height; y += gridSize) {
-            ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(canvas.width, y);
-            ctx.stroke();
-        }
-    }
-
-    // Function to toggle the grid overlay
-    function toggleGrid() {
-        const gridCanvas = document.getElementById('gridCanvas');
-        const gridCtx = gridCanvas.getContext('2d');
-        const gridVisible = gridCanvas.style.display !== 'none';
-
-        if (gridVisible) {
-            gridCanvas.style.display = 'none';
-        } else {
-            drawGrid(gridCtx, gridCanvas);
-            gridCanvas.style.display = 'block';
-        }
-
-        // Close the settings panel
-        document.getElementById('settingsscreen').style.display = 'none';
-    }
-
-    // Event listener for the Toggle Grid button
-    document.getElementById('toggleGridButton').addEventListener('click', function() {
-        toggleGrid();
-    });
-});
-
-//help
-document.getElementById('help').addEventListener('click', function() {
-    document.getElementById('helpScreen').style.display = 'block';
-  });
-
-  document.getElementById('closeHelp').addEventListener('click', function() {
-    document.getElementById('helpScreen').style.display = 'none';
-  });
-document.getElementById('close').addEventListener('click', toggleSetting);
-
-function openPPT(fileName) {
-    window.open(fileName, '_blank');
-}
