@@ -94,7 +94,12 @@
       <div class="color-palette" id="mainColorPalette">
         <button id="selectColor"><img src="picture/color.png" class="button-img"></button>
       </div>
+      <div class="color-palette2" id="mainColorPalette2">
+        <button id="selectColor2"><img src="picture/color.png" class="button-img"></button>
+      </div>
       <div class="color-palette" id="secondaryColorPalette" style="display: none;"></div>
+      <div class="color-palette" id="thirdColorPalette" style="display: none;"></div>
+  
    
     
 
@@ -166,6 +171,7 @@
     <button id="settingsbutton"><img src="picture/setting.png" class="button-img"></button>
     <div id="settingsscreen" class="settings-screen">
       <div class="settings-screen1">
+        
         <div class="closeSettingsButtons">
           <button id="close" class="close-button">Close</button>
         </div>
@@ -199,7 +205,7 @@
             <button id="playButton">Play Music</button>
             <button id="stopButton">Stop Music</button>
           </div>
-          <audio id="musicPlayer" src="song1.mp3"></audio>
+          <audio id="musicPlayer" src="songs/song1.mp3"></audio>
         </div>
         <button id="leveldraw">Picture Level</button>
         <div class="leveldrawbuttons">
@@ -216,7 +222,7 @@
           <button class="colorButton" data-color="0" data-image="picture/background.jpg">Original</button>
         </div>
         <div class="button-container-settings">
-          <button id="toggleGridButton">Toggle Grid</button>
+          <button id="toggleGridButton">Grid Is Off</button>
           <button id="immediateMode">Immediate Mode Is Off</button>
           <button id="functionsStopButton">No Functions Mode Is Off</button>
           <button id="downloadBtn">Download Eye-position Matrix</button>
@@ -248,8 +254,8 @@
 
   <div id="confirmationDialog" style="display:none;">
     <p>Are you sure?</p>
-    <button id="confirmYes" class="confirmation-button"><img src="yes.png" class="button-img"></button>
-    <button id="confirmNo" class="confirmation-button"><img src="no.png" class="button-img"></button>
+    <button id="confirmYes" class="confirmation-button"><img src="picture/yes.png" class="button-img"></button>
+    <button id="confirmNo" class="confirmation-button"><img src="picture/no.png" class="button-img"></button>
   </div>
   
   <div id="BlackAndWhiteDialog" style="display:none;">
