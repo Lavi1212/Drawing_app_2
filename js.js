@@ -1,4 +1,4 @@
-
+//Initialize
 const canvas = document.getElementById('imageCanvas');
 const ctx = canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
@@ -26,13 +26,11 @@ const switchToPencil2Button = document.getElementById('switchToPencil2');
 const switchToSprayButton = document.getElementById('switchToSpray');
 const switchToSplashButton = document.getElementById('switchToSplash');
 const toggleFiguresButton=document.getElementById('toggleFigures');
-
 const brushSizeFrame = document.getElementById('brushSizeFrame');
 const transparencyOptions = document.getElementById('transparencyOptions');
 const settingsscreen = document.getElementById('settingsscreen');
 const helpScreen = document.getElementById('helpScreen');
 const figuresContainer = document.getElementById("figures-container");
-
 const rectangleButton = document.getElementById('rectangleButton');
 const lineButton = document.getElementById('lineButton');
 const circleButton = document.getElementById('circleButton');
@@ -40,6 +38,7 @@ const triangleButton = document.getElementById('triangleButton');
 const elipsaButton = document.getElementById('elipsaButton');
 const IsoscelesTriangleButton = document.getElementById('IsoscelesTriangle');
 const selectColorButton = document.getElementById('selectColor');
+const selectColorButton2 = document.getElementById('selectColor2');
 const toggleBrushSizeButton = document.getElementById('toggleBrushSizeButtons');
 const PenTransparencyButton = document.getElementById('toggleTransparencyOptions');
 const settingsbutton=document.getElementById('settingsbutton');
@@ -55,53 +54,51 @@ const confirmYesButton = document.getElementById('confirmYes');
 const confirmNoButton = document.getElementById('confirmNo');
 const NoColorButton = document.getElementById('Black and White');
 const YesColorButton = document.getElementById('Color');
-
 const level1Button = document.getElementById('level1');
 const level2Button = document.getElementById('level2');
 const level3Button = document.getElementById('level3');
 const level1Palette = document.getElementById('level1Palette');
 const level2Palette = document.getElementById('level2Palette');
 const level3Palette = document.getElementById('level3Palette');
-
 const musicPlayer = document.getElementById('musicPlayer');
 const play_Button = document.getElementById('playButton');
 const stop_Button = document.getElementById('stopButton');
 const help_Button = document.getElementById('help');
 const close_help_Button = document.getElementById('closeHelp');
 const closeButton = document.getElementById('close');
-
-
-const canvasWidth = canvas.width;
-const canvasHeight = canvas.height;
-const containerWidth = canvasContainer.clientWidth;
-const containerHeight = canvasContainer.clientHeight;
 const gridButton = document.getElementById('toggleGridButton');
 const immidiateModeButton = document.getElementById('immediateMode');
 
 
 
+//Initialize modes
 let  isSplashMode=false, isPencilMode = false, isPencil_noCompass=false, isEraserMode = false,isZoomOutMode = false,isZoomInMode = false,
      isDragMode=false, isPenMode = false,isSprayMode=false, isDrawing = false, isRectangleMode = false,
-     isCircleMode = false, isIsoscelesTriangleMode=false, isTriangleMode = false, isLineMode = false, isEllipseMode=false, 
-    startX, startY,start_drawingX, start_drawingY ,currentX=0 ,currentY=0, flag=0, t=0, movement_check=0,
-    clientXWithinThreshold, clientYWithinThreshold ,currentAction = null, originalData, originalImageData,interval, 
-    brushSize = 1, penAlpha = 1,eraserSize = brushSize, timeoutId = null ,p=0,row=0,scale = 1, distance=1000;
+     isCircleMode = false, isIsoscelesTriangleMode=false, isTriangleMode = false, isLineMode = false, isEllipseMode=false; 
 
-// start_drawingX: The place where the mouse click happened and dwell-click finished!
-// startX: The place where the dwell-click started!
+//Initialize different flags
+let flag=0, t=0, num1=0, movement_check=0, first_grid=0,first_help=0,p=0,new_round=0;
+
+//Initialize random variables
+let clientXWithinThreshold, clientYWithinThreshold ,data1X, data1Y,data,currentAction = null,
+    timeoutId = null, originalData, originalImageData,Chosen_img, Chosen_newHeight,Chosen_newWidth;
+
+//Initialize default settings
+let brushSize = 1, penAlpha = 1,eraserSize = brushSize , scale = 1, distance=1000,
+    NoMusic=1 ,immidiate_mode=0,functionStop=0,timesetting = 2000,threshold = 40,user_threshold=40;
+
+// start_drawingX: The place where the mouse click happened or dwell-click finished.
+// startX: The place where the dwell-click started.
 // currentX: The place the mouse is in the call to every event function.
 // endX/Y: Only for compass use. The place with Z distance from currentX/Y, inside the compass.
+let startX, startY,start_drawingX, start_drawingY ,currentX=0 ,currentY=0;
 
 let actionsStack = [],canvasStateStack=[],matrix_mousePosition = [],mouse_movement=[];
-let Chosen_img, Chosen_newHeight,Chosen_newWidth;
-let NoMusic=1;
-let first_grid=0,first_help=0;
-let immidiate_mode=0,num1=0;
-let data1X, data1Y,data,new_round;
-let functionStop=0;
-let timesetting = 2000; // Default timesetting value
-let threshold = 40,user_threshold=40; // Default threshold value
-let numberOfRows = 20000; //number of matrix_mousePosition rows
+
+
+
+
+let numberOfRows = 20000,row=0,numberOfRows_original=20000; //number of matrix_mousePosition rows
 
 for (let i = 0; i < numberOfRows; i++) {//initalizing matrix_mousePosition
     matrix_mousePosition[i] = [];
@@ -118,7 +115,7 @@ canvas.addEventListener("mousemove", Drawing);
 canvas.addEventListener("mouseleave", stopdraw);
 
 
-function startDraw(event) {
+function startDraw(event) {//Function to start draw when mouse-clicked. on dwell click there is no pass here.
     if (movement_check==1){// So there will be no double-click, mouse & dwell-click
         return;
     }
@@ -131,74 +128,74 @@ function startDraw(event) {
 }
 
 
-function Drawing(event) {
+function Drawing(event) {//main function of this code.
 
     const color = colorPicker.value;
     const rgbaColor = hexToRgba(color, penAlpha);
     currentX = event.offsetX;
     currentY = event.offsetY;
 
-    if (row < numberOfRows) {
+    if (row < numberOfRows) {//get the mouse Position for the  matrix_mousePosition data
         time=getCurrentTime();
         matrix_mousePosition[row] = `${time},${currentX},${currentY}`;
         row++;
     }
+    else{//if there is no more place, make space for more rows.
+    make_rows();
+    Drawing(event);
+}
 
+    
+   if (!(immidiate_mode&&(isPencilMode||isSprayMode||isSplashMode||isPencil_noCompass||isEraserMode))){//make sure we are not in a case when no need for dwell-click 
 
-   if (!(immidiate_mode&&(isPencilMode||isSprayMode||isSplashMode||isPencil_noCompass||isEraserMode))){//not case when no need for dwell-click 
-
-    if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode){// Drawing black circle for help 
-        DeleteMarkings();
-        p++;
-        saveCanvasState(1);
-        drawBlackCircle(currentX,currentY,threshold);
-    }
-
-    distance = getDistance(startX, startY, currentX, currentY);
-    if (isPencilMode && isDrawing){//for pencil mode the center of the circle is start_drawingX,  start_drawingY
-            distance = getDistance(start_drawingX, start_drawingY, currentX, currentY);
-        }
-    //console.log('distance:', distance);
-
-    if (distance <= threshold) {
-        //console.log("distance <= threshold");
-        if (!timeoutId){//Starting the timecount
-            startX = currentX;
-            startY = currentY;
-            timeoutId = setTimeout(() => {
-                //console.log("click");
-                click_happened();
-                 }, timesetting); }
-                }
-    else{
-        restart_timeout();
-    }
- 
-    if (movement_check==1){// Click has been made
-
-        restart_timeout();
-        if (isDrawing){
-            //undoLastAction();//Delete the circle/dot now!
+        if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode){// Drawing black circle for help 
             DeleteMarkings();
-            saveCanvasState(3);// Save the current canvas state before drawing
-            ctx.beginPath(); // creating new path to draw
+            p++;
+            saveCanvasState(1);
+            drawBlackCircle(currentX,currentY,threshold);
+        }
 
-            originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            start_drawingX = event.offsetX;
-            start_drawingY = event.offsetY;   
-           }
+        distance = getDistance(startX, startY, currentX, currentY);//dwell click calculations
+        if (isPencilMode && isDrawing){//for pencil mode the center of the circle is start_drawingX,  start_drawingY
+                distance = getDistance(start_drawingX, start_drawingY, currentX, currentY);
+            }
+
+        if (distance <= threshold) {
+            if (!timeoutId){//Starting the timecount
+                startX = currentX;
+                startY = currentY;
+                timeoutId = setTimeout(() => {
+                    click_happened();
+                    }, timesetting); }
+                    }
+        else{   //distance > threshold
+            restart_timeout();
+        }
+    
+        if (movement_check==1){// Click has been made
+
+            restart_timeout();
+            if (isDrawing){
+                DeleteMarkings();
+                saveCanvasState(3);// Save the current canvas state before drawing
+                ctx.beginPath(); // creating new path to draw
+                originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                start_drawingX = event.offsetX;
+                start_drawingY = event.offsetY;   
+            }
+        }
     }
-
-
-    }
-    else{// immidiate_mode&&(isPencilMode||isSprayMode||isSplashMode||isPencil_noCompass||isEraserMode)
+    else{// immidiate_mode && (isPencilMode||isSprayMode||isSplashMode||isPencil_noCompass||isEraserMode)
         movement_check=0;
         isDrawing=1;
-        // creating new path to draw
         originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        if (num1==0){
+        if (num1==0){//first time to start this current draw
             ctx.beginPath();
-        num1++;} 
+            {musicPlayer.pause();
+            musicPlayer.src= ('songs/song1.mp3');
+            musicPlayer.play();}
+            num1++;
+         } 
     }
     
     if (movement_check==0){
@@ -208,9 +205,9 @@ function Drawing(event) {
 
         if (isDrawing){
            if (!isSprayMode && !isSplashMode && !isPencilMode ){
-                ctx.putImageData(originalData, 0, 0);} 
+                ctx.putImageData(originalData, 0, 0);} //this is for the shapes to not duplicate themselves.
 
-           if (isSprayMode){
+            if (isSprayMode){
             for (let i = 0; i < 100; i++) {
                 let x = currentX + (Math.random() - 0.5) *3* brushSize; 
                 let y = currentY + (Math.random() - 0.5) *3*brushSize; 
@@ -220,9 +217,9 @@ function Drawing(event) {
                 ctx.arc(x, y, 1, 0, 2 * Math.PI);
                 ctx.fill();
             }
-           }
+            }
 
-           else if (isSplashMode) {
+            else if (isSplashMode) {
             const splashSize = brushSize; 
             const density = 5;    
     
@@ -239,45 +236,41 @@ function Drawing(event) {
                 ctx.fill();
                 }
             }   
-      else if (isPencilMode && immidiate_mode==0){
-            if (row%3==1){
-             data1X = currentX;
-             data1Y = currentY;
-             console.log("1data1Y:",data1Y);
-             }
-            if (row%3 == 2 &&  data1X != 0 ){ //we Make sure in the start we go in the order: row%3==1,row%3 == 2,row%3 == 0 ...
-            data1X = currentX+data1X;
-            data1Y = currentY+data1Y;
-           //console.log("2data1Y:",data1Y);
-            }
-            if (row%3 == 0  &&  data1X != 0 ){
-                data1X=(currentX+data1X)/3;
-                data1Y=(currentY+data1Y)/3;
-                //console.log("new_round/3:",new_round/3);
-                mouse_movement[row/3][1]=data1Y;
-                mouse_movement[row/3][0]=data1X;
-                //console.log("mouse_movement[row/3][1]:",mouse_movement[row/3][1])
-                if(new_round>1){
-                pencilmode((mouse_movement[row/3][0]+mouse_movement[(row/3)-1][0]+mouse_movement[(row/3)-2][0])/3,(mouse_movement[row/3][1]+mouse_movement[(row/3)-1][1]+mouse_movement[(row/3)-2][1])/3);
+            
+            else if (isPencilMode && immidiate_mode==0){
+                if (row%3==1){
+                data1X = currentX;//data1X saves the median of three consecutive gaze points.
+                data1Y = currentY;
                 }
-                else{ 
-                    pencilmode(data1X,data1Y);
+                if (row%3 == 2 &&  data1X != 0 ){ //we Make sure in the start we go in the order: row%3==1,row%3 == 2,row%3 == 0. data1X will be zero unless we start from row%3 == 1
+                data1X = currentX+data1X;
+                data1Y = currentY+data1Y;
                 }
-                 data1X=0;
-                 data1Y=0;
-                 new_round++;
+                if (row%3 == 0  &&  data1X != 0 ){
+                    data1X=(currentX+data1X)/3;
+                    data1Y=(currentY+data1Y)/3;
+                    mouse_movement[row/3][1]=data1Y;
+                    mouse_movement[row/3][0]=data1X;
+                    if(new_round>1){// use another median, only if there allready two drawing points in this drawing
+                    pencilmode((mouse_movement[row/3][0]+mouse_movement[(row/3)-1][0]+mouse_movement[(row/3)-2][0])/3,(mouse_movement[row/3][1]+mouse_movement[(row/3)-1][1]+mouse_movement[(row/3)-2][1])/3);
+                    }
+                    else{ pencilmode(data1X,data1Y);}
+
+                    data1X=0;
+                    data1Y=0;
+                    new_round++;
+                }
             }
-        }
-           else if (isPencil_noCompass || isEraserMode||(isPencilMode&& immidiate_mode)){
-            if (isEraserMode){
-                ctx.strokeStyle = "#fff";
+
+            else if (isPencil_noCompass || isEraserMode||(isPencilMode&& immidiate_mode)){
+                if (isEraserMode){
+                    ctx.strokeStyle = "#fff";
+                }
+                ctx.lineTo(currentX, currentY); 
+                ctx.stroke();
             }
-       
-            ctx.lineTo(currentX, currentY); 
-            ctx.stroke();
-         
-           }
-             else if (isRectangleMode) {
+
+            else if (isRectangleMode) {
                 ctx.strokeRect(start_drawingX, start_drawingY, currentX - start_drawingX,currentY-start_drawingY);
             } else if (isCircleMode) {
                 drawCircle(ctx, start_drawingX, start_drawingY, currentX, currentY);
@@ -305,101 +298,60 @@ function Drawing(event) {
                 ctx.closePath();
                 ctx.stroke();
             }
-
         }
     }
 }
 
-function pencilmode(mediumX , mediumY) {
-    distance = getDistance(start_drawingX, start_drawingY, mediumX, mediumY);
-    //console.log("start_drawingX:",start_drawingX);
-    //console.log("currentY:",currentY);
-    //console.log("mediumX:",mediumX);
-    //console.log("mediumY:",mediumY);
-    DeleteMarkings();
-
-    if (distance >= threshold && distance <= threshold*3) {
-        //const speed = A * distance; // Speed is proportional to the distance
-        //interval = Math.max(1, 100 / speed); // Calculate interval based on speed
-
-        // Calculate angle from current point to last mouse position
-        const angle = Math.atan2(start_drawingY - mediumY, start_drawingX - mediumX);
-       // console.log("here");
-
-        // Calculate endpoint at distance Z from currentX, currentY in the angle direction
-        const endX = mediumX + threshold * Math.cos(angle);
-        const endY = mediumY + threshold * Math.sin(angle);
-
-        ctx.beginPath();
-      
-        ctx.moveTo(start_drawingX, start_drawingY);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
-
-        // Update start_drawingX, start_drawingY to the endpoint of the drawn line
-        [start_drawingX, start_drawingY] = [endX, endY];
-    } 
-  
-    saveCanvasState(1);
-    drawBlackCircle(start_drawingX,start_drawingY,threshold+2);
-    //drawBlackCircle(start_drawingX,start_drawingY,3*threshold);
-    //drawNeedleArray();
-    drawNeedle();
-    
-  //  setTimeout(() => {
-    //    pencilmode();
-   // }, interval); // Way to control the velocity
-}   
-
 function stopdraw() {
-    p=0;
     if (isDrawing){
         isDrawing=false; 
-            //{undoLastAction();}
     }
-    //if (isPenMode || isZoomInMode|| isZoomOutMode||isDragMode) {undoLastAction();}
     DeleteMarkings();
     musicPlayer.pause();
     clearTimeout(timeoutId);
     timeoutId = null;
     num1=0;
+    p=0;
 }
 
-
 function click_happened(){
+    movement_check=1; 
     data1X=0;
     data1Y=0;
     new_round=0;
-    movement_check=1; 
+    
     musicPlayer.pause();
    if(!(isPencilMode||isPencil_noCompass||isSprayMode||isSplashMode)){
-    musicPlayer.src= ('song3.mp3');
-    if (!NoMusic)
-    {musicPlayer.play();}}
+        musicPlayer.src= ('songs/song3.mp3');
+        if (!NoMusic)
+            {musicPlayer.play();}
+    }
+
     if(!(isPenMode || isZoomInMode|| isZoomOutMode||isDragMode||isPencilMode)){
-    saveCanvasState(2);
-    drawRedDot(currentX, currentY);
+        saveCanvasState(2);
+        drawRedDot(currentX, currentY);
     }
     
-     if (isPenMode) { 
+    if (isPenMode) { 
         DeleteMarkings();
         saveCanvasState(3);
         handleMouseDownPen();
         p=0;
-        //musicPlayer.pause();
      }
-     else if (isZoomInMode) {
+    else if (isZoomInMode) {
         if (scale<5){
-        scale = scale * 2;
-        threshold = threshold/2;}
+            scale = scale * 2;
+            threshold = threshold/2;
+        }
         updateTransform(); 
     }
     else if (isZoomOutMode){
         scale = scale/2;
-        if (threshold<user_threshold){
-        threshold = threshold*2;}
-        if (scale < 1) scale = 1;// Prevent scaling below the original size
-            updateTransform();
+        if (threshold<user_threshold)// Prevent threshold over the original threshold
+            {threshold = threshold*2;}
+        if (scale < 1) 
+            {scale = 1;}// Prevent scaling below the original size
+        updateTransform();
         }
     else if (isDragMode){
           updateTransform();
@@ -407,13 +359,12 @@ function click_happened(){
     else if (isDrawing){
         isDrawing=false;
         DeleteMarkings(); //command to delete the circle/dot
-       
     }
-    else if (!isDrawing){
+    else if (!isDrawing){//need to start draw now
         isDrawing=true;
-        if (!NoMusic&& ( isPencil_noCompass|| isSprayMode|| isSplashMode|| isIsoscelesTriangleMode|| isEllipseMode || isPenMode ||isPencilMode || isEraserMode || isRectangleMode || isCircleMode ||isTriangleMode ||isLineMode))
+        if (!NoMusic && ( isPencil_noCompass|| isSprayMode|| isSplashMode|| isIsoscelesTriangleMode|| isEllipseMode || isPenMode ||isPencilMode || isEraserMode || isRectangleMode || isCircleMode ||isTriangleMode ||isLineMode))
             {musicPlayer.pause();
-            musicPlayer.src= ('song1.mp3');
+            musicPlayer.src= ('songs/song1.mp3');
             musicPlayer.play();}
         if (isPencilMode){
             start_drawingX=currentX;
@@ -425,19 +376,62 @@ function click_happened(){
     }
 }
 
+function getDistance(x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    return Math.sqrt(dx * dx + dy * dy);
+}
 
+function restart_timeout(){
+    clearTimeout(timeoutId);
+    timeoutId = null;
+    startX = currentX; //startX goes back to current X
+    startY = currentY;
+    movement_check=0;
+}
 
-function handleMouseDownPen() {
+function DeleteMarkings(){
+    if (canvasStateStack.length>0){
+        while (actionsStack[actionsStack.length - 1]<3){//delete only markings of type 1 and 2
+            undoLastAction();
+        }
+    }
+}
+
+function pencilmode(mediumX , mediumY) {//The drawing function for compass mode
+    distance = getDistance(start_drawingX, start_drawingY, mediumX, mediumY);
+    DeleteMarkings();
+
+    if (distance >= threshold && distance <= threshold*5) {
+
+        const angle = Math.atan2(start_drawingY - mediumY, start_drawingX - mediumX);// Calculate angle from current point to last mouse position
+        const endX = mediumX + threshold * Math.cos(angle);// Calculate endpoint at distance Z from currentX, currentY in the angle direction
+        const endY = mediumY + threshold * Math.sin(angle);
+
+        ctx.beginPath();
+        ctx.moveTo(start_drawingX, start_drawingY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        [start_drawingX, start_drawingY] = [endX, endY];// Update start_drawingX, start_drawingY to the endpoint of the drawn line
+    } 
+  
+    saveCanvasState(1);
+    drawBlackCircle(start_drawingX,start_drawingY,threshold+2);
+    //drawNeedleArray();
+    drawNeedle();
+}   
+
+function handleMouseDownPen() {//Function to fill the color in pen mode.
     isDrawing= false;
-   // saveCanvasState();
-    
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height); // Get the image data of the canvas
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data; // Get the pixel data of the canvas
     const color = hexToRgb(colorPicker.value);
     const mouseX = currentX;
     const mouseY = currentY;
-    const rectWidth =1800; // Adjust rectangle width 
-    const rectHeight = 1800; // Adjust rectangle height 
+    const rectWidth =1800; 
+    const rectHeight = 1800; 
     
     
     let xStart = Math.max(0, mouseX - Math.floor(rectWidth / 2));
@@ -447,16 +441,7 @@ function handleMouseDownPen() {
     let rows_up_zero = Math.max(0,Math.floor(rectHeight / 2) - mouseY);
     let columns_left_zero = Math.max(0,  Math.floor(rectWidth / 2) - mouseX );
     
-    //console.log("mouseX:", mouseX);
-    //console.log("mouseY:", mouseY);
-    //console.log("currentX:", currentX);
-    //console.log("currentY:", currentY);
-    //console.log("xStart:", xStart);
-    //console.log("yStart:", yStart);
-    //console.log("xEnd:", xEnd);
-    //console.log("yEnd:", yEnd);
-    
-    
+
     const grayscaleValues = Array.from({ length: rectHeight }, () => Array(rectWidth).fill(0));
     
     for (let y = yStart; y < yEnd; y++) {
@@ -469,7 +454,6 @@ function handleMouseDownPen() {
     
     floodFill(Math.floor(rectWidth / 2), Math.floor(rectHeight / 2), grayscaleValues, -1); // Pass relative coordinates (always middle of rectangle) and replacement color (-1)
     updateImagePixels(ctx, imageData, grayscaleValues, xStart, yStart, xEnd - xStart, yEnd - yStart, [color.r, color.g, color.b],rows_up_zero,columns_left_zero);
-    
     }
     
 function floodFill(x, y, image, replacementColor) {
@@ -504,10 +488,8 @@ function floodFill(x, y, image, replacementColor) {
         }
     }
     
-function updateImagePixels(ctx, imageData, grayscaleValues, xStart, yStart, rectWidth, rectHeight, color,rows_up_zero,columns_left_zero) {
+function updateImagePixels(ctx, imageData, grayscaleValues, xStart, yStart, rectWidth, rectHeight, color,rows_up_zero,columns_left_zero) {//For the handleMouseDownPen function only
         const data = imageData.data;
-        
-    
         for (let y = yStart; y < yStart + rectHeight; y++) {
             for (let x = xStart; x < xStart + rectWidth; x++) {
                 const grayscaleY = y - yStart+rows_up_zero;
@@ -517,24 +499,14 @@ function updateImagePixels(ctx, imageData, grayscaleValues, xStart, yStart, rect
                     data[pixelIndex] = color[0]; // Red channel
                     data[pixelIndex + 1] = color[1]; // Green channel
                     data[pixelIndex + 2] = color[2]; // Blue channel
-                    //data[pixelIndex + 3] = 100;
-                    //console.log(color[0],color[1],color[2],data[pixelIndex + 3])
                 }
             }
         }
     
-    // Update the canvas with the modified image data
     ctx.putImageData(imageData, 0, 0);
 }
 
-function DeleteMarkings(){
-    if (canvasStateStack.length>0){
-        //console.log('here');
-        while (actionsStack[actionsStack.length - 1]<3){
-            undoLastAction();
-        }
-    }
-}
+/*
 
 function drawNeedleArray() {
     ctx.strokeStyle = 'lightblue';
@@ -589,6 +561,7 @@ function drawNeedleArray() {
     }
 
 }
+*/
 
 function drawRedDot(x, y) {
     ctx.beginPath();
@@ -597,10 +570,10 @@ function drawRedDot(x, y) {
     ctx.fill(); // Fill the circle with the red color
 }
 
-function drawNeedle() {
+function drawNeedle() {//needle for the compass mode
  
     ctx.strokeStyle = 'lightblue';
-    ctx.lineWidth = 3; // Set the line width for the needle
+    ctx.lineWidth = 3; 
 
     // Calculate the angle of the needle
     const angle = Math.atan2(currentY - start_drawingY, currentX - start_drawingX);
@@ -646,7 +619,7 @@ function drawCircle(ctx, startX, startY, endX, endY) {
     ctx.stroke();
     }
     
-function getCurrentTime() {
+function getCurrentTime() {//function for matrix_mouseposition
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -655,18 +628,11 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}.${milliseconds}`; // Return the time as a string without quotes
 }
     
-function updateTransform() {
+function updateTransform()//function for zoom in and out
+ {
     canvas.style.transformOrigin = `${startX}px ${startY}px`;
     canvas.style.transform = `scale(${scale})`;
 } 
-
-function restart_timeout(){
-    clearTimeout(timeoutId);
-    timeoutId = null;
-    startX = currentX; //startX goes back to current X
-    startY = currentY;
-    movement_check=0;
-}
 
 function drawBlackCircle(X,Y,Radius){
     ctx.strokeStyle = 'black';
@@ -676,13 +642,55 @@ function drawBlackCircle(X,Y,Radius){
     ctx.stroke();
 }
 
-function getDistance(x1, y1, x2, y2) {
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    return Math.sqrt(dx * dx + dy * dy);
+
+//End of drawing functions
+
+//general functions
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.substring(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return { r, g, b };
+  }
+  
+function hexToRgba(hex, alpha) {//with transparency (alpha)
+      // Remove the hash at the start if it's there
+      hex = hex.replace(/^#/, '');
+      // Parse r, g, b values
+      let r = parseInt(hex.substring(0, 2), 16);
+      let g = parseInt(hex.substring(2, 4), 16);
+      let b = parseInt(hex.substring(4, 6), 16);
+      // Return the RGBA string
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  
+function rgbToHex(rgb) {
+      // Assuming rgb is in the format "rgb(r, g, b)"
+      const [r, g, b] = rgb.match(/\d+/g);
+      return `#${Number(r).toString(16).padStart(2, '0')}${Number(g).toString(16).padStart(2, '0')}${Number(b).toString(16).padStart(2, '0')}`;
+  }
+ 
+function make_rows(){
+    for (let i = 0; i < numberOfRows; i++) {
+        matrix_mousePosition[row+i] = [];
+        mouse_movement[row+i]=[];
+        for (let j = 0; j < 3; j++) {
+            matrix_mousePosition[row+i][j] = [];
+            mouse_movement[row+i][j]=[];
+        }
+    }
+    numberOfRows+=numberOfRows_original;
+}
+function toggleAllFigures() {
+    figuresContainer.style.display =  'none';
+    transparencyOptions.style.display = 'none';
+    settingsscreen.style.display = 'none';
+    brushSizeFrame.style.display ='none';
+    pencilButtonsContainer.style.display ='none';
 }
 
-
+//functions for file selects
 function handleFileSelect(event) {
     saveCanvasState();
     originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -708,14 +716,6 @@ function handleFileSelect(event) {
                 canvas.height = 450;
                 ctx.fillStyle = 'white';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Draw the resized image on the canvas
-                //ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
-
-                // Store the original image data
-                //originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                //originalImageData = adjustBrightness(originalImageData);
-               // ctx.putImageData(originalImageData, 0, 0);
             };
             Chosen_img.src = event.target.result; // Set the source of the image to the result of FileReader
         };
@@ -731,75 +731,24 @@ function handleFileSelect(event) {
     toggleAllFigures();
     showBlackAndWhite();
 }
-function showBlackAndWhite() {
+
+function showBlackAndWhite() {//function to display dialog before uploading image
     BlackAndWhiteDialog.style.display = 'block';
   }
 
-  function NoColor(){
+function NoColor(){
     ctx.drawImage(Chosen_img, (canvas.width - Chosen_newWidth) / 2, (canvas.height - Chosen_newHeight) / 2, Chosen_newWidth, Chosen_newHeight);
     originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     originalImageData = adjustBrightness(originalImageData);
     ctx.putImageData(originalImageData, 0, 0);
     BlackAndWhiteDialog.style.display = 'none';
 }
+
 function YesColor(){
      ctx.drawImage(Chosen_img, (canvas.width - Chosen_newWidth) / 2, (canvas.height - Chosen_newHeight) / 2, Chosen_newWidth, Chosen_newHeight);
     originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     ctx.putImageData(originalImageData, 0, 0);
     BlackAndWhiteDialog.style.display = 'none';
-}
-NoColorButton.addEventListener('click',NoColor);
-YesColorButton.addEventListener('click',YesColor);
-function saveImage() {
-    const canvas = document.getElementById('imageCanvas');
-    const link = document.createElement("a");
-    link.download = `${Date.now()}.jpg`;
-    link.href = canvas.toDataURL();
-    link.click();
-  };
-
-  
-function saveCanvasState(actionType) {//Three types of drawing: 1-BlackCircle. 2-redDot. 3-regularDrawing
-    canvasStateStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-    actionsStack.push(actionType);
-    ///console.log("Canvas state saved. Stack size:", canvasStateStack.length);
-}
-
-function undoLastAction() {
-    if (canvasStateStack.length > 0) {
-      const lastImageData = canvasStateStack.pop();
-      const last_action = actionsStack.pop();
-      ctx.putImageData(lastImageData, 0, 0);
-      //console.log("Undo action. last action:",last_action);
-    } else {
-      //console.log("No actions to undo");
-    }
-  }
-
-
-function hexToRgb(hex) {
-  const bigint = parseInt(hex.substring(1), 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return { r, g, b };
-}
-
-function hexToRgba(hex, alpha) {
-    // Remove the hash at the start if it's there
-    hex = hex.replace(/^#/, '');
-    // Parse r, g, b values
-    let r = parseInt(hex.substring(0, 2), 16);
-    let g = parseInt(hex.substring(2, 4), 16);
-    let b = parseInt(hex.substring(4, 6), 16);
-    // Return the RGBA string
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
-function rgbToHex(rgb) {
-    // Assuming rgb is in the format "rgb(r, g, b)"
-    const [r, g, b] = rgb.match(/\d+/g);
-    return `#${Number(r).toString(16).padStart(2, '0')}${Number(g).toString(16).padStart(2, '0')}${Number(b).toString(16).padStart(2, '0')}`;
 }
 
 function adjustBrightness(imageData) {
@@ -818,6 +767,33 @@ function adjustBrightness(imageData) {
     return imageData;
     }
 
+//function to Save and download image 
+function saveImage() {
+    const canvas = document.getElementById('imageCanvas');
+    const link = document.createElement("a");
+    link.download = `${Date.now()}.jpg`;
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+ 
+//undo last action functions
+function undoLastAction() {
+    if (canvasStateStack.length > 0) {
+      const lastImageData = canvasStateStack.pop();
+      const last_action = actionsStack.pop();
+      ctx.putImageData(lastImageData, 0, 0);
+      //console.log("Undo action. last action:",last_action);
+    } else {
+      //console.log("No actions to undo");
+    }
+  }
+
+function saveCanvasState(actionType) {//Three types of drawing: 1-BlackCircle. 2-redDot. 3-regularDrawing
+    canvasStateStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    actionsStack.push(actionType);
+}
+
+//zoom-in and out functions
 function resetScaleTransform() {
     switchToEraserButton.style.transform = '';
     switchToPenButton.style.transform = '';
@@ -877,25 +853,6 @@ function scaleTransform() {
 
 }
 
-function switchToIsoscelesTriangle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=true; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
-function switchToRectangle  () { isPencil_noCompass=false;  isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = true; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
-function switchToCircle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = true; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
-function switchToTriangle  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = true; isLineMode = false;  scaleTransform();toggleFigures();}
-function switchToLine  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = true;  scaleTransform();toggleFigures();}
-function switchToElipsa ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= true; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleFigures(); }
-function switchToPen () {p=0;  isPencil_noCompass=false;isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); toggleAllFigures();}
-function switchToEraser() {t=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = true; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleAllFigures();}
-function activateZoomInMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();  toggleAllFigures(); }
-function activateZoomOutMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
-function activateDragMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
-function switchToSpray () {  isPencil_noCompass=false;  isSprayMode = true; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();   switchToPenciloptoins();}
-function switchToSplash () { isPencil_noCompass=false;   isSprayMode = false; isSplashMode = true; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins(); }
-function switchToPencil () {t=0; isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = true; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
-function switchToPencil_noCompass () {isPencil_noCompass=true; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
-
-function Pause() { isDragMode = false; isPenMode = false;  isZoomInMode = false;isZoomOutMode = false; isPencilMode = false; isDrawing = false;scaleTransform();toggleAllFigures(); }
-
-
 
 //function for dwell-click on buttons
 function setupTimeoutHandler(button, clickFunction) {
@@ -903,7 +860,7 @@ function setupTimeoutHandler(button, clickFunction) {
 
     button.addEventListener('mouseenter', function() {
         timeoutId = setTimeout(function() {
-            musicPlayer.src= ('song4.mp3');
+            musicPlayer.src= ('songs/song4.mp3');
             if (!NoMusic)
                 {musicPlayer.play();}
             clickFunction(); // Trigger the click function after delay
@@ -922,7 +879,12 @@ const matrix_color = [
     ["#FF0000", "#FFFF00", "#FF66FF", "#00CC00", "#3acabb", "#0000FF", "#D2B48C", "#D3D3D3"],
     ["#E26A13", "#fdfd96", "#FF99CC", "#00FF00", "#40e0d0", "#77B5FE", "#d8cbc4", "#FFFFFF"]
   ];
-
+  const matrix_color2 =  [
+    ["#eb5196", "#Fa9d00", "#CC00FF", "#006600", "#26867d", "#0F056B", "#8B4513", "#00000F"],
+    ["#bd1a21", "#DFAF2C", "#FF00FF", "#009900", "#33b3a6", "#4000FF", "#8b6c5c", "#303030"],
+    ["#FF0000", "#FFFF00", "#FF66FF", "#00CC00", "#3acabb", "#0000FF", "#D2B48C", "#D3D3D3"],
+    ["#E26A13", "#fdfd96", "#FF99CC", "#00FF00", "#40e0d0", "#77B5FE", "#d8cbc4", "#FFFFFF"]
+  ];
 function selectColor(color='#000000') {
     p=0;
     isDrawing = false;
@@ -930,30 +892,53 @@ function selectColor(color='#000000') {
     document.body.classList.add('secondary-palette-visible'); // Add class to hide brush-size-container and settings
     populateSecondaryPalette(color);
 }
+function selectColor2(color='#000000') {
+    p=0;
+    isDrawing = false;
+    document.getElementById("thirdColorPalette").style.display = "block";
+    document.body.classList.add('secondary-palette-visible'); // Add class to hide brush-size-container and settings
+    populatethirdPalette(color);
+}
+function populatethirdPalette(primaryColor) {
+    // Clear the existing secondary color palette
+    const secondaryPalette = document.getElementById("thirdColorPalette");
+    secondaryPalette.innerHTML = "";
+
+
+    for (let j = 0; j <= 7; j++) {
+        let column = document.createElement("div");
+        column.classList.add("color-column");
+        
+        for (let i = 0; i <= 3; i++) {
+            let shade = matrix_color2[i][j]; 
+            addColorOption(shade, column);
+        }
+        // Append the column to the secondary color palette
+        secondaryPalette.appendChild(column);
+    }
+}
 
 function populateSecondaryPalette(primaryColor) {
     // Clear the existing secondary color palette
     const secondaryPalette = document.getElementById("secondaryColorPalette");
     secondaryPalette.innerHTML = "";
 
-    // Create two columns
+
     for (let j = 0; j <= 7; j++) {
         let column = document.createElement("div");
         column.classList.add("color-column");
         
-        // Add shades of the selected color to each column
         for (let i = 0; i <= 3; i++) {
-            let shade = matrix_color[i][j]; // Adjust the shade
+            let shade = matrix_color[i][j]; 
             addColorOption(shade, column);
         }
-        
         // Append the column to the secondary color palette
         secondaryPalette.appendChild(column);
     }
 }
 
 function addColorOption(color, column) {
-    musicPlayer.src= ('song2.mp3');
+    musicPlayer.src= ('songs/song2.mp3');
     if (!NoMusic)
         {musicPlayer.play();}
     let colorOption = document.createElement("div");
@@ -964,10 +949,11 @@ function addColorOption(color, column) {
         // Set the colorPicker value to the selected color
         colorPicker.value = color;
         document.getElementById("secondaryColorPalette").style.display = "none";
+        document.getElementById("thirdColorPalette").style.display = "none";
         document.body.classList.remove('secondary-palette-visible'); // Remove class to show brush-size-container and settings
         chosenColorButton.style.backgroundColor = color;
         musicPlayer.pause();
-        musicPlayer.src= ('song3.mp3');
+        musicPlayer.src= ('songs/song3.mp3');
         if (!NoMusic)
             {musicPlayer.play();}
         
@@ -987,7 +973,7 @@ function select_immidiate_color(){
     chosenColorButton.style.backgroundColor = selectedColor;
 }
 
-//Shape functions
+//Shape options toggle
 function toggleFigures() {
     figuresContainer.style.display =  figuresContainer.style.display === 'none' ? 'block' : 'none';
     transparencyOptions.style.display = 'none';
@@ -995,15 +981,8 @@ function toggleFigures() {
     brushSizeFrame.style.display ='none';
     pencilButtonsContainer.style.display ='none';
 }
-function toggleAllFigures() {
-    figuresContainer.style.display =  'none';
-    transparencyOptions.style.display = 'none';
-    settingsscreen.style.display = 'none';
-    brushSizeFrame.style.display ='none';
-    pencilButtonsContainer.style.display ='none';
-}
 
-
+//pencil options toggle
 function switchToPenciloptoins(){
     pencilButtonsContainer.style.display = pencilButtonsContainer.style.display === 'none' ? 'block' : 'none';
     brushSizeFrame.style.display = 'none';
@@ -1011,8 +990,6 @@ function switchToPenciloptoins(){
     figuresContainer.style.display ='none';
     settingsscreen.style.display ='none';
 }
-
-
 
 //BrushSize functions
 function setBrushSize(size) {
@@ -1030,7 +1007,6 @@ function toggleBrushSizeFrame() {
     figuresContainer.style.display ='none';
     pencilButtonsContainer.style.display ='none';
 }
-
 
 document.querySelectorAll('.brush-size-buttons button').forEach(button => {
     button.addEventListener('click', function() {
@@ -1063,8 +1039,7 @@ document.querySelectorAll('.transparency-options button').forEach(button => {
     setupTimeoutHandler(button, () => button.click());
 });
 
-// Settings functions
-
+// Settings functions until row 1205
 
 function toggleSetting() {
     settingsscreen.style.display = settingsscreen.style.display === 'none' ? 'block' : 'none';
@@ -1074,6 +1049,7 @@ function toggleSetting() {
     pencilButtonsContainer.style.display ='none';
 }
 
+//background image options
 document.querySelectorAll('.colorButton').forEach(button=> { 
     button.addEventListener('click', function() {
         document.body.style.backgroundImage = 'none'; // Remove background image
@@ -1082,14 +1058,14 @@ document.querySelectorAll('.colorButton').forEach(button=> {
           document.body.style.backgroundColor = this.getAttribute('data-color');
         } else {
           document.body.style.backgroundImage = `url('${this.getAttribute('data-image')}')`;
-        }
-          //document.body.style.backgroundColor = ''; // Clear any background color
-        
+        } 
        // toggleSetting();
     });
     setupTimeoutHandler(button, () => button.click());
   });
-  function createPictureButtons(level, palette, start, end) {
+
+//level options
+function createPictureButtons(level, palette, start, end) {
     toggleSetting();
     palette.style.display = 'block';
     palette.innerHTML = '';
@@ -1156,6 +1132,7 @@ document.querySelectorAll('.colorButton').forEach(button=> {
     
   }
 
+//download matrix_mousePosition
 function matrixToCSV(matrix) {
     // Add headers
     const headers = 'Time,X Position,Y Position';
@@ -1182,15 +1159,7 @@ function MatrixDownload () {
     //toggleSetting(); // Close settings panel after clicking play
 };
 
-
-document.querySelectorAll('.songButton').forEach(button => {
-      button.addEventListener('click', function() {
-        musicPlayer.src = this.getAttribute('data-src');
-        toggleSetting();
-      });
-      setupTimeoutHandler(button, () => button.click());
-});
-
+//help function
 function toggle_help() {
   
     if (helpScreen.style.display === 'none'||first_help==0 ) {
@@ -1201,6 +1170,12 @@ function toggle_help() {
         helpScreen.style.display = 'none';
      }
 }
+
+function openPPT(fileName) {
+    window.open(fileName, '_blank');
+}
+
+//grid functions
 function drawGrid(ctx, canvas) {
         const gridSize = 35; // Size of the grid squares
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous grid
@@ -1229,42 +1204,54 @@ function toggleGrid() {
 
         if (gridVisible && (!first_grid==0)) {
             gridCanvas.style.display = 'none';
+            gridButton.textContent= 'Grid Is Off'
             
         } else {
             drawGrid(gridCtx, gridCanvas);
             gridCanvas.style.display = 'block';
+            gridButton.textContent= 'Grid Is On'
             first_grid++;
         }
         //toggleSetting();
     }
 
-
-
-function openPPT(fileName) {
-    window.open(fileName, '_blank');
-}
-
+//music functions
 function playMusic (){
-    //musicPlayer.play();
-    //console.log('here');
-   // toggleSetting(); // Close settings panel after clicking play
     NoMusic=0;
     play_Button.style.background='#ddd';
     stop_Button.style.background='#fff';
-    //console.log('here1');
   };
 
-  
 function stopMusic()  {
-    //musicPlayer.pause();
-    //musicPlayer.currentTime = 0;
-    //toggleSetting(); // Close settings panel after clicking play
     NoMusic=1;
     stop_Button.style.background='#ddd';
     play_Button.style.background='#fff';
   };
 
-// newPage functions
+//immidiate mode functions
+  function immidiateModeChange(){
+    if (immidiate_mode)
+       { immidiate_mode=0;
+        immidiateModeButton.textContent= 'Immediate Mode Is Off';}
+    else{
+        immidiate_mode=1;
+        immidiateModeButton.textContent= 'Immediate Mode Is On';
+    }
+    //toggleSetting();
+}
+
+document.getElementById('functionsStopButton').addEventListener('click', function() {
+    if (functionStop){
+        functionStop =0;
+        this.textContent = `No Functions Mode Is Off`;}
+    else { 
+         functionStop =1;
+        this.textContent = `No Functions Mode Is On`;}
+   // toggleSetting();
+});
+
+
+// newPage function
 function newPage(){
     saveCanvasState();
     const canvasContainer = document.getElementById('canvas-container');
@@ -1280,7 +1267,7 @@ function newPage(){
     updateTransform();
     toggleAllFigures();
 }
-
+// reset image functions
 function resetImage() {
     
     saveCanvasState();
@@ -1311,7 +1298,8 @@ function confirmYes(){
     confirmationDialog.style.display = 'none';
   }
 
-//initialization function
+
+//initialization functions
 document.addEventListener('DOMContentLoaded', function() {
     
     canvas.width = canvasContainer.offsetWidth;
@@ -1362,6 +1350,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elipsaButton.addEventListener('click', switchToElipsa);
     IsoscelesTriangleButton.addEventListener('click', switchToIsoscelesTriangle);
     selectColorButton.addEventListener('click', selectColor);
+    selectColorButton2.addEventListener('click', selectColor2);
     toggleBrushSizeButton.addEventListener('click',toggleBrushSizeFrame);
     PenTransparencyButton.addEventListener('click',toggleTransparencyOptions);
     settingsbutton.addEventListener('click',toggleSetting);
@@ -1375,6 +1364,8 @@ document.addEventListener('DOMContentLoaded', function() {
     magentaColorButton.addEventListener('click', select_immidiate_color);
     confirmYesButton.addEventListener('click', confirmYes);
     confirmNoButton.addEventListener('click', confirmNo);
+    NoColorButton.addEventListener('click',NoColor);
+    YesColorButton.addEventListener('click',YesColor);
     play_Button.addEventListener('click', function() {playMusic();});
     stop_Button.addEventListener('click', function() {stopMusic();});
     gridButton.addEventListener('click', toggleGrid);
@@ -1384,7 +1375,7 @@ document.addEventListener('DOMContentLoaded', function() {
     [undoButton, saveButton, resetImageButton,newPageButton,PauseButton,zoomInButton,zoomOutButton,DragButton
         ,switchToPenButton,switchToEraserButton,switchToPencilButton ,toggleFiguresButton,level1Button,level2Button,level3Button,
         rectangleButton,lineButton ,circleButton,elipsaButton,triangleButton,IsoscelesTriangleButton,
-        selectColorButton,redColorButton,greenColorButton,cyanColorButton,magentaColorButton,yellowColorButton,blueColorButton,toggleBrushSizeButton,PenTransparencyButton,settingsbutton,MatrixButton
+        selectColorButton,selectColorButton,redColorButton,greenColorButton,cyanColorButton,magentaColorButton,yellowColorButton,blueColorButton,toggleBrushSizeButton,PenTransparencyButton,settingsbutton,MatrixButton
         ,confirmYesButton,confirmNoButton,switchToPencil1Button,switchToPencil2Button,switchToSprayButton,switchToSplashButton
         ,play_Button,stop_Button,gridButton,immidiateModeButton,closeButton,close_help_Button,help_Button
     ].forEach(button => {
@@ -1392,7 +1383,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         button.addEventListener('mouseenter', function() {
             timeoutId = setTimeout(function() {
-                musicPlayer.src= ('song4.mp3');
+                musicPlayer.src= ('songs/song4.mp3');
                 if (!NoMusic)
                 {musicPlayer.play();}
                 button.click(); // Trigger button click after delay
@@ -1441,23 +1432,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-document.getElementById('functionsStopButton').addEventListener('click', function() {
-    if (functionStop){
-        functionStop =0;
-        this.textContent = `No Functions Mode Is Off`;}
-    else { 
-         functionStop =1;
-        this.textContent = `No Functions Mode Is On`;}
-   // toggleSetting();
-});
-
-function immidiateModeChange(){
-    if (immidiate_mode)
-       { immidiate_mode=0;
-        immidiateModeButton.textContent= 'Immediate Mode Is Off';}
-    else{
-        immidiate_mode=1;
-        immidiateModeButton.textContent= 'Immediate Mode Is On';
-    }
-    //toggleSetting();
-}
+function switchToIsoscelesTriangle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=true; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
+function switchToRectangle  () { isPencil_noCompass=false;  isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = true; isCircleMode = false; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
+function switchToCircle ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = true; isTriangleMode = false; isLineMode = false;  scaleTransform();toggleFigures();}
+function switchToTriangle  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = true; isLineMode = false;  scaleTransform();toggleFigures();}
+function switchToLine  () { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = true;  scaleTransform();toggleFigures();}
+function switchToElipsa ()  { isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= true; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleFigures(); }
+function switchToPen () {p=0;  isPencil_noCompass=false;isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = true; isZoomInMode= false ;isZoomOutMode= false; isPencilMode= false; isEraserMode= false; isRectangleMode= false; isCircleMode= false; isTriangleMode= false; isLineMode= false; isDrawing= false; scaleTransform(); toggleAllFigures();}
+function switchToEraser() {t=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isZoomInMode = false ;isZoomOutMode = false; isPenMode = false; isPencilMode = false; isEraserMode = true; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false; scaleTransform();toggleAllFigures();}
+function activateZoomInMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false;  isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = true; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;    scaleTransform();  toggleAllFigures(); }
+function activateZoomOutMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false;  isEllipseMode= false;  isDragMode = false; isZoomInMode = false; isZoomOutMode = true; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
+function activateDragMode() {if (functionStop){return;}p=0;  isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false;  isDragMode = true; isZoomInMode = false; isZoomOutMode = false; isDrawing=false;  isPenMode = false; isPencilMode = false; isEraserMode = false;isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode =false;scaleTransform();toggleAllFigures();}
+function switchToSpray () {  isPencil_noCompass=false;  isSprayMode = true; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();   switchToPenciloptoins();}
+function switchToSplash () { isPencil_noCompass=false;   isSprayMode = false; isSplashMode = true; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins(); }
+function switchToPencil () {t=0; isPencil_noCompass=false; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = true; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
+function switchToPencil_noCompass () {isPencil_noCompass=true; isSprayMode = false; isSplashMode = false; isIsoscelesTriangleMode=false; isEllipseMode= false; isDragMode = false; isPenMode = false; isZoomInMode = false ;isZoomOutMode = false; isPencilMode = false; isEraserMode = false; isDrawing = false; isRectangleMode = false; isCircleMode = false; isTriangleMode = false; isLineMode = false;scaleTransform();  switchToPenciloptoins();}
+function Pause() { isDragMode = false; isPenMode = false;  isZoomInMode = false;isZoomOutMode = false; isPencilMode = false; isDrawing = false;scaleTransform();toggleAllFigures(); }
