@@ -874,16 +874,16 @@ function setupTimeoutHandler(button, clickFunction) {
 
 //Selecting color functions
 const matrix_color = [
-    ["#eb5196", "#Fa9d00", "#CC00FF", "#006600", "#26867d", "#0F056B", "#8B4513", "#00000F"],
-    ["#bd1a21", "#DFAF2C", "#FF00FF", "#009900", "#33b3a6", "#4000FF", "#8b6c5c", "#303030"],
-    ["#FF0000", "#FFFF00", "#FF66FF", "#00CC00", "#3acabb", "#0000FF", "#D2B48C", "#D3D3D3"],
-    ["#E26A13", "#fdfd96", "#FF99CC", "#00FF00", "#40e0d0", "#77B5FE", "#d8cbc4", "#FFFFFF"]
+    ['#FF0000', '#FF0000', '#FF3333', '#FF6666', '#FF9999', '#FFCCCC', '#CCCCCC','#FFFFFF'],
+    ['#999999', '#666666', '#333333', '#000000', '#330000', '#660000', '#990000', '#CC0000'],
+    ['#FF3300', '#FF4000', '#FF6600', '#FF8000', '#FF9900', '#FFBF00', '#FFCC00', '#FFFF00'],
+    ['#FFFF00', '#CCFF00', '#BFFF00', '#99FF00', '#80FF00', '#66FF00', '#40FF00', '#33FF00']
   ];
   const matrix_color2 =  [
-    ["#eb5196", "#Fa9d00", "#CC00FF", "#006600", "#26867d", "#0F056B", "#8B4513", "#00000F"],
-    ["#bd1a21", "#DFAF2C", "#FF00FF", "#009900", "#33b3a6", "#4000FF", "#8b6c5c", "#303030"],
-    ["#FF0000", "#FFFF00", "#FF66FF", "#00CC00", "#3acabb", "#0000FF", "#D2B48C", "#D3D3D3"],
-    ["#E26A13", "#fdfd96", "#FF99CC", "#00FF00", "#40e0d0", "#77B5FE", "#d8cbc4", "#FFFFFF"]
+    ['#00FF00', '#00FF00', '#00FF33', '#00FF40', '#00FF66', '#00FF80', '#00FF99', '#00FFBF'],
+    ['#00FFCC', '#00FFFF', '#00FFFF', '#00CCFF', '#00BFFF', '#0099FF', '#0080FF', '#0066FF'],
+    ['#0040FF', '#0033FF', '#0000FF', '#0000FF', '#3300FF', '#4000FF', '#6600FF', '#8000FF'],
+    ['#9900FF', '#BF00FF', '#CC00FF', '#FF00FF', '#FF00FF', '#FF00BF', '#FF0080', '#FF0040']
   ];
 function selectColor(color='#000000') {
     p=0;
