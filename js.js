@@ -875,8 +875,8 @@ function setupTimeoutHandler(button, clickFunction) {
 //Selecting color functions
 const matrix_color = [
     ['#FF0000', '#FF0000', '#FF3333', '#FF6666', '#FF9999', '#FFCCCC', '#CCCCCC','#FFFFFF'],
-    ['#999999', '#666666', '#333333', '#000000', '#330000', '#660000', '#990000', '#CC0000'],
-    ['#FF3300', '#FF4000', '#FF6600', '#FF8000', '#FF9900', '#FFBF00', '#FFCC00', '#FFFF00'],
+    ['#FF3300', '#FF4000', '#FF6600', '#FF8000', '#FF9900', '#FFBF00', '#FFCC00', '#FFFF0F'],
+    ['#CC0000', '#990000', '#660000', '#666666', '#999999', '#330000', '#333333','#00000F'],
     ['#FFFF00', '#CCFF00', '#BFFF00', '#99FF00', '#80FF00', '#66FF00', '#40FF00', '#33FF00']
   ];
   const matrix_color2 =  [
